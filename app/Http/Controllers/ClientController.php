@@ -2,21 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
-use Illuminate\Http\Request;
-use App\Http\Requests\StoreUserRequest;
-use App\Http\Requests\UpdateUserRequest;
+use App\Http\Requests\StoreClientRequest;
+use App\Http\Requests\UpdateClientRequest;
+use App\Models\Client;
 use Exception;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
-class UserController extends Controller
+class ClientController extends Controller
 {
     use AuthorizesRequests;
 
-    public function __construct()
+     public function __construct()
     {
         //Llama al método authorizeResource para aplicar las políticas de autorización
-        $this->authorizeResource(User::class, 'user');
+        $this->authorizeResource(Client::class, 'user');
     }
 
     /**
@@ -38,11 +37,11 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreUserRequest $request)
+    public function store(StoreClientRequest $request)
     {
         $validated = $request->validated();
         try {
-            User::create($validated);
+            Client::create($validated);
         } catch (Exception $e) {
             return back()->withErrors('message', 'Error al crear usuario: ' . $e);
         }
@@ -51,7 +50,7 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(User $user)
+    public function show(Client $client)
     {
         //
     }
@@ -59,7 +58,7 @@ class UserController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(User $user)
+    public function edit(Client $client)
     {
         //
     }
@@ -67,11 +66,11 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateUserRequest $request, User $user)
+    public function update(UpdateClientRequest $request, Client $client)
     {
         $validated = $request->validated();
         try {
-            $user->update($validated);
+            $client->update($validated);
         } catch (Exception $e) {
             return back()->withErrors('message', 'Error al actualizar usuario: ' . $e);
         }
@@ -80,10 +79,10 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(User $user)
+    public function destroy(Client $client)
     {
         try {
-            $user->delete();
+            $client->delete();
         } catch (Exception $e) {
             return back()->withErrors('message', 'Error al eliminar usuario: ' . $e);
         }
