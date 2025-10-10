@@ -1,0 +1,13 @@
+<?php
+namespace App\Repositories;
+
+use App\Interfaces\{{ model }}Interface;
+use App\Models\{{ model }};
+
+class {{ model }}Repository extends BaseRepository implements {{ model }}Interface
+{
+    public function model(){
+        return {{ model }}::class;
+    }
+
+}

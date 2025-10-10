@@ -1,22 +1,22 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace {{ namespace }};
 
-use App\Http\Requests\StoreClientRequest;
-use App\Http\Requests\UpdateClientRequest;
-use App\Interfaces\ClientInterface;
-use App\Models\Client;
+use {{ namespacedModel }};
+use {{ rootNamespace }}Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
+use App\Interfaces\{{model}}Interface;
+use {{ namespacedRequests }}
 
-class ClientController extends Controller
+class {{ class }} extends Controller
 {
     public function __construct(
-        private ClientInterface $repository,
+        private {{ model }}Interface $repository,
     )
     {
     }
 
-        public function index()
+    public function index()
     {
         //
     }
@@ -32,13 +32,13 @@ class ClientController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreClientRequest $request)
+    public function store({{ storeRequest }} $request)
     {
         try{
             DB::beginTransaction();
             $this->repository->create($request->validated());
             DB::commit();
-            return back()->with('status', 'Client create successfully');
+            return back()->with('status', '{{model}} create successfully');
         }catch(\Exception $e){
             return back()->withError('errors', 'Action no Disabled');
         }
@@ -47,7 +47,7 @@ class ClientController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Client $client)
+    public function show({{ model }} ${{ modelVariable }})
     {
         //
     }
@@ -55,7 +55,7 @@ class ClientController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Client $client)
+    public function edit({{ model }} ${{ modelVariable }})
     {
         //
     }
@@ -63,13 +63,13 @@ class ClientController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateClientRequest $request, Client $client)
+    public function update({{ updateRequest }} $request, {{ model }} ${{ modelVariable }})
     {
           try{
             DB::beginTransaction();
-            $this->repository->update($client->id,$request->validated());
+            $this->repository->update(${{modelVariable}}->id,$request->validated());
             DB::commit();
-            return back()->with('status', 'Client updated successfully');
+            return back()->with('status', '{{model}} updated successfully');
         }catch(\Exception $e){
             return back()->withError('errors', 'Action no Disabled');
         }
@@ -78,13 +78,13 @@ class ClientController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Client $client)
+    public function destroy({{ model }} ${{ modelVariable }})
     {
         try{
             DB::beginTransaction();
-            $this->repository->delete($client->id);
+            $this->repository->delete(${{modelVariable}}->id);
             DB::commit();
-            return back()->with('status', 'Client delete successfully');
+            return back()->with('status', '{{model}} delete successfully');
         }catch(\Exception $e){
             return back()->withError('errors', 'Action no Disabled');
         }
