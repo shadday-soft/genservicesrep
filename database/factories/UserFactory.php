@@ -27,11 +27,15 @@ class UserFactory extends Factory
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
-            'password' => static::$password ??= Hash::make('password'),
+            'password' => 12345678,
             'remember_token' => Str::random(10),
             'two_factor_secret' => Str::random(10),
             'two_factor_recovery_codes' => Str::random(10),
             'two_factor_confirmed_at' => now(),
+            'phone_number' => fake()->unique()->numberBetween(100000000, 9999999999),
+            'role' => 'customer',
+            'enterprise_name' => fake()->company(),
+            'nit' => fake()->unique()->numberBetween(1000000000, 9999999999),
         ];
     }
 
