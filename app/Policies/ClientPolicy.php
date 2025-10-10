@@ -8,6 +8,7 @@ use Illuminate\Auth\Access\Response;
 
 class ClientPolicy
 {
+<<<<<<< HEAD
      public function before(User $user, $ability)
     {
         if ($user->role === 'admin') {
@@ -15,6 +16,8 @@ class ClientPolicy
         }
     }
     
+=======
+>>>>>>> 200ba4eda14599c192446dd1af7ae94e055c543d
     /**
      * Determine whether the user can view any models.
      */
@@ -44,10 +47,13 @@ class ClientPolicy
      */
     public function update(User $user, Client $client): bool
     {
+<<<<<<< HEAD
          if ($user->id === $client->id) {
             return true;
         }
 
+=======
+>>>>>>> 200ba4eda14599c192446dd1af7ae94e055c543d
         return false;
     }
 
@@ -56,10 +62,13 @@ class ClientPolicy
      */
     public function delete(User $user, Client $client): bool
     {
+<<<<<<< HEAD
          if ($user->id === $client->id) {
             return true;
         }
 
+=======
+>>>>>>> 200ba4eda14599c192446dd1af7ae94e055c543d
         return false;
     }
 

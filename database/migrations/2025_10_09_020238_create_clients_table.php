@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('clients', function (Blueprint $table) {
             $table->id();
+<<<<<<< HEAD
             $table->string('name');
             $table->string('email')->unique();
             $table->string('phone_number', 20)->unique()->nullable();
@@ -20,6 +21,8 @@ return new class extends Migration
             $table->string('role')->default('customer');
             $table->string('enterprise_name')->nullable();
             $table->string('nit')->nullable();
+=======
+>>>>>>> 200ba4eda14599c192446dd1af7ae94e055c543d
             $table->timestamps();
         });
     }
