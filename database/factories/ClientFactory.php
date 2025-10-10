@@ -3,11 +3,8 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-<<<<<<< HEAD
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
-=======
->>>>>>> 200ba4eda14599c192446dd1af7ae94e055c543d
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Client>
@@ -22,7 +19,6 @@ class ClientFactory extends Factory
     public function definition(): array
     {
         return [
-<<<<<<< HEAD
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'password' => 12345678,
@@ -30,9 +26,6 @@ class ClientFactory extends Factory
             'role' => 'customer',
             'enterprise_name' => fake()->company(),
             'nit' => fake()->unique()->numberBetween(1000000000, 9999999999),
-=======
-            //
->>>>>>> 200ba4eda14599c192446dd1af7ae94e055c543d
         ];
     }
 }
