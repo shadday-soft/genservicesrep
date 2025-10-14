@@ -36,4 +36,15 @@ export interface User {
     updated_at: string;
 }
 
+export interface Column {
+    field: string;
+    header: string;
+    sortable?: boolean;
+    type?: string;
+    filter?: boolean;
+    filterPlaceholder?: string;
+    filterMatchMode?: string;
+    filterValue?: string | number | boolean;
+}
+
 export type BreadcrumbItemType = BreadcrumbItem;
