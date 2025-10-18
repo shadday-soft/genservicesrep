@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreClientRequest;
 use App\Http\Requests\UpdateClientRequest;
 use App\Interfaces\ClientInterface;
+use App\Interfaces\UserInterface;
 use App\Models\Client;
 use Illuminate\Support\Facades\DB;
 
@@ -16,9 +17,10 @@ class ClientController extends Controller
     {
     }
 
-        public function index()
+    public function index()
     {
-        //
+        $clients = $this->repository->getAll();
+        return inertia('Clients/Index', compact('clients'));
     }
 
     /**
@@ -34,14 +36,11 @@ class ClientController extends Controller
      */
     public function store(StoreClientRequest $request)
     {
-        try{
             DB::beginTransaction();
             $this->repository->create($request->validated());
             DB::commit();
             return back()->with('status', 'Client create successfully');
-        }catch(\Exception $e){
-            return back()->withError('errors', 'Action no Disabled');
-        }
+        
     }
 
     /**

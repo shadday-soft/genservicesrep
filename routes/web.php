@@ -13,8 +13,10 @@ Route::get('dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::resource('clients', ClientController::class);
-Route::resource('users', UserController::class);
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::resource('clients', ClientController::class);
+    Route::resource('users', UserController::class);
+}); 
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';

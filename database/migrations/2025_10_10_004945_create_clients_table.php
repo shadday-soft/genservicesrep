@@ -12,13 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('clients', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->string('phone_number', 20)->unique()->nullable();
-            $table->string('password');
-            $table->string('enterprise_name')->nullable();
-            $table->string('nit')->nullable();
+            $table->uuid('id')->primary();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->string('enterprise_name');
+            $table->string('contact_name');
+            $table->string('email');
+            $table->string('phone_number', 20)->nullable();
+            $table->string('nit')->unique()->nullable();
             $table->timestamps();
         });
     }

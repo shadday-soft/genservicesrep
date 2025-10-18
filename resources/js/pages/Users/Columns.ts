@@ -1,7 +1,7 @@
 import type { Column } from '@/types';
 
 export const columns: Column[] = [
-   
+
     {
         header: 'Nombre',
         field: 'name',
@@ -10,7 +10,7 @@ export const columns: Column[] = [
         filter: true,
         filterPlaceholder: 'Search by name',
     },
-   
+
     {
         header: 'Correo Electrónico',
         field: 'email',
@@ -20,5 +20,5 @@ export const columns: Column[] = [
         filterPlaceholder: 'Search by email',
     }
 
-    
+
 ];

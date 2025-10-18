@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { Dialog } from 'primevue';
+import AppLogoIcon from './AppLogoIcon.vue';
+
 const props = defineProps({
   width: {
     type: String,
@@ -63,15 +66,15 @@ const visible = defineModel({
     :baseZIndex
     :style="{ width: props.width }"
     :pt="{
-      header: { class: '!h-10'},
       headerActions: { class: '!text-white' },
       content: { class: '!pt-2' },
     }"
   >
     <template #header>
-      <div class="flex items-center space-x-2 ">
-        <i v-if="icon" :class="icon" />
-        <slot v-else name="icon" />
+      <div class="flex items-center justify-between w-1/2  py-2">
+        <AppLogoIcon class="w-5 fill-current text-white dark:text-black" />
+        <!-- <i v-if="icon" :class="icon" />
+        <slot v-else name="icon" /> -->
         <span v-if="title" class="text-xl font-bold truncate">
           {{ title }}
         </span>

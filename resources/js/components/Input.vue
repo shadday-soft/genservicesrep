@@ -72,24 +72,7 @@
       :placeholder
     ></DatePicker>
 
-  
-    <div class="w-full flex items-center gap-x-4 mt-2"  v-else-if="type == 'checkbox'">
-      <div class="flex items-center gap-x-2" v-for="(option, index) in options">
-        <RadioButton v-model="valueBool" :value="option.value" :inputId="`bool-${option.label}`" />
-        <label class="flex items-center gap-x-2 cursor-pointer" :for="`bool-${option.label}`">
-          {{ option.label }}
-        </label>
-      </div>
-    </div>
-
-    <div class="w-full flex items-center gap-x-4 mt-2"  v-else-if="type == 'radioGroup'">
-      <div class="flex items-center gap-x-2" v-for="(option, index) in options">
-        <RadioButton v-model="value" :value="option.value" :inputId="`bool-${option.label}`" />
-        <label class="flex items-center gap-x-2 cursor-pointer" :for="`bool-${option.label}`">
-          {{ option.label }}
-        </label>
-      </div>
-    </div>
+   
 
     <Textarea :disabled v-model="value" autoResize :rows="textAreaRows"  v-else-if="type == 'textarea'" />
     <Password v-model="value"  v-else-if="type == 'password'"  class="w-full" :pt="{
@@ -109,6 +92,7 @@ import DatePicker from "primevue/datepicker";
 import InputText from "primevue/inputtext";
 import InputNumber from "primevue/inputnumber";
 import Select from "primevue/select";
+import { MultiSelect, Password, Textarea } from "primevue";
 
 interface Option {
   label?: string;
