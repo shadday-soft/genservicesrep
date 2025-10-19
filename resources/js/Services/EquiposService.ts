@@ -11,7 +11,7 @@ export default class Equipo extends GeneralService {
         sucursal_id: '',
         nombre_equipo: '',
         detalles: '',
-        tipo_equipo: '',
+        tipo_equipo: 'Planta Eléctrica',
 
         // Planta Eléctrica
         potencia: '',
@@ -34,19 +34,19 @@ export default class Equipo extends GeneralService {
         tablero_controlador: '',
 
         // Insumos
-    filtro_aire_cantidad: '',
+    filtro_aire_cantidad: 0,
         filtro_aire_referencia: '',
-    filtro_aceite_cantidad: '',
+    filtro_aceite_cantidad: 0,
         filtro_aceite_referencia: '',
-    filtro_combustible_cantidad: '',
+    filtro_combustible_cantidad: 0,
         filtro_combustible_referencia: '',
-    filtro_separador_cantidad: '',
+    filtro_separador_cantidad: 0,
         filtro_separador_referencia: '',
-    filtro_agua_cantidad: '',
+    filtro_agua_cantidad: 0,
         filtro_agua_referencia: '',
-    filtro_aceite_2_cantidad: '',
+    filtro_aceite_2_cantidad: 0,
         filtro_aceite_2_referencia: '',
-    refrigerante_cantidad: '',
+    refrigerante_cantidad: 0,
         refrigerante_referencia: '',
     });
 

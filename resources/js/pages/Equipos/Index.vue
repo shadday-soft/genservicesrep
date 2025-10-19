@@ -61,7 +61,7 @@ const edit = (equipoData: any) => {
             </Datatable>
         </div>
 
-        <Modal v-model="showModal" :title="equipo?.id ? 'Editar Equipo' : 'Agregar Equipo'">
+        <Modal v-model="showModal" :title="equipo?.id ? 'Editar Equipo' : 'Agregar Equipo'" width="80vw" :maximizable="true">
             <Form :equipo="equipo" @close="showModal = false" />
         </Modal>
     </AppLayout>

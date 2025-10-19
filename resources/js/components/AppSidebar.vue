@@ -14,7 +14,7 @@ import {
 import { dashboard } from '@/routes';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/vue3';
-import { BookOpen, Folder, LayoutGrid, Users, SquareUser } from 'lucide-vue-next';
+import { BookOpen, Building, LayoutGrid, Users, SquareUser, CircuitBoard } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 
 const mainNavItems: NavItem[] = [
@@ -31,12 +31,12 @@ const mainNavItems: NavItem[] = [
     {
         title: 'Sucursales',
         href: 'sucursals',
-        icon: SquareUser,
+        icon: Building,
     },
     {
         title: 'Equipos',
         href: 'equipos',
-        icon: Folder,
+        icon: CircuitBoard,
     },
 
 

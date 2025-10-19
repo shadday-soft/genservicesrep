@@ -69,27 +69,24 @@ const getSucursalsForClient = async (clientId: string) => {
 
 <template>
     <div>
-        <form @submit.prevent="equipoService.submit(() => emit('close'))" class="grid grid-cols-2 gap-4">
+        <form @submit.prevent="equipoService.submit(() => emit('close'))" class="grid grid-cols-4 gap-4">
             <!-- Cliente -->
-            <div>
-                <Input v-model="form.client_id" @select="getSucursalsForClient(form.client_id)" type="select" label="Cliente" :error="form.errors.client_id"
-                    option-label="enterprise_name" option-value="id" :options="clientsList"></Input>
-
-            </div>
-
-            <!-- Sucursal -->
-            <div>
-                <Input v-model="form.sucursal_id" type="select" label="Sucursal" :error="form.errors.sucursal_id"
-                    option-label="name" option-value="id" :options="sucursalesList"></Input>
-
-            </div>
-
             <Input v-model="form.nombre_equipo" label="Nombre del equipo" :error="form.errors.nombre_equipo"></Input>
-            <Input v-model="form.tipo_equipo" label="Tipo de equipo" :error="form.errors.tipo_equipo"></Input>
-            <Input v-model="form.detalles" label="Detalles" :error="form.errors.detalles"></Input>
 
-            <!-- Campos de Planta Eléctrica (solo si tipo_equipo == 'Planta Eléctrica') -->
-            <template v-if="isPlanta">
+            <Input v-model="form.client_id" @select="getSucursalsForClient(form.client_id)" type="select"
+                label="Cliente" :error="form.errors.client_id" option-label="enterprise_name" option-value="id"
+                :options="clientsList"></Input>
+
+            <Input v-model="form.sucursal_id" type="select" label="Sucursal" :error="form.errors.sucursal_id"
+                option-label="name" option-value="id" :options="sucursalesList"></Input>
+
+
+            <Input v-model="form.tipo_equipo" type="select" :options="[
+                { label: 'Planta Eléctrica', value: 'Planta Eléctrica' },
+                { label: 'Tablero Eléctrico', value: 'Tablero Eléctrico' }
+            ]" label="Tipo de equipo" :error="form.errors.tipo_equipo"></Input>
+            
+            <template v-if="form.tipo_equipo == 'Planta Eléctrica'">
                 <Input v-model="form.potencia" label="Potencia" :error="form.errors.potencia"></Input>
                 <Input v-model="form.modelo_equipo" label="Modelo equipo" :error="form.errors.modelo_equipo"></Input>
                 <Input v-model="form.modelo_motor" label="Modelo motor" :error="form.errors.modelo_motor"></Input>
@@ -103,7 +100,6 @@ const getSucursalsForClient = async (clientId: string) => {
                 <Input v-model="form.marca_motor" label="Marca motor" :error="form.errors.marca_motor"></Input>
             </template>
 
-            <!-- Campos de Tablero (solo si tipo_equipo != 'Planta Eléctrica') -->
             <template v-else>
                 <Input v-model="form.tablero_tipo" label="Tipo tablero" :error="form.errors.tablero_tipo"></Input>
                 <Input v-model="form.tablero_tension_operacion" label="Tensión tablero"
@@ -120,13 +116,89 @@ const getSucursalsForClient = async (clientId: string) => {
                     :error="form.errors.tablero_controlador"></Input>
             </template>
 
-            <!-- Insumos -->
-            <Input v-model="form.filtro_aire_cantidad" label="Filtro aire (cantidad)"
-                :error="form.errors.filtro_aire_cantidad"></Input>
-            <Input v-model="form.filtro_aire_referencia" label="Filtro aire (ref)"
-                :error="form.errors.filtro_aire_referencia"></Input>
+            <!-- Insumos agrupados -->
+            <div class="col-span-4 grid grid-cols-2 gap-4" v-if="form.tipo_equipo == 'Planta Eléctrica'">
+                <!-- Filtro de aire -->
+                <div class="rounded-lg shadow-md border">
+                    <h3 class="font-extrabold py-2 mx-4">Filtro de aire</h3>
+                    <div class="grid grid-cols-2 gap-2 items-start bg-gray-100 py-1 px-4">
+                        <Input v-model:numeric="form.filtro_aire_cantidad" type="number" min="0" label="Cantidad"
+                            :error="form.errors.filtro_aire_cantidad"></Input>
+                        <Input v-model="form.filtro_aire_referencia" label="Referencia"
+                            :error="form.errors.filtro_aire_referencia"></Input>
+                    </div>
+                </div>
 
-            <div class="mt-6 flex justify-end col-span-2">
+                <!-- Filtro de aceite -->
+                <div class="rounded-lg shadow-md border">
+                    <h3 class="font-extrabold py-2 mx-4">Filtro de aceite</h3>
+                    <div class="grid grid-cols-2 gap-2 items-start bg-gray-100 py-1 px-4">
+                        <Input v-model:numeric="form.filtro_aceite_cantidad" type="number" min="0" label="Cantidad"
+                            :error="form.errors.filtro_aceite_cantidad"></Input>
+                        <Input v-model="form.filtro_aceite_referencia" label="Referencia"
+                            :error="form.errors.filtro_aceite_referencia"></Input>
+                    </div>
+                </div>
+
+                <!-- Filtro combustible -->
+                <div class="rounded-lg shadow-md border">
+                    <h3 class="font-extrabold py-2 mx-4">Filtro combustible</h3>
+                    <div class="grid grid-cols-2 gap-2 items-start bg-gray-100 py-1 px-4">
+                        <Input v-model:numeric="form.filtro_combustible_cantidad" type="number" min="0"
+                            label="Cantidad" :error="form.errors.filtro_combustible_cantidad"></Input>
+                        <Input v-model="form.filtro_combustible_referencia" label="Referencia"
+                            :error="form.errors.filtro_combustible_referencia"></Input>
+                    </div>
+                </div>
+
+                <!-- Filtro separador -->
+                <div class="rounded-lg shadow-md border">
+                    <h3 class="font-extrabold py-2 mx-4">Filtro separador</h3>
+                    <div class="grid grid-cols-2 gap-2 items-start bg-gray-100 py-1 px-4">
+                        <Input v-model:numeric="form.filtro_separador_cantidad" type="number" min="0"
+                            label="Cantidad" :error="form.errors.filtro_separador_cantidad"></Input>
+                        <Input v-model="form.filtro_separador_referencia" label="Referencia"
+                            :error="form.errors.filtro_separador_referencia"></Input>
+                    </div>
+                </div>
+
+                <!-- Filtro agua -->
+                <div class="rounded-lg shadow-md border">
+                    <h3 class="font-extrabold py-2 mx-4">Filtro agua</h3>
+                    <div class="grid grid-cols-2 gap-2 items-start bg-gray-100 py-1 px-4">
+                        <Input v-model:numeric="form.filtro_agua_cantidad" type="number" min="0" label="Cantidad"
+                            :error="form.errors.filtro_agua_cantidad"></Input>
+                        <Input v-model="form.filtro_agua_referencia" label="Referencia"
+                            :error="form.errors.filtro_agua_referencia"></Input>
+                    </div>
+                </div>
+
+                <!-- Filtro aceite 2 -->
+                <div class="rounded-lg shadow-md border">
+                    <h3 class="font-extrabold py-2 mx-4">Cantidad de aceite</h3>
+                    <div class="grid grid-cols-2 gap-2 items-start bg-gray-100 py-1 px-4">
+                        <Input v-model:numeric="form.filtro_aceite_2_cantidad" type="number" min="0" label="Cantidad"
+                            :error="form.errors.filtro_aceite_2_cantidad"></Input>
+                        <Input v-model="form.filtro_aceite_2_referencia" label="Referencia"
+                            :error="form.errors.filtro_aceite_2_referencia"></Input>
+                    </div>
+                </div>
+
+                <!-- Refrigerante -->
+                <div class="rounded-lg shadow-md border">
+                    <h3 class="font-extrabold py-2 mx-4">Refrigerante</h3>
+                    <div class="grid grid-cols-2 gap-2 items-start bg-gray-100 py-1 px-4">
+                        <Input v-model:numeric="form.refrigerante_cantidad" type="number" min="0" label="Cantidad"
+                            :error="form.errors.refrigerante_cantidad"></Input>
+                        <Input v-model="form.refrigerante_referencia" label="Referencia"
+                            :error="form.errors.refrigerante_referencia"></Input>
+                    </div>
+                </div>
+            </div>
+
+
+            <Input v-model="form.detalles" label="Detalles" type="textarea" class="col-span-4" :error="form.errors.detalles"></Input>
+            <div class="mt-6 flex justify-end col-span-4">
                 <Button type="submit" label="Guardar" icon="pi pi-save" :loading="equipoService.form.processing">
                 </Button>
             </div>

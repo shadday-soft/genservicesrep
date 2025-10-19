@@ -56,7 +56,7 @@ const visible = defineModel({
 
 <template>
   <Dialog
-    pt:mask:class="backdrop-blur-sm"
+    
     v-model:visible="visible"
     :maximizable="maximizable"
     :modal
@@ -90,8 +90,8 @@ const visible = defineModel({
     <template #footer v-if="footer">
       <slot name="footer" />
     </template>
-    <template #maximizeicon="{ maximized }">
+    <!-- <template #maximizeicon="{ maximized }">
       <i :class="maximized ? 'fa-compress' : 'fa-expand'" class="text-white fa-solid"></i>
-    </template>
+    </template> -->
   </Dialog>
 </template>
