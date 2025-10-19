@@ -2,9 +2,11 @@ import { router, useForm } from "@inertiajs/vue3";
 import GeneralService from "./GeneralService";
 import { ref } from "vue";
 import type { Client as ClientType } from "@/types/client";
-import { store, update, } from "@/actions/App/Http/Controllers/ClientController";
+import { store, update, index } from "@/actions/App/Http/Controllers/ClientController";
 import { destroy } from "@/routes/clients";
 import { getSuccessMessage, getErrorMessage, questionDeleteMessage } from '@/composables/Toast';
+import axios from "axios";
+import Sucursal from "./SucursalsService";
 
 
 
@@ -26,6 +28,25 @@ export default class Client extends GeneralService {
             this.client.value = client;
             this.assignMatchingKeys(client, this.form);
         }
+    }
+
+    async getClients() {
+        try {
+            const { data } = await axios.get(index().url);
+            return data.clients;
+        } catch (error) {
+            console.error("Error fetching clients:", error);
+            return [];
+        }
+    }
+
+    getSucursals(id: string) {
+        const sucursalService = new Sucursal();
+
+        return sucursalService.getSucursals().then(sucursals => {
+            return sucursals.filter(sucursal => sucursal.client_id === id);
+        });
+
     }
 
     async submit(onSuccessCallback?: () => void) {

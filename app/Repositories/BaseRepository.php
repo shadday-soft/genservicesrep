@@ -17,7 +17,7 @@ abstract class BaseRepository {
         $this->model = app()->make($this->model());
     }
 
-    public function getAll(): Collection    
+    public function getAll()    
     {
         return $this->model->all();
     }

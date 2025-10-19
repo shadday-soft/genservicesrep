@@ -28,7 +28,18 @@ const mainNavItems: NavItem[] = [
         href: 'clients',
         icon: SquareUser,
     },
-    
+    {
+        title: 'Sucursales',
+        href: 'sucursals',
+        icon: SquareUser,
+    },
+    {
+        title: 'Equipos',
+        href: 'equipos',
+        icon: Folder,
+    },
+
+
 
 ];
 

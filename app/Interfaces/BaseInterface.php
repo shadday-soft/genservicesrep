@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 interface BaseInterface
 {
-    public function getAll(): Collection;
+    public function getAll();
 
     public function find(int $id);
 

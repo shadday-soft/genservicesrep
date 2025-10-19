@@ -10,9 +10,6 @@ import axios from 'axios';
 import Datatable from '@/components/Table/Datatable.vue';
 import Form from './Form.vue';
 import Modal from '@/components/Modal.vue';
-import ClientService  from '@/Services/ClientService';
-
-
 
 interface Props {
     clients: Client[];
@@ -36,8 +33,6 @@ const addClient = () => {
     showModal.value = true;
 };
 
-const clientService = new ClientService(client.value);
-
 const editClient = (clientData: Client) => {
     client.value = clientData;
     showModal.value = true;
@@ -59,13 +54,13 @@ const editClient = (clientData: Client) => {
                 </template>
                 <template #actions="{ data }">
                     <Button icon="pi pi-pencil" size="small" severity="warn" text @click="editClient(data)" />
-                    <Button icon="pi pi-trash" size="small" severity="danger" text
-                        @click="clientService.delete(data.id)" />
+                    <!-- <Button icon="pi pi-trash" size="small" severity="danger" text
+                        @click="questionDeleteMessage(route('equipos.destroy', data.id), 'Esta acción eliminará el equipo', 'Equipo')" /> -->
                 </template>
             </Datatable>
         </div>
 
-        <Modal v-model="showModal" :title="client?.id ? 'Editar Cliente' : 'Agregar Cliente'">
+        <Modal v-model="showModal" title="Asignar Rol" >
             <Form :client="client" @close="showModal = false" />
         </Modal>
     </AppLayout>

@@ -2,29 +2,30 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreClientRequest;
-use App\Http\Requests\UpdateClientRequest;
-use App\Interfaces\ClientInterface;
-use App\Interfaces\UserInterface;
-use App\Models\Client;
+use App\Http\Requests\StoreEquipoRequest;
+use App\Http\Requests\UpdateEquipoRequest;
+use App\Interfaces\EquipoInterface;
+use App\Models\Equipo;
 use Illuminate\Support\Facades\DB;
 
-class ClientController extends Controller
+class EquipoController extends Controller
 {
     public function __construct(
-        private ClientInterface $repository,
+        private EquipoInterface $repository,
     )
     {
     }
 
     public function index()
     {
-        $clients = $this->repository->getAll();
-        if(request()->wantsJson()){
+        $equipos = $this->repository->getAll();
+
+        if (request()->wantsJson()) {
             return response()->json([
-                'clients' => $clients]);
+                'equipos' => $equipos
+            ]);
         }
-        return inertia('Clients/Index', compact('clients'));
+        return inertia('Equipos/Index', compact('equipos'));
     }
 
     /**
@@ -38,19 +39,22 @@ class ClientController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreClientRequest $request)
+    public function store(StoreEquipoRequest $request)
     {
+        try{
             DB::beginTransaction();
             $this->repository->create($request->validated());
             DB::commit();
-            return back()->with('status', 'Client create successfully');
-        
+            return back()->with('status', 'Equipo create successfully');
+        }catch(\Exception $e){
+            return back()->withError('errors', 'Action no Disabled');
+        }
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Client $client)
+    public function show(Equipo $equipo)
     {
         //
     }
@@ -58,7 +62,7 @@ class ClientController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Client $client)
+    public function edit(Equipo $equipo)
     {
         //
     }
@@ -66,13 +70,13 @@ class ClientController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateClientRequest $request, Client $client)
+    public function update(UpdateEquipoRequest $request, Equipo $equipo)
     {
           try{
             DB::beginTransaction();
-            $this->repository->update($client->id,$request->validated());
+            $this->repository->update($equipo->id,$request->validated());
             DB::commit();
-            return back()->with('status', 'Client updated successfully');
+            return back()->with('status', 'Equipo updated successfully');
         }catch(\Exception $e){
             return back()->withError('errors', 'Action no Disabled');
         }
@@ -81,13 +85,13 @@ class ClientController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Client $client)
+    public function destroy(Equipo $equipo)
     {
         try{
             DB::beginTransaction();
-            $this->repository->delete($client->id);
+            $this->repository->delete($equipo->id);
             DB::commit();
-            return back()->with('status', 'Client delete successfully');
+            return back()->with('status', 'Equipo delete successfully');
         }catch(\Exception $e){
             return back()->withError('errors', 'Action no Disabled');
         }

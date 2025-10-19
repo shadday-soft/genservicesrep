@@ -1,6 +1,8 @@
 import '../css/app.css';
 import 'primeicons/primeicons.css'
 import 'sweetalert2/dist/sweetalert2.min.css';
+import 'filepond/dist/filepond.min.css';
+import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css';
 
 import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';

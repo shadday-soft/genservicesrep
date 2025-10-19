@@ -27,6 +27,7 @@
       :invalid="(error?.length ?? 0) > 0"
       v-else-if="type == 'select'"
       :placeholder
+      @change="emit('select')"
       :optionLabel="optionLabel ?? 'label'"
       :optionValue="optionValue ?? 'value'"
       :options
@@ -93,6 +94,7 @@ import InputText from "primevue/inputtext";
 import InputNumber from "primevue/inputnumber";
 import Select from "primevue/select";
 import { MultiSelect, Password, Textarea } from "primevue";
+const emit= defineEmits(['select']);
 
 interface Option {
   label?: string;
@@ -103,7 +105,7 @@ interface Props {
   label?: string;
   type?: string;
   placeholder?: string;
-  options?: Option[];
+  options?: Option[] | any[];
   optionLabel?: string | 'label';
   optionValue?: string | 'value';
   error?: string;
