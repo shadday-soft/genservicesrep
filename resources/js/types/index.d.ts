@@ -110,6 +110,34 @@ export interface Equipo {
     sucursal?: Sucursal;
 }
 
+export interface Solicitud {
+    id: string;
+    empresa_id?: string | null;
+    sucursal_id: string;
+    equipo_id: string;
+    user_id: string;
+    numero_orden?: string | null;
+    prioridad: 'Normal' | 'Intermedio' | 'Urgente';
+    detalles?: string | null;
+    estado: 'Nueva' | 'Proceso' | 'Revisión' | 'Finalizada' | 'Anulada' | 'Programada';
+    mantenimiento_id?: string | null;
+    fecha_mantenimiento?: string | null;
+    telefono?: string | null;
+    mail?: string | null;
+    ubicacion?: string | null;
+    quien_solicita?: string | null;
+    fecha_programada?: string | null;
+    orden_trabajo?: string | null;
+    created_at: string;
+    updated_at: string;
+    
+    // Relaciones
+    empresa?: Client;
+    sucursal?: Sucursal;
+    equipo?: Equipo;
+    user?: User;
+}
+
 
 
 export type BreadcrumbItemType = BreadcrumbItem;

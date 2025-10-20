@@ -15,8 +15,8 @@ return new class extends Migration
             $table->uuid('id')->primary();
             // --- DATOS GENERALES ---
             $table->string('nombre_equipo', 100)->comment('Nombre del equipo (Ej: Planta Eléctrica 1)');
-            // $table->foreignId('client_id')->nullable()->constrained('empresas')->onDelete('set null')->comment('Empresa a la que pertenece (Dropdown)');
-            $table->foreignId('sucursal_id')->nullable()->constrained('sucursales')->onDelete('set null')->comment('Sucursal o sede (Dropdown)');
+            $table->foreignUuid('client_id')->nullable()->constrained()->onDelete('set null')->comment('Empresa a la que pertenece (Dropdown)');
+            $table->foreignUuid('sucursal_id')->nullable()->constrained()->onDelete('set null')->comment('Sucursal o sede (Dropdown)');
             $table->text('detalles')->nullable()->comment('Campo de texto libre para detalles adicionales');
             $table->string('tipo_equipo', 50)->default('Planta Eléctrica')->comment('Tipo de equipo (Ej: Planta Eléctrica)');
             
@@ -32,7 +32,7 @@ return new class extends Migration
             $table->string('marca_motor', 100)->nullable()->comment('Marca del motor');
             
             // --- DETALLES DE TABLERO ELÉCTRICO ---
-            $table->string('tablero_tipo', 100)->default('Transferencia y distribución')->comment('Tipo de tablero (Ej: Transferencia y distribución)');
+            $table->string('tablero_tipo', 100)->nullable()->default('Transferencia y distribución')->comment('Tipo de tablero (Ej: Transferencia y distribución)');
             $table->string('tablero_tension_operacion', 50)->nullable()->comment('Tensión de operación del tablero');
             $table->string('tablero_tipo_aplicacion', 100)->nullable()->comment('Tipo de aplicación del tablero');
             $table->string('tablero_fabricante', 100)->nullable()->comment('Fabricante del tablero');

@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\UserController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\EquipoController;
+use App\Http\Controllers\SolicitudController;
 use App\Http\Controllers\SucursalController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -20,6 +21,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('users', UserController::class);
     Route::resource('sucursals', SucursalController::class);
     Route::resource('equipos', EquipoController::class);
+    Route::resource('solicituds', SolicitudController::class);
 }); 
 
 require __DIR__.'/settings.php';

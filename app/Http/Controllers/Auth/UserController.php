@@ -12,13 +12,16 @@ class UserController extends Controller
 {
     public function __construct(
         private UserInterface $repository,
-    )
-    {
-    }
+    ) {}
 
     public function index()
     {
         $users = $this->repository->getAll();
+        if (request()->wantsJson()) {
+            return response()->json([
+                'users' => $users
+            ]);
+        }
         return inertia('Users/Index', compact('users'));
     }
 
@@ -35,12 +38,12 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        try{
+        try {
             DB::beginTransaction();
             $this->repository->create($request->validated());
             DB::commit();
             return back()->with('status', 'User create successfully');
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             return back()->withError('errors', 'Action no Disabled');
         }
     }
@@ -66,12 +69,12 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-          try{
+        try {
             DB::beginTransaction();
-            $this->repository->update($user->id,$request->validated());
+            $this->repository->update($user->id, $request->validated());
             DB::commit();
             return back()->with('status', 'User updated successfully');
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             return back()->withError('errors', 'Action no Disabled');
         }
     }
@@ -81,12 +84,12 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        try{
+        try {
             DB::beginTransaction();
             $this->repository->delete($user->id);
             DB::commit();
             return back()->with('status', 'User delete successfully');
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             return back()->withError('errors', 'Action no Disabled');
         }
     }

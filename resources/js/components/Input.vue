@@ -47,6 +47,7 @@
       class="w-full"
       :placeholder
     ></DatePicker>
+    
     <DatePicker
       v-else-if="type == 'dateRange'"
       dateFormat="dd/mm/yy"

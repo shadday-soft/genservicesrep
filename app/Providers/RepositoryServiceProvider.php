@@ -11,11 +11,12 @@ class RepositoryServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $models =[
+        $models =  [
             'User',
             'Client',
             'Sucursal',
             'Equipo',
+            'Solicitud',
         ];
 
         foreach ($models as $model) {

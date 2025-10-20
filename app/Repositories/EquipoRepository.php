@@ -10,4 +10,9 @@ class EquipoRepository extends BaseRepository implements EquipoInterface
         return Equipo::class;
     }
 
+    public function getAll()
+    {
+        return Equipo::with(['client', 'sucursal'])->get();
+    }
+
 }

@@ -14,4 +14,13 @@ class Equipo extends Model
 
     protected $guarded = [];
 
+    public function client()
+    {
+        return $this->belongsTo(Client::class);
+    }
+    
+    public function sucursal()
+    {
+        return $this->belongsTo(Sucursal::class);
+    }
 }

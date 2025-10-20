@@ -101,7 +101,10 @@ const getSucursalsForClient = async (clientId: string) => {
             </template>
 
             <template v-else>
-                <Input v-model="form.tablero_tipo" label="Tipo tablero" :error="form.errors.tablero_tipo"></Input>
+                <Input v-model="form.tablero_tipo" label="Tipo tablero" type="select" :options="[
+                { label: 'Transferencia y distribución', value: 'Transferencia y distribución' },
+                { label: 'Otro', value: 'Otro' }
+                ]" :error="form.errors.tablero_tipo"></Input>
                 <Input v-model="form.tablero_tension_operacion" label="Tensión tablero"
                     :error="form.errors.tablero_tension_operacion"></Input>
                 <Input v-model="form.tablero_tipo_aplicacion" label="Tipo aplicación"

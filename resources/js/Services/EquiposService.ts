@@ -1,8 +1,9 @@
 import { router, useForm } from "@inertiajs/vue3";
 import GeneralService from "./GeneralService";
 import { ref } from "vue";
-import { store, update, destroy} from "@/actions/App/Http/Controllers/EquipoController";
+import { store, update, destroy, index } from "@/actions/App/Http/Controllers/EquipoController";
 import { getSuccessMessage, getErrorMessage, questionDeleteMessage } from '@/composables/Toast';
+import axios from "axios";
 
 export default class Equipo extends GeneralService {
     equipo = ref<import('@/types').Equipo | null>(null);
@@ -34,19 +35,19 @@ export default class Equipo extends GeneralService {
         tablero_controlador: '',
 
         // Insumos
-    filtro_aire_cantidad: 0,
+        filtro_aire_cantidad: 0,
         filtro_aire_referencia: '',
-    filtro_aceite_cantidad: 0,
+        filtro_aceite_cantidad: 0,
         filtro_aceite_referencia: '',
-    filtro_combustible_cantidad: 0,
+        filtro_combustible_cantidad: 0,
         filtro_combustible_referencia: '',
-    filtro_separador_cantidad: 0,
+        filtro_separador_cantidad: 0,
         filtro_separador_referencia: '',
-    filtro_agua_cantidad: 0,
+        filtro_agua_cantidad: 0,
         filtro_agua_referencia: '',
-    filtro_aceite_2_cantidad: 0,
+        filtro_aceite_2_cantidad: 0,
         filtro_aceite_2_referencia: '',
-    refrigerante_cantidad: 0,
+        refrigerante_cantidad: 0,
         refrigerante_referencia: '',
     });
 
@@ -55,6 +56,16 @@ export default class Equipo extends GeneralService {
         if (equipo) {
             this.equipo.value = equipo;
             this.assignMatchingKeys(equipo, this.form);
+        }
+    }
+
+    async getEquipos() {
+        try {
+            const { data } = await axios.get(index().url);
+            return data.equipos as import('@/types').Equipo[];
+        } catch (error) {
+            getErrorMessage('Error al obtener los equipos');
+            return [];
         }
     }
 

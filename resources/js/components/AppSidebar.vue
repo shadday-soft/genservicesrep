@@ -38,6 +38,11 @@ const mainNavItems: NavItem[] = [
         href: 'equipos',
         icon: CircuitBoard,
     },
+    {
+        title: 'Solicitudes',
+        href: 'solicituds',
+        icon: BookOpen,
+    }
 
 
 

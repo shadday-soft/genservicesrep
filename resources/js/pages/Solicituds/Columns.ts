@@ -1,0 +1,68 @@
+import type { Column } from '@/types';
+
+export const columns: Column[] = [
+    {
+        header: 'Número de Orden',
+        field: 'numero_orden',
+        sortable: true,
+        type: 'text',
+        filter: true,
+        filterPlaceholder: 'Buscar por número de orden',
+    },
+    {
+        header: 'Empresa',
+        field: 'empresa.enterprise_name',
+        sortable: true,
+        type: 'text',
+        filter: true,
+        filterPlaceholder: 'Buscar por empresa',
+    },
+    {
+        header: 'Sucursal',
+        field: 'sucursal.name',
+        sortable: true,
+        type: 'text',
+        filter: true,
+        filterPlaceholder: 'Buscar por sucursal',
+    },
+    {
+        header: 'Equipo',
+        field: 'equipo.nombre_equipo',
+        sortable: true,
+        type: 'text',
+        filter: true,
+        filterPlaceholder: 'Buscar por equipo',
+    },
+    {
+        header: 'Prioridad',
+        field: 'prioridad',
+        sortable: true,
+        type: 'text',
+        filter: true,
+        filterPlaceholder: 'Buscar por prioridad',
+    },
+    {
+        header: 'Estado',
+        field: 'estado',
+        sortable: true,
+        type: 'text',
+        filter: true,
+        filterPlaceholder: 'Buscar por estado',
+    },
+    {
+        header: 'Fecha Programada',
+        field: 'fecha_programada',
+        sortable: true,
+        type: 'date',
+        filter: true,
+        filterPlaceholder: 'Buscar por fecha',
+    },
+    {
+        header: 'Técnico Asignado',
+        field: 'user.name',
+        sortable: true,
+        type: 'text',
+        filter: true,
+        filterPlaceholder: 'Buscar por técnico',
+    },
+]
