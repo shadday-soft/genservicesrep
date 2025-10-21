@@ -143,7 +143,7 @@ watchDebounced(
             </div>
         </div>
 
-        <Modal v-model="showModal" title="Asignar Rol" >
+        <Modal v-model="showModal" :title="client ? 'Editar Cliente' : 'Agregar Cliente'">
             <Form :client="client" @close="showModal = false" />
         </Modal>
     </AppLayout>

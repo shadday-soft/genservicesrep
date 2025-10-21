@@ -69,7 +69,7 @@ const getSucursalsForClient = async (clientId: string) => {
 
 <template>
     <div>
-        <form @submit.prevent="equipoService.submit(() => emit('close'))" class="grid grid-cols-4 gap-4">
+        <form @submit.prevent="equipoService.submit(() => emit('close'))" class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <!-- Cliente -->
             <Input v-model="form.nombre_equipo" label="Nombre del equipo" :error="form.errors.nombre_equipo"></Input>
 
@@ -120,7 +120,7 @@ const getSucursalsForClient = async (clientId: string) => {
             </template>
 
             <!-- Insumos agrupados -->
-            <div class="col-span-4 grid grid-cols-2 gap-4" v-if="form.tipo_equipo == 'Planta Eléctrica'">
+            <div class="col-sapn-1 md:col-span-4 grid grid-cols-1 md:grid-cols-2 gap-4" v-if="form.tipo_equipo == 'Planta Eléctrica'">
                 <!-- Filtro de aire -->
                 <div class="rounded-lg shadow-md border">
                     <h3 class="font-extrabold py-2 mx-4">Filtro de aire</h3>
@@ -200,8 +200,8 @@ const getSucursalsForClient = async (clientId: string) => {
             </div>
 
 
-            <Input v-model="form.detalles" label="Detalles" type="textarea" class="col-span-4" :error="form.errors.detalles"></Input>
-            <div class="mt-6 flex justify-end col-span-4">
+            <Input v-model="form.detalles" label="Detalles" type="textarea" class="col-span-1 md:col-span-4" :error="form.errors.detalles"></Input>
+            <div class="mt-6 flex justify-end col-span-1 md:col-span-4">
                 <Button type="submit" label="Guardar" icon="pi pi-save" :loading="equipoService.form.processing">
                 </Button>
             </div>

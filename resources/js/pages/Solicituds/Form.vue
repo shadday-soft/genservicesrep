@@ -126,7 +126,7 @@ onMounted(async () => {
 
 <template>
     <div>
-        <form @submit.prevent="solicitudService.submit(() => emit('close'))" class="grid grid-cols-3 gap-4">
+        <form @submit.prevent="solicitudService.submit(() => emit('close'))" class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <!-- Número de Orden (Autogenerado) -->
             <!-- <Input v-model="form.numero_orden" label="Número de Orden" :error="form.errors.numero_orden"
                 placeholder="Generado automáticamente" disabled></Input> -->
@@ -175,13 +175,13 @@ onMounted(async () => {
             <!-- Quien Solicita -->
             <Input v-model="form.quien_solicita" label="¿Quién solicita?" :error="form.errors.quien_solicita"></Input>
 
-            <div class="col-span-3 flex justify-between gap-x-4">
+            <div class="col-span-1 md:col-span-3 flex flex-col md:flex-row  justify-between gap-x-4">
                 <Input v-model="form.detalles" class="w-full" type="textarea" label="Detalles" :error="form.errors.detalles"
                     :textAreaRows="3"></Input>
 
 
                 <!-- Archivo PDF -->
-                <div class="col-span-2 w-full">
+                <div class="col-span-1 md:col-span-2 w-full">
                     <label class="block text-gray-700 text-sm font-bold mb-2">Archivo PDF (Orden de trabajo)</label>
                     <FilePond name="orden_trabajo" ref="pond" v-model="form.orden_trabajo" :allow-multiple="false"
                         accepted-file-types="application/pdf" :files="myFiles" @updatefiles="updatefiles"
@@ -194,7 +194,7 @@ onMounted(async () => {
 
 
 
-            <div class="mt-6 flex justify-end col-span-2">
+            <div class="mt-6 flex justify-end col-span-1 md:col-span-2">
                 <Button type="submit" label="Guardar" icon="pi pi-save" :loading="solicitudService.form.processing">
                 </Button>
             </div>
