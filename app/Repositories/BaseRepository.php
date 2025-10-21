@@ -17,9 +17,12 @@ abstract class BaseRepository {
         $this->model = app()->make($this->model());
     }
 
-    public function getAll()    
+    public function getAll($perPage = null, $search = null)    
     {
-        return $this->model->all();
+        if ($perPage === null || $perPage === 'all') {
+            return $this->model->all();
+        }
+        return $this->model->paginate($perPage);
     }
 
     public function create(Array $data){
@@ -40,5 +43,9 @@ abstract class BaseRepository {
 
     public function findBy($field, $value){
         return $this->model->where($field, $value)->first();
+    }
+
+    public function getAllData(){
+        return $this->model->all();
     }
 }

@@ -16,14 +16,24 @@ class SucursalController extends Controller
 
     public function index()
     {
-        $sucursals = $this->repository->getAll();
+        $search = request('search');
+        $perPage = request('per_page', 15);
+        
+        $sucursals = $this->repository->getAll($perPage, $search);
 
         if (request()->wantsJson()) {
             return response()->json([
-                'sucursals' => $sucursals
+                'sucursals' => $this->repository->getAllData()
             ]);
         }
-        return inertia('Sucursals/Index', compact('sucursals'));
+        
+        return inertia('Sucursals/Index', [
+            'sucursals' => $sucursals,
+            'filters' => [
+                'search' => $search,
+                'per_page' => $perPage
+            ]
+        ]);
     }
 
     /**

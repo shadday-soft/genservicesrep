@@ -38,7 +38,7 @@ initializeFilters();
 
 <template>
   <DataTable v-model:filters="filters" :globalFilterFields="columns.map((column: TypeColumn) => column.field)"
-    :value="data" resizableColumns columnResizeMode="expand" :paginator="true" filterDisplay="menu" scrollable
+    :value="data" resizableColumns columnResizeMode="expand" :paginator="false" filterDisplay="menu" scrollable
     scrollHeight="flex" removableSort :rows="defaultRows ?? 50" size="small">
     <template #empty>
       <div class="flex flex-col justify-center items-center py-4">

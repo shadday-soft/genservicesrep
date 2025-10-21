@@ -5,7 +5,6 @@ import Client from '@/Services/ClientService';
 import SucursalService from '@/Services/SucursalsService';
 import EquipoService from '@/Services/EquiposService';
 import vueFilePond from 'vue-filepond';
-
 import type { Solicitud as SolicitudType, Sucursal, Equipo, User } from '@/types';
 import type { Client as ClientTypes } from '@/types/client';
 import UserService from '@/Services/UserService';
@@ -80,8 +79,7 @@ function updatefiles() {
     }
 }
 
-// Watch para cargar sucursales cuando se selecciona una empresa
-watch(() => form.empresa_id, async (newEmpresaId) => {
+watch(() => form.client_id, async (newEmpresaId) => {
     if (newEmpresaId) {
         sucursalesList.value = await sucursalService.getSucursals();
     } else {
@@ -95,7 +93,12 @@ watch(() => form.empresa_id, async (newEmpresaId) => {
 watch(() => form.sucursal_id, async (newSucursalId) => {
     form.equipo_id = '';
     if (newSucursalId) {
-        equiposList.value = await equipoService.getEquipos();
+        equiposList.value = await equipoService.getEquipos(newSucursalId);
+        const sucursal = sucursalesList.value.find(s => s.id === newSucursalId);
+        form.ubicacion = sucursal ? sucursal.address : '';
+        form.telefono = sucursal ? sucursal.phone_number : '';
+        form.mail = sucursal ? sucursal.email : '';
+
     } else {
         equiposList.value = [];
     }
@@ -106,11 +109,11 @@ onMounted(async () => {
     clientsList.value = await clientService.getClients();
     tecnicosList.value = await userService.getUsers();
     if (props.solicitud) {
-        if (props.solicitud.empresa_id) {
+        if (props.solicitud.client_id) {
             sucursalesList.value = await sucursalService.getSucursals();
         }
         if (props.solicitud.sucursal_id) {
-            const equiposResponse = await equipoService.getEquipos();
+            const equiposResponse = await equipoService.getEquipos(props.solicitud.sucursal_id);
             equiposList.value = equiposResponse.filter((e: Equipo) => e.sucursal_id === props.solicitud!.sucursal_id);
         }
         if (props.solicitud.orden_trabajo) {
@@ -129,12 +132,12 @@ onMounted(async () => {
                 placeholder="Generado automáticamente" disabled></Input> -->
 
             <!-- Empresa -->
-            <Input v-model="form.empresa_id" type="select" label="Empresa" :error="form.errors.empresa_id"
+            <Input v-model="form.client_id" type="select" label="Empresa" :error="form.errors.client_id"
                 option-label="enterprise_name" option-value="id" :options="clientsList"></Input>
 
             <!-- Sucursal -->
             <Input v-model="form.sucursal_id" type="select" label="Sucursal" :error="form.errors.sucursal_id"
-                option-label="name" option-value="id" :options="sucursalesList" :disabled="!form.empresa_id"></Input>
+                option-label="name" option-value="id" :options="sucursalesList" :disabled="!form.client_id"></Input>
 
             <!-- Equipo -->
             <Input v-model="form.equipo_id" type="select" label="Equipo" :error="form.errors.equipo_id"
@@ -162,12 +165,12 @@ onMounted(async () => {
             <!-- Fecha Programada -->
             <Input v-model:datetime="form.fecha_programada" type="datetime" label="Fecha programada"
                 :error="form.errors.fecha_programada"></Input>
-<!-- 
+
             <Input v-model="form.telefono" label="Teléfono" :error="form.errors.telefono"></Input>
 
             <Input v-model="form.mail" label="Mail" :error="form.errors.mail" type="email"></Input>
 
-            <Input v-model="form.ubicacion" label="Ubicación" :error="form.errors.ubicacion"></Input> -->
+            <Input v-model="form.ubicacion" label="Ubicación" :error="form.errors.ubicacion"></Input>
 
             <!-- Quien Solicita -->
             <Input v-model="form.quien_solicita" label="¿Quién solicita?" :error="form.errors.quien_solicita"></Input>

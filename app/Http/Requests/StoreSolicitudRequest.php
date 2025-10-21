@@ -22,7 +22,7 @@ class StoreSolicitudRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'client_id' => ['nullable', 'exists:clients,id'],
+            'client_id' => ['required', 'exists:clients,id'],
             'sucursal_id' => ['required', 'exists:sucursals,id'],
             'equipo_id' => ['required', 'exists:equipos,id'],
             'user_id' => ['required', 'exists:users,id'],

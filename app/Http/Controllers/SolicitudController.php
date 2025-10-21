@@ -18,11 +18,24 @@ class SolicitudController extends Controller
 
     public function index()
     {
-        $solicituds = $this->repository->getAll();
+        $search = request('search');
+        $perPage = request('per_page', 15);
+        
+        $solicituds = $this->repository->getAll($perPage, $search);
+        
         if(request()->wantsJson()){
-            return response()->json(['solicituds'=>$solicituds],200);
+            return response()->json([
+                'solicituds' => $this->repository->getAllData()
+            ], 200);
         }
-        return inertia('Solicituds/Index', compact('solicituds'));
+        
+        return inertia('Solicituds/Index', [
+            'solicituds' => $solicituds,
+            'filters' => [
+                'search' => $search,
+                'per_page' => $perPage
+            ]
+        ]);
 
     }
 
@@ -39,14 +52,14 @@ class SolicitudController extends Controller
      */
     public function store(StoreSolicitudRequest $request)
     {
-        try{
-            DB::beginTransaction();
+        // try{
+        //     DB::beginTransaction();
             $this->repository->create($request->validated());
-            DB::commit();
-            return back()->with('status', 'Solicitud create successfully');
-        }catch(\Exception $e){
-            return back()->withError('errors', 'Action no Disabled');
-        }
+        //     DB::commit();
+        //     return back()->with('status', 'Solicitud create successfully');
+        // }catch(\Exception $e){
+        //     return back()->withError('errors', 'Action no Disabled');
+        // }
     }
 
     /**

@@ -10,9 +10,24 @@ class EquipoRepository extends BaseRepository implements EquipoInterface
         return Equipo::class;
     }
 
-    public function getAll()
+    public function getAll($perPage = 15, $search = null)
     {
-        return Equipo::with(['client', 'sucursal'])->get();
+        $query = Equipo::with(['client', 'sucursal']);
+        
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('nombre_equipo', 'like', "%{$search}%")
+                  ->orWhere('tipo_equipo', 'like', "%{$search}%")
+                  ->orWhere('modelo_equipo', 'like', "%{$search}%")
+                  ->orWhere('marca_motor', 'like', "%{$search}%");
+            });
+        }
+        
+        if ($perPage === null || $perPage === 'all') {
+            return $query->get();
+        }
+        
+        return $query->latest()->paginate($perPage);
     }
 
 }

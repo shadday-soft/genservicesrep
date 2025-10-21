@@ -19,12 +19,24 @@ class ClientController extends Controller
 
     public function index()
     {
-        $clients = $this->repository->getAll();
+        $search = request('search');
+        $perPage = request('per_page', 15);
+        
+        $clients = $this->repository->getAll($perPage, $search);
+        
         if(request()->wantsJson()){
             return response()->json([
-                'clients' => $clients]);
+                'clients' => $this->repository->getAllData()
+            ]);
         }
-        return inertia('Clients/Index', compact('clients'));
+        
+        return inertia('Clients/Index', [
+            'clients' => $clients,
+            'filters' => [
+                'search' => $search,
+                'per_page' => $perPage
+            ]
+        ]);
     }
 
     /**

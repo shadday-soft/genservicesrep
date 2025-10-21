@@ -43,6 +43,7 @@ export interface Column {
     sortable?: boolean;
     type?: string;
     filter?: boolean;
+    tags?: { label: string; value: string; severity: string }[];
     filterPlaceholder?: string;
     filterMatchMode?: string;
     filterValue?: string | number | boolean;
@@ -112,7 +113,7 @@ export interface Equipo {
 
 export interface Solicitud {
     id: string;
-    empresa_id?: string | null;
+    client_id: string | null;
     sucursal_id: string;
     equipo_id: string;
     user_id: string;
@@ -130,14 +131,32 @@ export interface Solicitud {
     orden_trabajo?: string | null;
     created_at: string;
     updated_at: string;
-    
-    // Relaciones
+
     empresa?: Client;
     sucursal?: Sucursal;
     equipo?: Equipo;
     user?: User;
 }
 
+export interface PaginatedResponse<T> {
+    data: T[];
+    current_page: number;
+    first_page_url: string;
+    from: number;
+    last_page: number;
+    last_page_url: string;
+    links: {
+        url: string | null;
+        label: string;
+        active: boolean;
+    }[];
+    next_page_url: string | null;
+    path: string;
+    per_page: number;
+    prev_page_url: string | null;
+    to: number;
+    total: number;
+}
 
 
 export type BreadcrumbItemType = BreadcrumbItem;

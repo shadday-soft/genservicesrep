@@ -13,9 +13,24 @@ class SucursalRepository extends BaseRepository implements SucursalInterface
         return Sucursal::class;
     }
 
-    public function getAll()
+    public function getAll($perPage = 15, $search = null)
     {
-        return $this->model->with('client')->get();
+        $query = $this->model->with('client');
+        
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('address', 'like', "%{$search}%")
+                  ->orWhere('phone_number', 'like', "%{$search}%")
+                  ->orWhere('contact_name', 'like', "%{$search}%");
+            });
+        }
+        
+        if ($perPage === null || $perPage === 'all') {
+            return $query->get();
+        }
+        
+        return $query->latest()->paginate($perPage);
     }
 
     public function create(array $data): Sucursal

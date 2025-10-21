@@ -4,6 +4,7 @@ import { ref } from "vue";
 import { store, update, destroy, index } from "@/actions/App/Http/Controllers/EquipoController";
 import { getSuccessMessage, getErrorMessage, questionDeleteMessage } from '@/composables/Toast';
 import axios from "axios";
+import type { Equipos } from "@/types";
 
 export default class Equipo extends GeneralService {
     equipo = ref<import('@/types').Equipo | null>(null);
@@ -59,10 +60,10 @@ export default class Equipo extends GeneralService {
         }
     }
 
-    async getEquipos() {
+    async getEquipos(sucursal_id: string) {
         try {
             const { data } = await axios.get(index().url);
-            return data.equipos as import('@/types').Equipo[];
+            return data.equipos.filter((equipo: Equipos) => equipo.sucursal_id === sucursal_id) as Equipos[];
         } catch (error) {
             getErrorMessage('Error al obtener los equipos');
             return [];

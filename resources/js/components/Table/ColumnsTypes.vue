@@ -41,7 +41,7 @@
         <Tag v-if="column?.tags && column.tags.find(tag => tag.value === data)"
           :severity="column.tags.find(tag => tag.value === data)?.severity"
           :value="column.tags.find(tag => tag.value === data)?.label"></Tag>
-        <span v-else class="text-gray-500 text-xs italic">Sin etiqueta</span>
+        <span v-else class="text-gray-500 text-xs italic">{{ data }}</span>
       </span>
       <div v-else-if="type == 'roles'" class="flex flex-wrap gap-1">
         <span v-if="Array.isArray(data) && data.length > 0">
@@ -60,7 +60,7 @@
 </template>
 <script setup lang="ts">
 import { useCommonUtilities } from "@/composables/useCommonUtilities";
-import { Image } from "primevue";
+import { Image, Tag } from "primevue";
 
 const { currencyFormat, formatDate, formatDateTime } = useCommonUtilities();
 

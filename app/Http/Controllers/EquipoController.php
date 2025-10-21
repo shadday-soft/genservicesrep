@@ -18,14 +18,24 @@ class EquipoController extends Controller
 
     public function index()
     {
-        $equipos = $this->repository->getAll();
+        $search = request('search');
+        $perPage = request('per_page', 15);
+        
+        $equipos = $this->repository->getAll($perPage, $search);
 
         if (request()->wantsJson()) {
             return response()->json([
-                'equipos' => $equipos
+                'equipos' => $this->repository->getAllData()
             ]);
         }
-        return inertia('Equipos/Index', compact('equipos'));
+        
+        return inertia('Equipos/Index', [
+            'equipos' => $equipos,
+            'filters' => [
+                'search' => $search,
+                'per_page' => $perPage
+            ]
+        ]);
     }
 
     /**

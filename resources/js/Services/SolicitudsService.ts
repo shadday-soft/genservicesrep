@@ -11,7 +11,7 @@ import axios from "axios";
 export default class Solicitud extends GeneralService {
     solicitud = ref<SolicitudType | null>(null);
     form = useForm({
-        empresa_id: '',
+        client_id: '',
         sucursal_id: '',
         equipo_id: '',
         user_id: '',
@@ -36,6 +36,7 @@ export default class Solicitud extends GeneralService {
         if (solicitud) {
             this.solicitud.value = solicitud;
             this.assignMatchingKeys(solicitud, this.form);
+            this.form.fecha_programada = solicitud.fecha_programada ? new Date(solicitud.fecha_programada) : new Date();
         }
     }
 
