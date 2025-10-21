@@ -110,7 +110,7 @@ class DashboardController extends Controller
 
         // Solicitudes por mes (últimos 6 meses)
         $solicitudesPorMes = Solicitud::select(
-                DB::raw('DATE_FORMAT(created_at, "%Y-%m") as mes'),
+                DB::raw('TO_CHAR(created_at, \'YYYY-MM\') as mes'),
                 DB::raw('count(*) as total')
             )
             ->where('created_at', '>=', now()->subMonths(6))
