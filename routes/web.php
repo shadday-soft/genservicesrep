@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\UserController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EquipoController;
 use App\Http\Controllers\SolicitudController;
 use App\Http\Controllers\SucursalController;
@@ -12,9 +13,9 @@ Route::get('/', function () {
     return Inertia::render('Welcome');
 })->name('home');
 
-Route::get('dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('dashboard', [DashboardController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('clients', ClientController::class);

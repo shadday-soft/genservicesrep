@@ -193,10 +193,10 @@ watchDebounced(
 }
 
 :deep(.paginator-custom .p-paginator-page.p-highlight) {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
     color: white;
     border-color: transparent;
-    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    box-shadow: 0 4px 6px -1px rgb(220 38 38 / 0.3);
 }
 
 :deep(.paginator-custom .p-dropdown) {
@@ -210,7 +210,7 @@ watchDebounced(
 }
 
 :deep(.paginator-custom .p-dropdown:hover) {
-    border-color: #667eea;
+    border-color: #dc2626;
 }
 
 :deep(.paginator-custom .p-paginator-rpp-options) {
