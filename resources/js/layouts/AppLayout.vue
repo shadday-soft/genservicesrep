@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import AppearanceTabs from '@/components/AppearanceTabs.vue';
 import AppLayout from '@/layouts/app/AppSidebarLayout.vue';
 import type { BreadcrumbItemType } from '@/types';
 
@@ -17,5 +18,6 @@ withDefaults(defineProps<Props>(), {
 
             <slot />
         </div>
+        <AppearanceTabs />
     </AppLayout>
 </template>

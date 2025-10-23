@@ -30,10 +30,10 @@ const chartData = computed(() => ({
     datasets: [
         {
             label: 'Solicitudes',
-            backgroundColor: 'rgba(220, 38, 38, 0.1)',
-            borderColor: '#dc2626',
+            backgroundColor: 'rgba(132, 42, 35, 0.08)',
+            borderColor: '#842A23',
             borderWidth: 3,
-            pointBackgroundColor: '#991b1b',
+            pointBackgroundColor: '#24C056',
             pointBorderColor: '#fff',
             pointBorderWidth: 2,
             pointRadius: 6,

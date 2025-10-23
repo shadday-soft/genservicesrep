@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import Modal from '@/components/Modal.vue';
 import FullCalendar from '@fullcalendar/vue3';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
@@ -28,6 +29,20 @@ interface Props {
 
 const props = defineProps<Props>();
 
+const isDialogOpen = ref(false);
+
+const selectedEvent = ref<null | {
+    id: string;
+    title: string;
+    start: string;
+    numero_orden: string;
+    cliente: string;
+    equipo: string;
+    usuario: string;
+    estado: string;
+    prioridad: string;
+}>(null);
+
 const calendarOptions = ref({
     plugins: [dayGridPlugin, interactionPlugin, listPlugin],
     initialView: 'dayGridMonth',
@@ -49,16 +64,20 @@ const calendarOptions = ref({
     eventClick: (info: any) => {
         const event = info.event;
         const props = event.extendedProps;
-        
-        alert(`
-Orden: #${props.numero_orden}
-Cliente: ${props.cliente}
-Equipo: ${props.equipo}
-Usuario: ${props.usuario}
-Estado: ${props.estado}
-Prioridad: ${props.prioridad}
-Fecha: ${new Date(event.start).toLocaleDateString('es-ES')}
-        `.trim());
+
+        selectedEvent.value = {
+            id: event.id,
+            title: event.title,
+            start: event.start?.toISOString() || event.startStr,
+            numero_orden: props.numero_orden,
+            cliente: props.cliente,
+            equipo: props.equipo,
+            usuario: props.usuario,
+            estado: props.estado,
+            prioridad: props.prioridad,
+        };
+
+        isDialogOpen.value = true;
     },
     eventDidMount: (info: any) => {
         info.el.style.cursor = 'pointer';
@@ -68,20 +87,68 @@ Fecha: ${new Date(event.start).toLocaleDateString('es-ES')}
 
 <template>
     <div class="calendar-wrapper">
-        <FullCalendar :options="calendarOptions" />
+                <FullCalendar :options="calendarOptions" />
+
+                <Modal v-model:visible="isDialogOpen" :title="selectedEvent?.title || 'Detalle de Solicitud'" width="40rem">
+                    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 text-sm">
+                        <div class="space-y-2">
+                            <div class="flex items-start gap-2">
+                                <span class="w-28 font-medium text-gray-600">Orden</span>
+                                <span class="truncate">#{{ selectedEvent?.numero_orden }}</span>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <span class="w-28 font-medium text-gray-600">Cliente</span>
+                                <span class="truncate">{{ selectedEvent?.cliente }}</span>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <span class="w-28 font-medium text-gray-600">Equipo</span>
+                                <span class="truncate">{{ selectedEvent?.equipo }}</span>
+                            </div>
+                        </div>
+
+                        <div class="space-y-2">
+                            <div class="flex items-start gap-2">
+                                <span class="w-28 font-medium text-gray-600">Usuario</span>
+                                <span class="truncate">{{ selectedEvent?.usuario }}</span>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <span class="w-28 font-medium text-gray-600">Estado</span>
+                                <span class="truncate">{{ selectedEvent?.estado }}</span>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <span class="w-28 font-medium text-gray-600">Prioridad</span>
+                                <span class="truncate">{{ selectedEvent?.prioridad }}</span>
+                            </div>
+                        </div>
+
+                        <div class="col-span-1 sm:col-span-2">
+                            <div class="flex items-start gap-2">
+                                <span class="w-28 font-medium text-gray-600">Fecha</span>
+                                <span class="truncate">{{ selectedEvent?.start ? new Date(selectedEvent.start).toLocaleString('es-ES') : 'N/A' }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <template #footer>
+                        <div class="w-full flex justify-end gap-3">
+                            <!-- Optional: replace with a navigation to the solicitud detail -->
+                            <button class="rounded border border-gray-300 px-4 py-2 bg-white text-gray-700 hover:bg-gray-50" @click="isDialogOpen = false">Cerrar</button>
+                        </div>
+                    </template>
+                </Modal>
     </div>
 </template>
 
 <style>
 .calendar-wrapper {
     --fc-border-color: #e5e7eb;
-    --fc-button-bg-color: #dc2626;
-    --fc-button-border-color: #991b1b;
-    --fc-button-hover-bg-color: #991b1b;
-    --fc-button-hover-border-color: #7f1d1d;
-    --fc-button-active-bg-color: #7f1d1d;
-    --fc-button-active-border-color: #7f1d1d;
-    --fc-today-bg-color: rgba(220, 38, 38, 0.1);
+    --fc-button-bg-color: #842A23;
+    --fc-button-border-color: #3037C0;
+    --fc-button-hover-bg-color: #3037C0;
+    --fc-button-hover-border-color: #842A23;
+    --fc-button-active-bg-color: #3037C0;
+    --fc-button-active-border-color: #3037C0;
+    --fc-today-bg-color: rgba(132, 42, 35, 0.08);
 }
 
 :deep(.fc) {
@@ -135,7 +202,7 @@ Fecha: ${new Date(event.start).toLocaleDateString('es-ES')}
 
 /* Dark mode */
 .dark .calendar-wrapper {
-    --fc-border-color: #374151;
+    --fc-border-color: #1f2937;
 }
 
 .dark :deep(.fc-col-header-cell) {

@@ -22,14 +22,12 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const colors = [
-    '#dc2626', // Rojo 600
-    '#991b1b', // Rojo 800
-    '#1f2937', // Gris oscuro 800
-    '#ef4444', // Rojo 500
-    '#7f1d1d', // Rojo 900
-    '#374151', // Gris 700
-    '#f87171', // Rojo 400
-    '#0f172a'  // Slate 900
+    '#842A23', // rojo oscuro
+    '#24C056', // verde
+    '#DCBB37', // amarillo
+    '#3037C0', // azul
+    '#7f1d1d', // fallback rojo
+    '#374151', // fallback gris
 ];
 
 const chartData = computed(() => ({

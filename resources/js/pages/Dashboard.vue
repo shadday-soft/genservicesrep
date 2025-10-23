@@ -70,7 +70,7 @@ const getEstadoColor = (estado: string) => {
             <!-- Tarjetas de estadísticas -->
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 <!-- Total Solicitudes -->
-                <div class="rounded-xl bg-gradient-to-br from-red-600 to-red-700 p-4 text-white shadow-lg">
+                <div class="rounded-xl bg-gradient-to-br from-[#842A23] to-[#3037C0] p-4 text-white shadow-lg">
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-sm font-medium opacity-90">Total Solicitudes</p>
@@ -83,7 +83,7 @@ const getEstadoColor = (estado: string) => {
                 </div>
 
                 <!-- Total Clientes -->
-                <div class="rounded-xl bg-gradient-to-br from-gray-800 to-gray-900 p-4 text-white shadow-lg">
+                <div class="rounded-xl bg-gradient-to-br from-[#24C056] to-[#DCBB37] p-4 text-white shadow-lg">
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-sm font-medium opacity-90">Total Clientes</p>
@@ -96,7 +96,7 @@ const getEstadoColor = (estado: string) => {
                 </div>
 
                 <!-- Total Equipos -->
-                <div class="rounded-xl bg-gradient-to-br from-red-500 to-red-600 p-4 text-white shadow-lg">
+                <div class="rounded-xl bg-gradient-to-br from-[#DCBB37] to-[#842A23] p-4 text-white shadow-lg">
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-sm font-medium opacity-90">Total Equipos</p>
@@ -109,7 +109,7 @@ const getEstadoColor = (estado: string) => {
                 </div>
 
                 <!-- Total Usuarios -->
-                <div class="rounded-xl bg-gradient-to-br from-slate-700 to-slate-800 p-4 text-white shadow-lg">
+                <div class="rounded-xl bg-gradient-to-br from-[#3037C0] to-[#842A23] p-4 text-white shadow-lg">
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-sm font-medium opacity-90">Total Usuarios</p>

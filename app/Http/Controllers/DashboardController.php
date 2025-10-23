@@ -108,9 +108,13 @@ class DashboardController extends Controller
                 ];
             });
 
-        // Solicitudes por mes (últimos 6 meses)
+        $dbDriver = DB::getDriverName();
+        $dateFormat = $dbDriver === 'pgsql' 
+            ? "TO_CHAR(created_at, 'YYYY-MM')" 
+            : "DATE_FORMAT(created_at, '%Y-%m')";
+        
         $solicitudesPorMes = Solicitud::select(
-                DB::raw('TO_CHAR(created_at, \'YYYY-MM\') as mes'),
+                DB::raw("{$dateFormat} as mes"),
                 DB::raw('count(*) as total')
             )
             ->where('created_at', '>=', now()->subMonths(6))

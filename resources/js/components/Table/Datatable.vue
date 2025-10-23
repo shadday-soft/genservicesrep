@@ -38,8 +38,8 @@ initializeFilters();
 
 <template>
   <DataTable v-model:filters="filters" :globalFilterFields="columns.map((column: TypeColumn) => column.field)"
-    :value="data" resizableColumns columnResizeMode="expand" :paginator="false" filterDisplay="menu" scrollable
-    scrollHeight="flex" removableSort :rows="defaultRows ?? 50" size="small">
+    :value="data" resizableColumns columnResizeMode="expand"  filterDisplay="menu" scrollable
+    scrollHeight="flex" removableSort stripedRows :rows="defaultRows ?? 50" size="small">
     <template #empty>
       <div class="flex flex-col justify-center items-center py-4">
         <img src="/svg/undraw_empty.svg" alt="" class="w-1/2 h-[30vh]" />

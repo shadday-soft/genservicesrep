@@ -25,8 +25,8 @@ const chartData = computed(() => ({
     datasets: [
         {
             label: 'Solicitudes asignadas',
-            backgroundColor: '#dc2626',
-            borderColor: '#991b1b',
+            backgroundColor: '#842A23',
+            borderColor: '#3037C0',
             borderWidth: 2,
             borderRadius: 8,
             data: props.data.map(item => item.total)
