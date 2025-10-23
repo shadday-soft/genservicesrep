@@ -12,10 +12,14 @@ import {
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes';
+import  clients  from '@/routes/clients';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/vue3';
 import { BookOpen, Building, LayoutGrid, Users, SquareUser, CircuitBoard } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
+import sucursals from '@/routes/sucursals';
+import equipos from '@/routes/equipos';
+import solicituds from '@/routes/solicituds';
 
 const mainNavItems: NavItem[] = [
     {
@@ -25,22 +29,22 @@ const mainNavItems: NavItem[] = [
     },
     {
         title: 'Clientes',
-        href: 'clients',
+        href: clients.index(),
         icon: SquareUser,
     },
     {
         title: 'Sucursales',
-        href: 'sucursals',
+        href: sucursals.index(),
         icon: Building,
     },
     {
         title: 'Equipos',
-        href: 'equipos',
+        href: equipos.index(),
         icon: CircuitBoard,
     },
     {
         title: 'Solicitudes',
-        href: 'solicituds',
+        href:  solicituds.index(),
         icon: BookOpen,
     }
 
