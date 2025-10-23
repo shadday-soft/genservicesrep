@@ -18,9 +18,9 @@ defineProps<{
         class="relative grid h-dvh flex-col items-center justify-center px-8 sm:px-0 lg:max-w-none lg:grid-cols-2 lg:px-0"
     >
         <div
-            class="relative hidden h-full flex-col bg-muted p-10 text-white lg:flex dark:border-r"
+            class="relative hidden h-full flex-col bg-muted  text-white lg:flex dark:border-r"
         >
-            <div class="absolute inset-0 bg-zinc-900" />
+            <div class="absolute inset-0 bg-zinc-900 object-cover" style="background-image: url('/auth-image.jpg'); background-repeat: no-repeat; background-size: cover; background-position: center;" />
             <Link
                 :href="home()"
                 class="relative z-20 flex items-center text-lg font-medium"
@@ -28,10 +28,10 @@ defineProps<{
                 <AppLogoIcon class="mr-2 size-8 fill-current text-white" />
                 {{ name }}
             </Link>
-            <div v-if="quote" class="relative z-20 mt-auto">
+            <div v-if="quote" class="relative z-20 mt-auto bg-stone-900/60 p-4 rounded text-white">
                 <blockquote class="space-y-2">
-                    <p class="text-lg">&ldquo;{{ quote.message }}&rdquo;</p>
-                    <footer class="text-sm text-neutral-300">
+                    <p class="text-lg italic">&ldquo;{{ quote.message }}&rdquo;</p>
+                    <footer class="text-sm ">
                         {{ quote.author }}
                     </footer>
                 </blockquote>
