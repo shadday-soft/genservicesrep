@@ -22,9 +22,9 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const colors = [
-    '#842A23', // rojo oscuro
     '#24C056', // verde
     '#DCBB37', // amarillo
+    '#842A23', // rojo oscuro
     '#3037C0', // azul
     '#7f1d1d', // fallback rojo
     '#374151', // fallback gris
@@ -42,7 +42,7 @@ const chartData = computed(() => ({
     ]
 }));
 
-const chartOptions = computed(() => ({
+const chartOptions = computed(() => ({ 
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
