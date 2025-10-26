@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Contracts\Cache\Store;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateClientRequest extends FormRequest
@@ -22,8 +21,9 @@ class UpdateClientRequest extends FormRequest
      */
     public function rules(): array
     {
-        $rules = (new StoreClientRequest())->rules();
-        $rules['nit'] = ['required', 'string', 'max:255', 'unique:clients,nit,' . $this->client->id];
+        $rules = (new StoreClientRequest)->rules();
+        $rules['nit'] = ['required', 'string', 'max:255', 'unique:clients,nit,'.$this->client->id];
+
         return $rules;
     }
 }

@@ -12,29 +12,27 @@ class SolicitudController extends Controller
 {
     public function __construct(
         private SolicitudInterface $repository,
-    )
-    {
-    }
+    ) {}
 
     public function index()
     {
         $search = request('search');
         $perPage = request('per_page', 15);
-        
+
         $solicituds = $this->repository->getAll($perPage, $search);
-        
-        if(request()->wantsJson()){
+
+        if (request()->wantsJson()) {
             return response()->json([
-                'solicituds' => $this->repository->getAllData()
+                'solicituds' => $this->repository->getAllData(),
             ], 200);
         }
-        
+
         return inertia('Solicituds/Index', [
             'solicituds' => $solicituds,
             'filters' => [
                 'search' => $search,
-                'per_page' => $perPage
-            ]
+                'per_page' => $perPage,
+            ],
         ]);
 
     }
@@ -54,7 +52,7 @@ class SolicitudController extends Controller
     {
         // try{
         //     DB::beginTransaction();
-            $this->repository->create($request->validated());
+        $this->repository->create($request->validated());
         //     DB::commit();
         //     return back()->with('status', 'Solicitud create successfully');
         // }catch(\Exception $e){
@@ -83,12 +81,13 @@ class SolicitudController extends Controller
      */
     public function update(UpdateSolicitudRequest $request, Solicitud $solicitud)
     {
-          try{
+        try {
             DB::beginTransaction();
-            $this->repository->update($solicitud->id,$request->validated());
+            $this->repository->update($solicitud->id, $request->validated());
             DB::commit();
+
             return back()->with('status', 'Solicitud updated successfully');
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             return back()->withError('errors', 'Action no Disabled');
         }
     }
@@ -98,12 +97,13 @@ class SolicitudController extends Controller
      */
     public function destroy(Solicitud $solicitud)
     {
-        try{
+        try {
             DB::beginTransaction();
             $this->repository->delete($solicitud->id);
             DB::commit();
+
             return back()->with('status', 'Solicitud delete successfully');
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             return back()->withError('errors', 'Action no Disabled');
         }
     }

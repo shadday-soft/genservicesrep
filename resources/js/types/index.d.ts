@@ -111,6 +111,15 @@ export interface Equipo {
     sucursal?: Sucursal;
 }
 
+export interface Actividad {
+    id: string;
+    nombre: string;
+    active: boolean;
+    created_at?: string;
+    updated_at?: string;
+}
+
+
 export interface Solicitud {
     id: string;
     client_id: string | null;

@@ -21,6 +21,6 @@ class UpdateSucursalRequest extends FormRequest
      */
     public function rules(): array
     {
-        return (new StoreSucursalRequest())->rules();
+        return (new StoreSucursalRequest)->rules();
     }
 }

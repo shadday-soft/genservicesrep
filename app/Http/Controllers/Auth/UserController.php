@@ -19,9 +19,10 @@ class UserController extends Controller
         $users = $this->repository->getAll();
         if (request()->wantsJson()) {
             return response()->json([
-                'users' => $users
+                'users' => $users,
             ]);
         }
+
         return inertia('Users/Index', compact('users'));
     }
 
@@ -42,6 +43,7 @@ class UserController extends Controller
             DB::beginTransaction();
             $this->repository->create($request->validated());
             DB::commit();
+
             return back()->with('status', 'User create successfully');
         } catch (\Exception $e) {
             return back()->withError('errors', 'Action no Disabled');
@@ -73,6 +75,7 @@ class UserController extends Controller
             DB::beginTransaction();
             $this->repository->update($user->id, $request->validated());
             DB::commit();
+
             return back()->with('status', 'User updated successfully');
         } catch (\Exception $e) {
             return back()->withError('errors', 'Action no Disabled');
@@ -88,6 +91,7 @@ class UserController extends Controller
             DB::beginTransaction();
             $this->repository->delete($user->id);
             DB::commit();
+
             return back()->with('status', 'User delete successfully');
         } catch (\Exception $e) {
             return back()->withError('errors', 'Action no Disabled');

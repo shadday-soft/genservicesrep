@@ -1,10 +1,5 @@
 <?php
 
-namespace App\Interfaces;;
+namespace App\Interfaces;
 
-
-
-interface EquipoInterface extends BaseInterface
-{
-   
-}
+interface EquipoInterface extends BaseInterface {}

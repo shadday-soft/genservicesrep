@@ -20,11 +20,17 @@ import AppLogo from './AppLogo.vue';
 import sucursals from '@/routes/sucursals';
 import equipos from '@/routes/equipos';
 import solicituds from '@/routes/solicituds';
+import actividads from '@/routes/actividads';
 
 const mainNavItems: NavItem[] = [
     {
         title: 'Dashboard',
         href: dashboard(),
+        icon: LayoutGrid,
+    },
+    {
+        title: 'Actividades',
+        href: actividads.index(),
         icon: LayoutGrid,
     },
     {

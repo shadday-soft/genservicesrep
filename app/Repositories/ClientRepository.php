@@ -14,6 +14,7 @@ class ClientRepository extends BaseRepository implements ClientInterface
         $this->userRepository = $userRepository;
         $this->makeModel();
     }
+
     public function model()
     {
         return Client::class;
@@ -22,20 +23,20 @@ class ClientRepository extends BaseRepository implements ClientInterface
     public function getAll($perPage = 15, $search = null)
     {
         $query = Client::query();
-        
+
         if ($search) {
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('enterprise_name', 'like', "%{$search}%")
-                  ->orWhere('nit', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%")
-                  ->orWhere('phone_number', 'like', "%{$search}%");
+                    ->orWhere('nit', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhere('phone_number', 'like', "%{$search}%");
             });
         }
-        
+
         if ($perPage === null || $perPage === 'all') {
             return $query->get();
         }
-        
+
         return $query->latest()->paginate($perPage);
     }
 

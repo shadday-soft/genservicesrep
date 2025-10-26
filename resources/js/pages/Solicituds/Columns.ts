@@ -8,16 +8,7 @@ export const columns: Column[] = [
         type: 'text',
         filter: true,
         filterPlaceholder: 'Buscar por empresa',
-    },
-    {
-        header: 'Número de Orden',
-        field: 'numero_orden',
-        sortable: true,
-        type: 'text',
-        filter: true,
-        filterPlaceholder: 'Buscar por número de orden',
-    },
-    
+    }, 
     {
         header: 'Sucursal',
         field: 'sucursal.name',
@@ -60,24 +51,12 @@ export const columns: Column[] = [
         ]
     },
     {
-        header: 'Estado',
-        field: 'estado',
+        header: 'Fecha de Solicitud',
+        field: 'created_at',
         sortable: true,
-        type: 'tag',
+        type: 'dateTime',
         filter: true,
-        tags: [
-            {
-                label: 'Nueva',
-                value: 'Nueva',
-                severity: 'info',
-            },
-            {
-                label: 'Revisión',
-                value: 'Revisión',
-                severity: 'warn',
-            }
-        ],
-        filterPlaceholder: 'Buscar por estado',
+        filterPlaceholder: 'Buscar por fecha',
     },
     {
         header: 'Fecha Programada',

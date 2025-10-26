@@ -52,6 +52,9 @@
         </span>
         <span v-else class="text-gray-500 text-xs italic">Sin roles</span>
       </div>
+      <div v-else-if="type == 'boolean'">
+        <Tag :value="data ? 'Sí' : 'No'" :severity="data ? 'success' : 'danger'"></Tag>
+      </div>
       <span v-else>
         {{ data }}
       </span>

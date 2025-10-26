@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('solicituds', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            
+
             // Relaciones
             $table->foreignUuid('client_id')->nullable()->constrained()->onDelete('set null');
             $table->foreignUuid('sucursal_id')->constrained();
@@ -31,11 +31,11 @@ return new class extends Migration
             $table->string('actividad');
             $table->string('mantenimiento_id')->nullable();
             $table->date('fecha_mantenimiento')->nullable();
-            
+
             $table->string('numero_orden')->unique()->nullable(); // Generado automáticamente
             // Información de mantenimiento
             // Datos de contacto
-            
+
             // Fecha programada
             $table->string('orden_trabajo')->nullable();
 

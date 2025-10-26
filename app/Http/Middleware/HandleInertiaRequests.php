@@ -80,12 +80,12 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
-    // Extraer mensaje y autor de la cita de forma segura
-    $raw = '';
-    $raw = (string) Inspiring::quotes()->random();
-    $parts = explode('-', $raw, 2);
-    $message = isset($parts[0]) ? trim($parts[0]) : '';
-    $author = isset($parts[1]) ? trim($parts[1]) : '';
+        // Extraer mensaje y autor de la cita de forma segura
+        $raw = '';
+        $raw = (string) Inspiring::quotes()->random();
+        $parts = explode('-', $raw, 2);
+        $message = isset($parts[0]) ? trim($parts[0]) : '';
+        $author = isset($parts[1]) ? trim($parts[1]) : '';
 
         // Buscar traducción; si no existe, usar la oración original como fallback
         $translated = $this->es[$message] ?? $message;

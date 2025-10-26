@@ -4,17 +4,16 @@ namespace App\Policies;
 
 use App\Models\Client;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class ClientPolicy
 {
-     public function before(User $user, $ability)
+    public function before(User $user, $ability)
     {
         if ($user->role === 'admin') {
             return true;
         }
     }
-    
+
     /**
      * Determine whether the user can view any models.
      */
@@ -44,7 +43,7 @@ class ClientPolicy
      */
     public function update(User $user, Client $client): bool
     {
-         if ($user->id === $client->id) {
+        if ($user->id === $client->id) {
             return true;
         }
 
@@ -56,7 +55,7 @@ class ClientPolicy
      */
     public function delete(User $user, Client $client): bool
     {
-         if ($user->id === $client->id) {
+        if ($user->id === $client->id) {
             return true;
         }
 

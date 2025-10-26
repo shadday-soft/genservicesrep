@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreignUuid('sucursal_id')->nullable()->constrained()->onDelete('set null')->comment('Sucursal o sede (Dropdown)');
             $table->text('detalles')->nullable()->comment('Campo de texto libre para detalles adicionales');
             $table->string('tipo_equipo', 50)->default('Planta Eléctrica')->comment('Tipo de equipo (Ej: Planta Eléctrica)');
-            
+
             // --- DETALLES DE PLANTA ELÉCTRICA ---
             $table->string('potencia', 50)->nullable()->comment('Potencia del equipo (Ej: 100 kVA)');
             $table->string('modelo_equipo', 100)->nullable()->comment('Modelo del equipo');
@@ -30,7 +30,7 @@ return new class extends Migration
             $table->string('marca_generador', 100)->nullable()->comment('Marca del generador');
             $table->integer('horometro')->nullable()->comment('Horómetro actual del equipo (en horas)');
             $table->string('marca_motor', 100)->nullable()->comment('Marca del motor');
-            
+
             // --- DETALLES DE TABLERO ELÉCTRICO ---
             $table->string('tablero_tipo', 100)->nullable()->default('Transferencia y distribución')->comment('Tipo de tablero (Ej: Transferencia y distribución)');
             $table->string('tablero_tension_operacion', 50)->nullable()->comment('Tensión de operación del tablero');
@@ -41,27 +41,27 @@ return new class extends Migration
             $table->string('tablero_controlador', 100)->nullable()->comment('Controlador del tablero (Ej: DSE7320)');
 
             // --- INSUMOS (Cantidades y Referencias) ---
-            
+
             // Filtro de aire
             $table->integer('filtro_aire_cantidad')->nullable();
             $table->string('filtro_aire_referencia', 100)->nullable();
-            
+
             // Filtro de aceite
             $table->integer('filtro_aceite_cantidad')->nullable();
             $table->string('filtro_aceite_referencia', 100)->nullable();
-            
+
             // Filtro de combustible
             $table->integer('filtro_combustible_cantidad')->nullable();
             $table->string('filtro_combustible_referencia', 100)->nullable();
-            
+
             // Filtro separador
             $table->integer('filtro_separador_cantidad')->nullable();
             $table->string('filtro_separador_referencia', 100)->nullable();
-            
+
             // Filtro de agua
             $table->integer('filtro_agua_cantidad')->nullable();
             $table->string('filtro_agua_referencia', 100)->nullable();
-            
+
             // Filtro de aceite (Segundo campo de aceite, si aplica)
             $table->integer('filtro_aceite_2_cantidad')->nullable()->comment('Campo adicional para filtro de aceite, si aplica');
             $table->string('filtro_aceite_2_referencia', 100)->nullable();

@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+
 // Store request used for creation - no ignore logic needed for uniques
 
 class StoreEquipoRequest extends FormRequest
@@ -22,7 +23,7 @@ class StoreEquipoRequest extends FormRequest
      */
     public function rules(): array
     {
-        
+
         return [
             // --- DATOS GENERALES ---
             'nombre_equipo' => ['required', 'string', 'max:100'],
@@ -33,7 +34,7 @@ class StoreEquipoRequest extends FormRequest
 
             // --- DETALLES DE PLANTA ELÉCTRICA ---
             // Estos campos son obligatorios sólo cuando tipo_equipo == 'Planta Eléctrica'
-            'potencia' => ['required_if:tipo_equipo,Planta Eléctrica',  'max:50',],
+            'potencia' => ['required_if:tipo_equipo,Planta Eléctrica',  'max:50'],
             'modelo_equipo' => ['required_if:tipo_equipo,Planta Eléctrica',  'max:100'],
             'modelo_motor' => ['required_if:tipo_equipo,Planta Eléctrica',  'max:100'],
             'tension_operacion' => ['required_if:tipo_equipo,Planta Eléctrica',  'max:50'],

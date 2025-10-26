@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreClientRequest;
 use App\Http\Requests\UpdateClientRequest;
 use App\Interfaces\ClientInterface;
-use App\Interfaces\UserInterface;
 use App\Models\Client;
 use Illuminate\Support\Facades\DB;
 
@@ -13,29 +12,27 @@ class ClientController extends Controller
 {
     public function __construct(
         private ClientInterface $repository,
-    )
-    {
-    }
+    ) {}
 
     public function index()
     {
         $search = request('search');
         $perPage = request('per_page', 15);
-        
+
         $clients = $this->repository->getAll($perPage, $search);
-        
-        if(request()->wantsJson()){
+
+        if (request()->wantsJson()) {
             return response()->json([
-                'clients' => $this->repository->getAllData()
+                'clients' => $this->repository->getAllData(),
             ]);
         }
-        
+
         return inertia('Clients/Index', [
             'clients' => $clients,
             'filters' => [
                 'search' => $search,
-                'per_page' => $perPage
-            ]
+                'per_page' => $perPage,
+            ],
         ]);
     }
 
@@ -52,11 +49,12 @@ class ClientController extends Controller
      */
     public function store(StoreClientRequest $request)
     {
-            DB::beginTransaction();
-            $this->repository->create($request->validated());
-            DB::commit();
-            return back()->with('status', 'Client create successfully');
-        
+        DB::beginTransaction();
+        $this->repository->create($request->validated());
+        DB::commit();
+
+        return back()->with('status', 'Client create successfully');
+
     }
 
     /**
@@ -80,12 +78,13 @@ class ClientController extends Controller
      */
     public function update(UpdateClientRequest $request, Client $client)
     {
-          try{
+        try {
             DB::beginTransaction();
-            $this->repository->update($client->id,$request->validated());
+            $this->repository->update($client->id, $request->validated());
             DB::commit();
+
             return back()->with('status', 'Client updated successfully');
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             return back()->withError('errors', 'Action no Disabled');
         }
     }
@@ -95,12 +94,13 @@ class ClientController extends Controller
      */
     public function destroy(Client $client)
     {
-        try{
+        try {
             DB::beginTransaction();
             $this->repository->delete($client->id);
             DB::commit();
+
             return back()->with('status', 'Client delete successfully');
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             return back()->withError('errors', 'Action no Disabled');
         }
     }

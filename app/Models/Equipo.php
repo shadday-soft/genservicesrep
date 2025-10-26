@@ -10,6 +10,7 @@ class Equipo extends Model
 {
     /** @use HasFactory<\Database\Factories\EquipoFactory> */
     use HasFactory;
+
     use HasUuids;
 
     protected $guarded = [];
@@ -18,7 +19,7 @@ class Equipo extends Model
     {
         return $this->belongsTo(Client::class);
     }
-    
+
     public function sucursal()
     {
         return $this->belongsTo(Sucursal::class);

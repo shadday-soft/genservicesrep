@@ -1,9 +1,9 @@
 <?php
+
 namespace App\Repositories;
 
-use Illuminate\Database\Eloquent\Collection;
-
-abstract class BaseRepository {
+abstract class BaseRepository
+{
     protected $model;
 
     abstract public function model();
@@ -13,39 +13,47 @@ abstract class BaseRepository {
         $this->makeModel();
     }
 
-    public function makeModel(){
+    public function makeModel()
+    {
         $this->model = app()->make($this->model());
     }
 
-    public function getAll($perPage = null, $search = null)    
+    public function getAll($perPage = null, $search = null)
     {
         if ($perPage === null || $perPage === 'all') {
             return $this->model->all();
         }
+
         return $this->model->paginate($perPage);
     }
 
-    public function create(Array $data){
+    public function create(array $data)
+    {
         return $this->model->create($data);
     }
 
-    public function find($id){
+    public function find($id)
+    {
         return $this->model->find($id);
     }
 
-    public function update($id, Array $data){
+    public function update($id, array $data)
+    {
         return $this->find($id)->update($data);
     }
 
-    public function delete($id){
+    public function delete($id)
+    {
         return $this->find($id)->delete();
     }
 
-    public function findBy($field, $value){
+    public function findBy($field, $value)
+    {
         return $this->model->where($field, $value)->first();
     }
 
-    public function getAllData(){
+    public function getAllData()
+    {
         return $this->model->all();
     }
 }

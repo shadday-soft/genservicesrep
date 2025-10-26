@@ -18,21 +18,21 @@ class SucursalController extends Controller
     {
         $search = request('search');
         $perPage = request('per_page', 15);
-        
+
         $sucursals = $this->repository->getAll($perPage, $search);
 
         if (request()->wantsJson()) {
             return response()->json([
-                'sucursals' => $this->repository->getAllData()
+                'sucursals' => $this->repository->getAllData(),
             ]);
         }
-        
+
         return inertia('Sucursals/Index', [
             'sucursals' => $sucursals,
             'filters' => [
                 'search' => $search,
-                'per_page' => $perPage
-            ]
+                'per_page' => $perPage,
+            ],
         ]);
     }
 
@@ -54,6 +54,7 @@ class SucursalController extends Controller
             DB::beginTransaction();
             $this->repository->create($request->validated());
             DB::commit();
+
             return back()->with('status', 'Sucursal create successfully');
         } catch (\Exception $e) {
             return back()->withError('errors', 'Action no Disabled');
@@ -85,6 +86,7 @@ class SucursalController extends Controller
             DB::beginTransaction();
             $this->repository->update($sucursal->id, $request->validated());
             DB::commit();
+
             return back()->with('status', 'Sucursal updated successfully');
         } catch (\Exception $e) {
             return back()->withError('errors', 'Action no Disabled');
@@ -100,6 +102,7 @@ class SucursalController extends Controller
             DB::beginTransaction();
             $this->repository->delete($sucursal->id);
             DB::commit();
+
             return back()->with('status', 'Sucursal delete successfully');
         } catch (\Exception $e) {
             return back()->withError('errors', 'Action no Disabled');

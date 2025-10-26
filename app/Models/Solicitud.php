@@ -10,6 +10,7 @@ class Solicitud extends Model
 {
     /** @use HasFactory<\Database\Factories\SolicitudFactory> */
     use HasFactory;
+
     use HasUuids;
 
     protected $guarded = [];
@@ -23,15 +24,16 @@ class Solicitud extends Model
     {
         return $this->belongsTo(Sucursal::class);
     }
+
     public function equipo()
     {
         return $this->belongsTo(Equipo::class);
     }
+
     public function user()
     {
         return $this->belongsTo(User::class);
     }
-
 
     protected static function boot()
     {
@@ -44,5 +46,4 @@ class Solicitud extends Model
             $solicitud->numero_orden = str_pad($nuevoNumero, 4, '0', STR_PAD_LEFT);
         });
     }
-
 }

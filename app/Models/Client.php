@@ -10,8 +10,8 @@ class Client extends Model
 {
     /** @use HasFactory<\Database\Factories\ClientFactory> */
     use HasFactory;
+
     use HasUuids;
 
     protected $guarded = [];
-
 }

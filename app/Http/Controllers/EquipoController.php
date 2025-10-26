@@ -12,29 +12,27 @@ class EquipoController extends Controller
 {
     public function __construct(
         private EquipoInterface $repository,
-    )
-    {
-    }
+    ) {}
 
     public function index()
     {
         $search = request('search');
         $perPage = request('per_page', 15);
-        
+
         $equipos = $this->repository->getAll($perPage, $search);
 
         if (request()->wantsJson()) {
             return response()->json([
-                'equipos' => $this->repository->getAllData()
+                'equipos' => $this->repository->getAllData(),
             ]);
         }
-        
+
         return inertia('Equipos/Index', [
             'equipos' => $equipos,
             'filters' => [
                 'search' => $search,
-                'per_page' => $perPage
-            ]
+                'per_page' => $perPage,
+            ],
         ]);
     }
 
@@ -51,12 +49,13 @@ class EquipoController extends Controller
      */
     public function store(StoreEquipoRequest $request)
     {
-        try{
+        try {
             DB::beginTransaction();
             $this->repository->create($request->validated());
             DB::commit();
+
             return back()->with('status', 'Equipo create successfully');
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             return back()->withError('errors', 'Action no Disabled');
         }
     }
@@ -82,12 +81,13 @@ class EquipoController extends Controller
      */
     public function update(UpdateEquipoRequest $request, Equipo $equipo)
     {
-          try{
+        try {
             DB::beginTransaction();
-            $this->repository->update($equipo->id,$request->validated());
+            $this->repository->update($equipo->id, $request->validated());
             DB::commit();
+
             return back()->with('status', 'Equipo updated successfully');
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             return back()->withError('errors', 'Action no Disabled');
         }
     }
@@ -97,12 +97,13 @@ class EquipoController extends Controller
      */
     public function destroy(Equipo $equipo)
     {
-        try{
+        try {
             DB::beginTransaction();
             $this->repository->delete($equipo->id);
             DB::commit();
+
             return back()->with('status', 'Equipo delete successfully');
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             return back()->withError('errors', 'Action no Disabled');
         }
     }

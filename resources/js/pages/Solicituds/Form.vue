@@ -4,8 +4,9 @@ import SolicitudService from '@/Services/SolicitudsService';
 import Client from '@/Services/ClientService';
 import SucursalService from '@/Services/SucursalsService';
 import EquipoService from '@/Services/EquiposService';
+import ActividadService from '@/Services/ActividadsService';
 import vueFilePond from 'vue-filepond';
-import type { Solicitud as SolicitudType, Sucursal, Equipo, User } from '@/types';
+import type { Solicitud as SolicitudType, Sucursal, Equipo, User, Actividad } from '@/types';
 import type { Client as ClientTypes } from '@/types/client';
 import UserService from '@/Services/UserService';
 import { Button } from 'primevue';
@@ -24,12 +25,14 @@ const solicitudService = new SolicitudService(props.solicitud);
 const clientService = new Client(null);
 const sucursalService = new SucursalService(null);
 const equipoService = new EquipoService(null);
+const actividadService = new ActividadService(null);
 const userService = new UserService();
 
 const clientsList = ref<ClientTypes[]>([]);
 const sucursalesList = ref<Sucursal[]>([]);
 const equiposList = ref<Equipo[]>([]);
 const tecnicosList = ref<User[]>([]);
+const actividadesList = ref<Actividad[]>([]);
 const pond = useTemplateRef<any>("pond");
 
 const form = solicitudService.form;
@@ -44,33 +47,8 @@ const prioridadOptions = [
 const estadoOptions = [
     { label: 'Nueva', value: 'Nueva' },
     { label: 'Proceso', value: 'Proceso' },
-    { label: 'Revisión', value: 'Revisión' },
     { label: 'Finalizada', value: 'Finalizada' },
-    { label: 'Anulada', value: 'Anulada' },
-    { label: 'Programada', value: 'Programada' },
 ];
-
-const actividadOptions = [
-    { label: 'Mantenimiento preventivo', value: 'Mantenimiento preventivo' },
-    { label: 'Atención de emergencia', value: 'Atención de emergencia' },
-    { label: 'Montaje de equipos', value: 'Montaje de equipos' },
-    { label: 'Cambio de insumos', value: 'Cambio de insumos' },
-    { label: 'Inspección', value: 'Inspección' },
-    { label: 'Mantenimiento Transferencia', value: 'Mantenimiento Transferencia' },
-    { label: 'Microfiltrado', value: 'Microfiltrado' },
-    { label: 'Soporte Técnico', value: 'Soporte Técnico' },
-    { label: 'Mantenimiento Eléctrico', value: 'Mantenimiento Eléctrico' },
-    { label: 'Mantenimiento Sub-estación', value: 'Mantenimiento Sub-estación' },
-    { label: 'Mantenimiento Transformadores', value: 'Mantenimiento Transformadores' },
-    { label: 'Mantenimiento Correctivo', value: 'Mantenimiento Correctivo' },
-    { label: 'Cambio de Control', value: 'Cambio de Control' },
-    { label: 'Instalación de Tanque', value: 'Instalación de Tanque' },
-    { label: 'Correctivo Mecánico', value: 'Correctivo Mecánico' },
-    { label: 'Mantenimiento Tuberías de Escape', value: 'Mantenimiento Tuberías de Escape' },
-    { label: 'Lavados Generador-Radiador-Motor', value: 'Lavados Generador-Radiador-Motor' },
-    { label: 'Cambio de Baterías', value: 'Cambio de Baterías' },
-    { label: 'Otro', value: 'Otro' },
-]
 
 function updatefiles() {
     if (pond.value) {
@@ -105,9 +83,11 @@ watch(() => form.sucursal_id, async (newSucursalId) => {
 });
 
 onMounted(async () => {
-    // Cargar clientes
+    // Cargar clientes, técnicos y actividades
     clientsList.value = await clientService.getClients();
     tecnicosList.value = await userService.getUsers();
+    actividadesList.value = await actividadService.getActividades();
+    
     if (props.solicitud) {
         if (props.solicitud.client_id) {
             sucursalesList.value = await sucursalService.getSucursals();
@@ -148,7 +128,7 @@ onMounted(async () => {
             <Input v-model="form.prioridad" type="select" label="Prioridad de solicitud" :error="form.errors.prioridad"
                 option-label="label" option-value="value" :options="prioridadOptions"></Input>
             <Input v-model="form.actividad" type="select" label="Actividad" :error="form.errors.actividad"
-                option-label="label" option-value="value" :options="actividadOptions"></Input>
+                option-label="nombre" option-value="nombre" :options="actividadesList"></Input>
 
             <!-- Estado -->
             <Input v-model="form.estado" type="select" label="Estado de solicitud" :error="form.errors.estado"
@@ -182,7 +162,7 @@ onMounted(async () => {
 
                 <!-- Archivo PDF -->
                 <div class="col-span-1 md:col-span-2 w-full">
-                    <label class="block text-gray-700 text-sm font-bold mb-2">Archivo PDF (Orden de trabajo)</label>
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Orden de compra</label>
                     <FilePond name="orden_trabajo" ref="pond" v-model="form.orden_trabajo" :allow-multiple="false"
                         accepted-file-types="application/pdf" :files="myFiles" @updatefiles="updatefiles"
                         :label-idle="'Arrastra y suelta tu archivo o <span class=\'filepond--label-action\'>Examinar</span>'" />

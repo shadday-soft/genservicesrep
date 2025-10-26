@@ -11,16 +11,17 @@ class RepositoryServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $models =  [
+        $models = [
             'User',
             'Client',
             'Sucursal',
             'Equipo',
             'Solicitud',
+            'Actividad',
         ];
 
         foreach ($models as $model) {
-            $this->app->bind('App\\Interfaces\\' . $model . 'Interface', 'App\\Repositories\\' . $model . 'Repository');
+            $this->app->bind('App\\Interfaces\\'.$model.'Interface', 'App\\Repositories\\'.$model.'Repository');
         }
     }
 

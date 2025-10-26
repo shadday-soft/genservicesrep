@@ -2,8 +2,6 @@
 
 namespace App\Interfaces;
 
-use Illuminate\Database\Eloquent\Collection;
-
 interface BaseInterface
 {
     public function getAll($perPage = 15, $search = null);
@@ -15,5 +13,6 @@ interface BaseInterface
     public function update(int $id, array $data);
 
     public function delete(int $id);
+
     public function getAllData();
 }

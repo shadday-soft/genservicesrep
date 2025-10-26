@@ -21,6 +21,6 @@ class UpdateSolicitudRequest extends FormRequest
      */
     public function rules(): array
     {
-        return (new StoreSolicitudRequest())->rules();
+        return (new StoreSolicitudRequest)->rules();
     }
 }
