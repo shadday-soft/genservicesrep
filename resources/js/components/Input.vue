@@ -39,6 +39,7 @@
     :maxSelectedLabels="3" selectedItemsLabel="{0} Selecciones" />
 
     <DatePicker
+      @date-select="emit('select', $event)"
       v-else-if="type == 'date'"
       dateFormat="dd/mm/yy"
       :disabled

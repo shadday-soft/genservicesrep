@@ -229,7 +229,7 @@ const getSucursalsForClient = async (clientId: string) => {
                     { label: 'Anual', value: 'Anual' }
                 ]"></Input>
 
-                <Input v-model:date="form.fecha_primer_mantenimiento" label="Fecha del Primer Mantenimiento" type="date"></Input>
+                <Input v-model:date="form.fecha_primer_mantenimiento" @select="calcularProximosMantenimientos" label="Fecha del Primer Mantenimiento" type="date"></Input>
 
                 <!-- Mostrar próximas fechas de mantenimiento -->
                 <div v-if="proximasMantenimientos.length > 0" class="col-span-1 md:col-span-2">
