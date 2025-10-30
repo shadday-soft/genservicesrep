@@ -162,7 +162,7 @@ onMounted(async () => {
 
                 <!-- Archivo PDF -->
                 <div class="col-span-1 md:col-span-2 w-full">
-                    <label class="block text-gray-700 text-sm font-bold mb-2">Orden de compra</label>
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Orden de compra</label>+
                     <FilePond name="orden_trabajo" ref="pond" v-model="form.orden_trabajo" :allow-multiple="false"
                         accepted-file-types="application/pdf" :files="myFiles" @updatefiles="updatefiles"
                         :label-idle="'Arrastra y suelta tu archivo o <span class=\'filepond--label-action\'>Examinar</span>'" />

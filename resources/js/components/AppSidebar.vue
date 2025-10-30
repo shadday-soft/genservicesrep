@@ -12,10 +12,10 @@ import {
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes';
-import  clients  from '@/routes/clients';
+import clients from '@/routes/clients';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/vue3';
-import { BookOpen, Building, LayoutGrid, Users, SquareUser, CircuitBoard } from 'lucide-vue-next';
+import { BookOpen, Building, LayoutGrid, Users, SquareUser, CircuitBoard, UserCog, List, Calendar, AlertCircle } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 import sucursals from '@/routes/sucursals';
 import equipos from '@/routes/equipos';
@@ -34,6 +34,11 @@ const mainNavItems: NavItem[] = [
         icon: LayoutGrid,
     },
     {
+        title: 'Tecnicos',
+        href: 'users',
+        icon: UserCog,
+    },
+    {
         title: 'Clientes',
         href: clients.index(),
         icon: SquareUser,
@@ -50,12 +55,30 @@ const mainNavItems: NavItem[] = [
     },
     {
         title: 'Solicitudes',
-        href:  solicituds.index(),
+        href: solicituds.index(),
         icon: BookOpen,
-    }
-
-
-
+        items: [
+            {
+                title: 'Preventivo',
+                href: solicituds.index({
+                    query: { tipo: 'Mantenimiento Preventivo' },
+                }),
+                icon: Calendar,
+            },
+            {
+                title: 'Por Demanda',
+                href: solicituds.index({
+                    query: { tipo: 'Mantenimiento Correctivo' },
+                }),
+                icon: AlertCircle,
+            },
+            {
+                title: 'Todas las Solicitudes',
+                href: solicituds.index(),
+                icon: List,
+            },
+        ],
+    },
 ];
 
 const footerNavItems: NavItem[] = [
