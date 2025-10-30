@@ -94,16 +94,17 @@ class ActividadController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Actividad $actividad)
+    public function destroy($actividad)
     {
         try {
             DB::beginTransaction();
-            $this->repository->delete($actividad->id);
+            $this->repository->delete($actividad);
             DB::commit();
 
             return back()->with('status', 'Actividad delete successfully');
         } catch (\Exception $e) {
-            return back()->withError('errors', 'Action no Disabled');
+            DB::rollBack();
+            return back()->withErrors(['error' => 'Error deleting Actividad: ' . $e->getMessage()]);
         }
     }
 }

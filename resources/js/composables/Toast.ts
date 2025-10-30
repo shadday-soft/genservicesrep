@@ -39,9 +39,17 @@ const questionDeleteMessage = (route: any,  text: string, model: string) => {
     }).then((result) => {
       if (result.isConfirmed) {
         try {
-          router.delete(route);
-          getSuccessMessage(`${model} Eliminado Correctamente`)
+          router.delete(route ,  { 
+            onSuccess: () => {
+              getSuccessMessage(`${model} Eliminado Correctamente`)
+            },
+            onError: (error) => {
+              console.error(error);
+              getErrorMessage(`No podemos Eliminar Este ${model}!`)
+            }
+          });
         } catch (error) {
+          console.error(error);
           getErrorMessage(`No podemos Eliminar Este ${model}!`)
         }
       } else {
