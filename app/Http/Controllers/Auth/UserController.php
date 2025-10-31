@@ -14,10 +14,10 @@ class UserController extends Controller
         private UserInterface $repository,
     ) {}
 
-    public function index()
+    public function index(Request $request)
     {
-        $users = $this->repository->getAll();
-        if (request()->wantsJson()) {
+        $users = $this->repository->getAll(null , $request->query('role'));
+        if ($request->wantsJson()) {
             return response()->json([
                 'users' => $users,
             ]);
@@ -96,5 +96,27 @@ class UserController extends Controller
         } catch (\Exception $e) {
             return back()->withError('errors', 'Action no Disabled');
         }
+    }
+
+    /**
+     * Assign or update a user's role.
+     */
+    public function updateRole(Request $request, User $user)
+    {
+        // $request->validate([
+        //     'role' => ['required', 'string'],
+        // ]);
+
+        // try {
+            DB::beginTransaction();
+            $this->repository->update($user->id, ['role' => $request->input('role')]);
+            DB::commit();
+
+            // return response()->json(['ok' => true]);
+        // } catch (\Exception $e) {
+        //     DB::rollBack();
+
+        //     return response()->json(['ok' => false, 'message' => $e->getMessage()], 500);
+        // }
     }
 }

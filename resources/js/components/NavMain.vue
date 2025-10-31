@@ -46,6 +46,7 @@ const page = usePage();
                                 <SidebarMenuSubItem v-for="subItem in item.items" :key="subItem.title">
                                     <SidebarMenuSubButton
                                         as-child
+                                        v-if="item.show"
                                     >
                                         <Link :href="subItem.href">
                                             <component :is="subItem.icon" v-if="subItem.icon" />
@@ -64,6 +65,7 @@ const page = usePage();
                         as-child
                         :is-active="urlIsActive(item.href, page.url)"
                         :tooltip="item.title"
+                        v-if="item.show"
                     >
                         <Link :href="item.href">
                             <component :is="item.icon" v-if="item.icon" />

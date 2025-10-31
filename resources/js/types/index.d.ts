@@ -17,6 +17,7 @@ export interface NavItem {
     icon?: LucideIcon;
     isActive?: boolean;
     items?: NavItem[];
+    show?: boolean;
 }
 
 export type AppPageProps<
@@ -31,6 +32,7 @@ export type AppPageProps<
 export interface User {
     id: number;
     name: string;
+    role: 'Administrador' | 'Tecnico' | 'Cliente';
     email: string;
     avatar?: string;
     email_verified_at: string | null;

@@ -104,7 +104,8 @@ class ActividadController extends Controller
             return back()->with('status', 'Actividad delete successfully');
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->withErrors(['error' => 'Error deleting Actividad: ' . $e->getMessage()]);
+
+            return back()->withErrors(['error' => 'Error deleting Actividad: '.$e->getMessage()]);
         }
     }
 }

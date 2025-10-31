@@ -20,10 +20,12 @@ Route::get('dashboard', [DashboardController::class, 'index'])
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('clients', ClientController::class);
     Route::resource('users', UserController::class);
+    Route::put('users/{user}/role', [\App\Http\Controllers\Auth\UserController::class, 'updateRole'])->name('users.updateRole');
     Route::resource('sucursals', SucursalController::class);
     Route::resource('equipos', EquipoController::class);
     Route::resource('solicituds', SolicitudController::class);
     Route::resource('actividads', ActividadController::class);
+    
 });
 
 require __DIR__.'/settings.php';

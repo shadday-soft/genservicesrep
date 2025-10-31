@@ -1,3 +1,7 @@
+
+import { Auth } from "@/types";
+import { usePage } from "@inertiajs/vue3";
+
 const COP = new Intl.NumberFormat('es-CO', {
     style: 'currency',
     currency: 'COP',
@@ -17,6 +21,10 @@ export function calculateTimeInHours(start:any, end: any) {
     const totalHours = Math.round((diffMs / 3600000) * 100) / 100;
     return totalHours;
 }
+
+export function validateRole(role: string) {
+    return usePage().props.auth.user.role === role;
+};
 
 export function useCommonUtilities() {
     const autoTruncateString = (string = '') => {

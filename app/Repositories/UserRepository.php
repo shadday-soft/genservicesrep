@@ -11,4 +11,11 @@ class UserRepository extends BaseRepository implements UserInterface
     {
         return User::class;
     }
+
+    public function getAll($perPage = null, $search = null)
+    {
+        // dd($this->model->get());
+        return $this->model->where('role', 'LIKE' ,$search)->get();
+
+    }
 }

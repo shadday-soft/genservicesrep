@@ -20,5 +20,19 @@ export const columns: Column[] = [
         filterPlaceholder: 'Search by email',
     }
 
+    ,
+    {
+        header: 'Rol',
+        field: 'role',
+        sortable: true,
+        type: 'tag',
+        filter: true,
+        filterPlaceholder: 'Search by role',
+        tags: [
+            { value: 'Cliente', label: 'Cliente', severity: 'info' },
+            { value: 'Tecnico', label: 'Técnico', severity: 'success' },
+            { value: 'Administrador', label: 'Administrador', severity: 'warning' },
+        ],
+    }
 
 ];

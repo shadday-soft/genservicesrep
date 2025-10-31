@@ -21,37 +21,45 @@ import sucursals from '@/routes/sucursals';
 import equipos from '@/routes/equipos';
 import solicituds from '@/routes/solicituds';
 import actividads from '@/routes/actividads';
+import users from '@/routes/users';
+import { validateRole } from '@/composables/useCommonUtilities';
 
 const mainNavItems: NavItem[] = [
     {
         title: 'Dashboard',
         href: dashboard(),
         icon: LayoutGrid,
+        show: validateRole('Administrador'),
     },
     {
         title: 'Actividades',
         href: actividads.index(),
         icon: LayoutGrid,
+        show: validateRole('Administrador'),
     },
     {
         title: 'Tecnicos',
-        href: 'users',
+        href: users.index({ query: { role: 'Tecnico' } }),
         icon: UserCog,
+        show: validateRole('Administrador'),
     },
     {
         title: 'Clientes',
         href: clients.index(),
         icon: SquareUser,
+        show: validateRole('Administrador'),
     },
     {
         title: 'Sucursales',
         href: sucursals.index(),
         icon: Building,
+        show: validateRole('Administrador'),
     },
     {
         title: 'Equipos',
         href: equipos.index(),
         icon: CircuitBoard,
+        show: validateRole('Tecnico') || validateRole('Administrador'),    
     },
     {
         title: 'Solicitudes',
