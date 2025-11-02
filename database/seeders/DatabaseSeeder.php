@@ -19,7 +19,14 @@ class DatabaseSeeder extends Seeder
             'name' => 'Admin',
             'email' => 'admin@admin.com',
             'password' => bcrypt('12345678'),
-            'role' => 'Administrador'
+            'role' => 'Administrador',
+        ]);
+
+        User::create([
+            'name' => 'Gen Services',
+            'email' => 'genservices@outlook.com',
+            'password' => bcrypt('Soport3e@1978*'),
+            'role' => 'Administrador',
         ]);
 
         // Seed actividades
