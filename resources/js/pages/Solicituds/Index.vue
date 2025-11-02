@@ -228,6 +228,49 @@ watchDebounced(
 
                     <!-- Footer compacto con acciones -->
                     <div class="px-3 py-2 bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 flex justify-end gap-1.5">
+                        <div class="flex items-center gap-1.5">
+                            <!-- Mostrar opciones si hay coordenadas -->
+                            <template v-if="solicitudItem.sucursal?.latitude && solicitudItem.sucursal?.longitude">
+                                <a
+                                    :href="`https://www.google.com/maps/dir/?api=1&destination=${solicitudItem.sucursal.latitude},${solicitudItem.sucursal.longitude}`"
+                                    target="_blank"
+                                    rel="noopener"
+                                >
+                                    <Button
+                                        text
+                                        icon="pi pi-map"
+                                        size="small"
+                                        v-tooltip.top="'Abrir en Google Maps'"
+                                        class="!p-1.5"
+                                    />
+                                </a>
+
+                                <a
+                                    :href="`https://waze.com/ul?ll=${solicitudItem.sucursal.latitude},${solicitudItem.sucursal.longitude}&navigate=yes`"
+                                    target="_blank"
+                                    rel="noopener"
+                                >
+                                    <Button
+                                        text
+                                        icon="pi pi-map-marker"
+                                        size="small"
+                                        v-tooltip.top="'Abrir en Waze'"
+                                        class="!p-1.5"
+                                    />
+                                </a>
+                            </template>
+
+                            <!-- Si no hay coordenadas -->
+                            <Button
+                                v-else
+                                icon="pi pi-map"
+                                size="small"
+                                text
+                                disabled
+                                v-tooltip.top="'Coordenadas no disponibles'"
+                                class="!p-1.5"
+                            />
+                        </div>
                         <Button 
                             icon="pi pi-pencil" 
                             size="small"

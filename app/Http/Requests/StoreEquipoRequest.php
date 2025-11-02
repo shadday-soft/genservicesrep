@@ -33,7 +33,6 @@ class StoreEquipoRequest extends FormRequest
             'tipo_equipo' => ['required', 'string', 'max:50'],
             'proximas_fechas_mantenimiento' => ['nullable', 'array'],
             'proximas_fechas_mantenimiento.*' => ['date'],
-            
 
             // --- DETALLES DE PLANTA ELÉCTRICA ---
             // Estos campos son obligatorios sólo cuando tipo_equipo == 'Planta Eléctrica'

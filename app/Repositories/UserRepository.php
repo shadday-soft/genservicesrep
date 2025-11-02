@@ -15,7 +15,7 @@ class UserRepository extends BaseRepository implements UserInterface
     public function getAll($perPage = null, $search = null)
     {
         // dd($this->model->get());
-        return $this->model->where('role', 'LIKE' ,$search)->get();
+        return $this->model->where('role', 'LIKE', $search)->get();
 
     }
 }

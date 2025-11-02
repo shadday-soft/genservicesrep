@@ -61,6 +61,8 @@ export interface Sucursal{
     phone_number: string;
     contact_name: string;
     image: string;
+    latitude?: number | null;
+    longitude?: number | null;
     email: string;
     latitude?: number | null;
     longitude?: number | null;

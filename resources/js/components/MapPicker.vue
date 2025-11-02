@@ -38,16 +38,98 @@ const isSearching = ref(false);
 const showResults = ref(false);
 let searchTimeout: ReturnType<typeof setTimeout> | null = null;
 
-// Icono personalizado del marcador
-const customIcon = L.icon({
-    iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-    iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
-    shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]
+// Información de la ubicación
+const locationInfo = ref<{
+    city?: string;
+    state?: string;
+    country?: string;
+    address?: string;
+} | null>(null);
+
+// Icono personalizado del marcador (edificio)
+const customIcon = L.divIcon({
+    html: '<i class="pi pi-building text-blue-600" style="font-size: 32px;"></i>',
+    className: 'custom-building-marker',
+    iconSize: [32, 32],
+    iconAnchor: [16, 32],
+    popupAnchor: [0, -32]
 });
+
+// Función para crear el contenido del popup
+const createPopupContent = (lat: number, lng: number): string => {
+    const info = locationInfo.value;
+    
+    let addressHTML = '';
+    if (info) {
+        if (info.address) {
+            addressHTML += `
+                <div style="margin-bottom: 6px; padding: 8px; background: #f3f4f6; border-radius: 4px;">
+                    <div style="font-size: 11px; color: #6b7280; margin-bottom: 2px;">
+                        <i class="pi pi-map-marker" style="margin-right: 4px;"></i>Dirección
+                    </div>
+                    <div style="font-size: 12px; color: #374151;">${info.address}</div>
+                </div>
+            `;
+        }
+        
+        if (info.city || info.state) {
+            addressHTML += `
+                <div style="margin-bottom: 6px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+            `;
+            
+            if (info.city) {
+                addressHTML += `
+                    <div style="padding: 6px; background: #eff6ff; border-radius: 4px;">
+                        <div style="font-size: 10px; color: #1e40af; margin-bottom: 2px;">
+                            <i class="pi pi-building" style="margin-right: 2px;"></i>Ciudad
+                        </div>
+                        <div style="font-size: 11px; color: #1e3a8a; font-weight: 500;">${info.city}</div>
+                    </div>
+                `;
+            }
+            
+            if (info.state) {
+                addressHTML += `
+                    <div style="padding: 6px; background: #f0fdf4; border-radius: 4px;">
+                        <div style="font-size: 10px; color: #16a34a; margin-bottom: 2px;">
+                            <i class="pi pi-flag" style="margin-right: 2px;"></i>Departamento
+                        </div>
+                        <div style="font-size: 11px; color: #15803d; font-weight: 500;">${info.state}</div>
+                    </div>
+                `;
+            }
+            
+            addressHTML += `</div>`;
+        }
+    }
+    
+    return `
+        <div class="popup-content" style="min-width: 250px; max-width: 300px;">
+            <div style="font-weight: bold; font-size: 14px; margin-bottom: 10px; color: #1e40af; border-bottom: 2px solid #3b82f6; padding-bottom: 6px;">
+                <i class="pi pi-building" style="margin-right: 4px;"></i>
+                Ubicación de Sucursal
+            </div>
+            
+            ${addressHTML}
+            
+            <div style="font-size: 11px; color: #4b5563; margin-bottom: 6px; padding: 6px; background: #fef3c7; border-radius: 4px;">
+                <div style="margin-bottom: 3px;">
+                    <i class="pi pi-compass" style="margin-right: 4px; color: #d97706;"></i>
+                    <strong>Lat:</strong> ${lat}
+                </div>
+                <div>
+                    <i class="pi pi-compass" style="margin-right: 4px; color: #d97706;"></i>
+                    <strong>Lng:</strong> ${lng}
+                </div>
+            </div>
+            
+            <div style="font-size: 10px; color: #6b7280; font-style: italic; text-align: center; padding-top: 6px; border-top: 1px solid #e5e7eb;">
+                <i class="pi pi-info-circle" style="margin-right: 2px;"></i>
+                Arrastra el marcador para ajustar
+            </div>
+        </div>
+    `;
+};
 
 const initMap = () => {
     if (!mapContainer.value || map) return;
@@ -71,40 +153,82 @@ const initMap = () => {
             draggable: true 
         }).addTo(map);
 
-        marker.on('dragend', (e) => {
+        // Agregar popup al marcador
+        marker.bindPopup(createPopupContent(currentLat.value, currentLng.value), {
+            maxWidth: 300,
+            className: 'custom-popup'
+        }).openPopup();
+
+        marker.on('dragend', async (e) => {
             const position = e.target.getLatLng();
-            updateCoordinates(position.lat, position.lng);
+            await updateCoordinates(position.lat, position.lng);
+            // Actualizar el contenido del popup después de arrastrar
+            marker!.setPopupContent(createPopupContent(position.lat, position.lng));
         });
     }
 
     // Evento de clic en el mapa
-    map.on('click', (e: L.LeafletMouseEvent) => {
+    map.on('click', async (e: L.LeafletMouseEvent) => {
         const { lat, lng } = e.latlng;
-        updateCoordinates(lat, lng);
+        await updateCoordinates(lat, lng);
 
         if (marker) {
             marker.setLatLng([lat, lng]);
+            marker.setPopupContent(createPopupContent(lat, lng)).openPopup();
         } else {
             marker = L.marker([lat, lng], { 
                 icon: customIcon,
                 draggable: true 
             }).addTo(map!);
 
-            marker.on('dragend', (e) => {
+            // Agregar popup al marcador
+            marker.bindPopup(createPopupContent(lat, lng), {
+                maxWidth: 350,
+                className: 'custom-popup'
+            }).openPopup();
+
+            marker.on('dragend', async (e) => {
                 const position = e.target.getLatLng();
-                updateCoordinates(position.lat, position.lng);
+                await updateCoordinates(position.lat, position.lng);
+                marker!.setPopupContent(createPopupContent(position.lat, position.lng));
             });
         }
     });
 };
 
-const updateCoordinates = (lat: number, lng: number) => {
+// Función para obtener información de la ubicación (geocodificación inversa)
+const fetchLocationInfo = async (lat: number, lng: number) => {
+    try {
+        const response = await fetch(
+            `/geocoding/reverse?lat=${lat}&lng=${lng}`
+        );
+        
+        const data = await response.json();
+        
+        if (data.address) {
+            locationInfo.value = {
+                city: data.address.city || data.address.town || data.address.village || data.address.municipality,
+                state: data.address.state || data.address.region,
+                country: data.address.country,
+                address: data.display_name
+            };
+        }
+    } catch (error) {
+        console.error('Error obteniendo información de ubicación:', error);
+        locationInfo.value = null;
+    }
+};
+
+const updateCoordinates = async (lat: number, lng: number) => {
     currentLat.value = lat;
     currentLng.value = lng;
     emit('update:modelValue', { 
         latitude: lat, 
         longitude: lng 
     });
+    
+    // Obtener información de la ubicación
+    await fetchLocationInfo(lat, lng);
 };
 
 const clearLocation = () => {
@@ -123,26 +247,33 @@ const clearLocation = () => {
 const getCurrentLocation = () => {
     if ('geolocation' in navigator) {
         navigator.geolocation.getCurrentPosition(
-            (position) => {
+            async (position) => {
                 const lat = position.coords.latitude;
                 const lng = position.coords.longitude;
                 
-                updateCoordinates(lat, lng);
+                await updateCoordinates(lat, lng);
                 
                 if (map) {
                     map.setView([lat, lng], 15);
                     
                     if (marker) {
                         marker.setLatLng([lat, lng]);
+                        marker.setPopupContent(createPopupContent(lat, lng)).openPopup();
                     } else {
                         marker = L.marker([lat, lng], { 
                             icon: customIcon,
                             draggable: true 
                         }).addTo(map);
 
-                        marker.on('dragend', (e) => {
+                        marker.bindPopup(createPopupContent(lat, lng), {
+                            maxWidth: 350,
+                            className: 'custom-popup'
+                        }).openPopup();
+
+                        marker.on('dragend', async (e) => {
                             const position = e.target.getLatLng();
-                            updateCoordinates(position.lat, position.lng);
+                            await updateCoordinates(position.lat, position.lng);
+                            marker!.setPopupContent(createPopupContent(position.lat, position.lng));
                         });
                     }
                 }
@@ -169,7 +300,7 @@ const searchLocation = async () => {
 
     try {
         const response = await fetch(
-            `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchQuery.value)}&limit=5&countrycodes=co`
+            `/geocoding/search?query=${encodeURIComponent(searchQuery.value)}`
         );
         
         const data = await response.json();
@@ -204,26 +335,33 @@ const debouncedSearch = () => {
     }, 500); // 0.5 segundos
 };
 
-const selectSearchResult = (result: { display_name: string; lat: string; lon: string }) => {
+const selectSearchResult = async (result: { display_name: string; lat: string; lon: string }) => {
     const lat = parseFloat(result.lat);
     const lng = parseFloat(result.lon);
 
-    updateCoordinates(lat, lng);
+    await updateCoordinates(lat, lng);
 
     if (map) {
         map.setView([lat, lng], 15);
 
         if (marker) {
             marker.setLatLng([lat, lng]);
+            marker.setPopupContent(createPopupContent(lat, lng)).openPopup();
         } else {
             marker = L.marker([lat, lng], { 
                 icon: customIcon,
                 draggable: true 
             }).addTo(map);
 
-            marker.on('dragend', (e) => {
+            marker.bindPopup(createPopupContent(lat, lng), {
+                maxWidth: 350,
+                className: 'custom-popup'
+            }).openPopup();
+
+            marker.on('dragend', async (e) => {
                 const position = e.target.getLatLng();
-                updateCoordinates(position.lat, position.lng);
+                await updateCoordinates(position.lat, position.lng);
+                marker!.setPopupContent(createPopupContent(position.lat, position.lng));
             });
         }
     }
@@ -240,25 +378,35 @@ const handleClickOutside = (event: MouseEvent) => {
     }
 };
 
-watch(() => props.modelValue, (newValue) => {
+watch(() => props.modelValue, async (newValue) => {
     if (newValue?.latitude && newValue?.longitude) {
         currentLat.value = newValue.latitude;
         currentLng.value = newValue.longitude;
+        
+        // Obtener información de la ubicación
+        await fetchLocationInfo(newValue.latitude, newValue.longitude);
         
         if (map) {
             map.setView([newValue.latitude, newValue.longitude], 13);
             
             if (marker) {
                 marker.setLatLng([newValue.latitude, newValue.longitude]);
+                marker.setPopupContent(createPopupContent(newValue.latitude, newValue.longitude)).openPopup();
             } else {
                 marker = L.marker([newValue.latitude, newValue.longitude], { 
                     icon: customIcon,
                     draggable: true 
                 }).addTo(map);
 
-                marker.on('dragend', (e) => {
+                marker.bindPopup(createPopupContent(newValue.latitude, newValue.longitude), {
+                    maxWidth: 350,
+                    className: 'custom-popup'
+                }).openPopup();
+
+                marker.on('dragend', async (e) => {
                     const position = e.target.getLatLng();
-                    updateCoordinates(position.lat, position.lng);
+                    await updateCoordinates(position.lat, position.lng);
+                    marker!.setPopupContent(createPopupContent(position.lat, position.lng));
                 });
             }
         }
@@ -374,8 +522,8 @@ onUnmounted(() => {
 
         <div v-if="currentLat && currentLng" class="text-sm text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 p-3 rounded">
             <p class="font-semibold mb-1">Coordenadas seleccionadas:</p>
-            <p><strong>Latitud:</strong> {{ currentLat.toFixed(6) }}</p>
-            <p><strong>Longitud:</strong> {{ currentLng.toFixed(6) }}</p>
+            <p><strong>Latitud:</strong> {{ currentLat}}</p>
+            <p><strong>Longitud:</strong> {{ currentLng }}</p>
         </div>
         <div v-else class="text-sm text-gray-500 dark:text-gray-400 italic">
             Haz clic en el mapa para seleccionar una ubicación
@@ -393,7 +541,27 @@ onUnmounted(() => {
     background: #f3f4f6;
 }
 
-/* :deep(.leaflet-popup-content-wrapper) {
-    @apply bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100;
+/* Estilos para el marcador personalizado */
+:deep(.custom-building-marker) {
+    background: transparent;
+    border: none;
+}
+
+/* Estilos para el popup */
+/* :deep(.custom-popup .leaflet-popup-content-wrapper) {
+    @apply bg-white dark:bg-gray-800 rounded-lg shadow-lg;
+    padding: 12px;
 } */
+
+/* :deep(.custom-popup .leaflet-popup-tip) {
+    @apply bg-white dark:bg-gray-800;
+} */
+
+:deep(.custom-popup .leaflet-popup-content) {
+    margin: 0;
+}
+
+:deep(.custom-popup .popup-content) {
+    font-family: inherit;
+}
 </style>
