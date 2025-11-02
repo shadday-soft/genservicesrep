@@ -15,6 +15,13 @@ class Equipo extends Model
 
     protected $guarded = [];
 
+    protected function casts(): array
+    {
+        return [
+            'proximas_fechas_mantenimiento' => 'array',
+        ];
+    }
+
     public function client()
     {
         return $this->belongsTo(Client::class);

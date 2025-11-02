@@ -71,6 +71,7 @@ const mainNavItems: NavItem[] = [
                 href: solicituds.index({
                     query: { tipo: 'Mantenimiento Preventivo' },
                 }),
+                show: true,
                 icon: Calendar,
             },
             {
@@ -79,11 +80,13 @@ const mainNavItems: NavItem[] = [
                     query: { tipo: 'Mantenimiento Correctivo' },
                 }),
                 icon: AlertCircle,
+                show: true,
             },
             {
                 title: 'Todas las Solicitudes',
                 href: solicituds.index(),
                 icon: List,
+                show: true,
             },
         ],
     },
