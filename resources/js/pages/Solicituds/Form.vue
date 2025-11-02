@@ -85,7 +85,7 @@ watch(() => form.sucursal_id, async (newSucursalId) => {
 onMounted(async () => {
     // Cargar clientes, técnicos y actividades
     clientsList.value = await clientService.getClients();
-    tecnicosList.value = await userService.getUsers();
+    tecnicosList.value = (await userService.getUsers()).filter((user: User) => user.role === 'Tecnico');
     actividadesList.value = await actividadService.getActividades();
     
     if (props.solicitud) {

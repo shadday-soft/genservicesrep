@@ -107,19 +107,160 @@ watchDebounced(
                 <Button label="Agregar Solicitud" icon="pi pi-plus" size="small" @click="add" />
             </div>
 
-            <Datatable :columns="columns" :data="solicituds.data" :noShowHeader="true">
-                <template #addButton>
-                    <!-- Removido porque ahora está arriba -->
-                </template>
-                <template #actions="{ data }">
-                    <Button icon="pi pi-pencil" size="small" severity="warn" text v-tooltip.left="`Editar`" @click="edit(data)" />
-                    <Button icon="pi pi-trash" size="small" severity="danger" text
-                        @click="solicitudService.delete(data.id)" />
-                </template>
-            </Datatable>
+            <!-- Vista de Tabla para pantallas grandes -->
+            <div class="hidden md:block">
+                <Datatable :columns="columns" :data="solicituds.data" :noShowHeader="true">
+                    <template #addButton>
+                        <!-- Removido porque ahora está arriba -->
+                    </template>
+                    <template #actions="{ data }">
+                        <Button icon="pi pi-pencil" size="small" severity="warn" text v-tooltip.left="`Editar`" @click="edit(data)" />
+                        <Button icon="pi pi-trash" size="small" severity="danger" text
+                            @click="solicitudService.delete(data.id)" />
+                    </template>
+                </Datatable>
+            </div>
 
-            <div class="mt-6 flex items-center justify-between border-t border-gray-200 dark:border-gray-700 pt-4">
-                <div class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+            <!-- Vista de Tarjetas para móviles -->
+            <div class="md:hidden space-y-3">
+                <div 
+                    v-for="solicitudItem in solicituds.data" 
+                    :key="solicitudItem.id"
+                    class="bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700 overflow-hidden"
+                >
+                    <!-- Header compacto de la tarjeta -->
+                    <div class="px-3 py-2 bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+                        <div class="flex items-center gap-1.5">
+                            <i class="pi pi-file text-gray-500 dark:text-gray-400 text-xs"></i>
+                            <span class="text-sm font-semibold text-gray-900 dark:text-white">
+                                #{{ solicitudItem.numero_orden }}
+                            </span>
+                        </div>
+                        <span 
+                            :class="{
+                                'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-200': solicitudItem.prioridad === 'Normal',
+                                'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-200': solicitudItem.prioridad === 'Intermedio',
+                                'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-200': solicitudItem.prioridad === 'Urgente'
+                            }"
+                            class="px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wide"
+                        >
+                            {{ solicitudItem.prioridad }}
+                        </span>
+                    </div>
+
+                    <!-- Contenido compacto en 2 columnas -->
+                    <div class="px-3 py-2.5 space-y-2">
+                        <!-- Fila 1: Cliente y Sucursal -->
+                        <div class="grid grid-cols-2 gap-2">
+                            <div class="min-w-0">
+                                <p class="text-[10px] text-gray-500 dark:text-gray-400 mb-0.5 flex items-center gap-1">
+                                    <i class="pi pi-building text-[9px]"></i>
+                                    <span>Cliente</span>
+                                </p>
+                                <p class="text-xs font-medium text-gray-900 dark:text-white truncate">
+                                    {{ solicitudItem.empresa?.enterprise_name || 'N/A' }}
+                                </p>
+                            </div>
+                            <div class="min-w-0">
+                                <p class="text-[10px] text-gray-500 dark:text-gray-400 mb-0.5 flex items-center gap-1">
+                                    <i class="pi pi-map-marker text-[9px]"></i>
+                                    <span>Sucursal</span>
+                                </p>
+                                <p class="text-xs font-medium text-gray-900 dark:text-white truncate">
+                                    {{ solicitudItem.sucursal?.name || 'N/A' }}
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Fila 2: Equipo y Técnico -->
+                        <div class="grid grid-cols-2 gap-2">
+                            <div class="min-w-0">
+                                <p class="text-[10px] text-gray-500 dark:text-gray-400 mb-0.5 flex items-center gap-1">
+                                    <i class="pi pi-cog text-[9px]"></i>
+                                    <span>Equipo</span>
+                                </p>
+                                <p class="text-xs font-medium text-gray-900 dark:text-white truncate">
+                                    {{ solicitudItem.equipo?.nombre_equipo || 'N/A' }}
+                                </p>
+                            </div>
+                            <div class="min-w-0">
+                                <p class="text-[10px] text-gray-500 dark:text-gray-400 mb-0.5 flex items-center gap-1">
+                                    <i class="pi pi-user text-[9px]"></i>
+                                    <span>Técnico</span>
+                                </p>
+                                <p class="text-xs font-medium text-gray-900 dark:text-white truncate">
+                                    {{ solicitudItem.user?.name || 'Sin asignar' }}
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Fila 3: Fechas -->
+                        <div class="grid grid-cols-2 gap-2 pt-1.5 border-t border-gray-100 dark:border-gray-700">
+                            <div class="min-w-0">
+                                <p class="text-[10px] text-gray-500 dark:text-gray-400 mb-0.5 flex items-center gap-1">
+                                    <i class="pi pi-calendar text-[9px]"></i>
+                                    <span>Creada</span>
+                                </p>
+                                <p class="text-[11px] font-medium text-gray-900 dark:text-white">
+                                    {{ new Date(solicitudItem.created_at).toLocaleDateString('es-ES', { 
+                                        day: '2-digit', 
+                                        month: 'short'
+                                    }) }}
+                                </p>
+                            </div>
+                            <div class="min-w-0">
+                                <p class="text-[10px] text-gray-500 dark:text-gray-400 mb-0.5 flex items-center gap-1">
+                                    <i class="pi pi-clock text-[9px]"></i>
+                                    <span>Programada</span>
+                                </p>
+                                <p class="text-[11px] font-medium text-gray-900 dark:text-white">
+                                    {{ solicitudItem.fecha_programada 
+                                        ? new Date(solicitudItem.fecha_programada).toLocaleDateString('es-ES', { 
+                                            day: '2-digit', 
+                                            month: 'short'
+                                        })
+                                        : 'Sin prog.' 
+                                    }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Footer compacto con acciones -->
+                    <div class="px-3 py-2 bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 flex justify-end gap-1.5">
+                        <Button 
+                            icon="pi pi-pencil" 
+                            size="small"
+                            severity="warn"
+                            text
+                            v-tooltip.top="'Editar'"
+                            @click="edit(solicitudItem)"
+                            class="!p-1.5"
+                        />
+                        <Button 
+                            icon="pi pi-trash" 
+                            size="small" 
+                            severity="danger"
+                            text
+                            v-tooltip.top="'Eliminar'"
+                            @click="solicitudService.delete(solicitudItem.id)"
+                            class="!p-1.5"
+                        />
+                    </div>
+                </div>
+
+                <!-- Mensaje cuando no hay datos -->
+                <div 
+                    v-if="solicituds.data.length === 0"
+                    class="text-center py-8 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+                >
+                    <i class="pi pi-inbox text-3xl text-gray-400 dark:text-gray-600 mb-2"></i>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">No se encontraron solicitudes</p>
+                </div>
+            </div>
+
+            <div class="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-gray-200 dark:border-gray-700 pt-4">
+                <div class="flex items-center gap-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
                     <span>Mostrando</span>
                     <span class="font-semibold text-gray-900 dark:text-white">
                         {{ (solicituds.current_page - 1) * solicituds.per_page + 1 }}
@@ -130,7 +271,7 @@ watchDebounced(
                     </span>
                     <span>de</span>
                     <span class="font-semibold text-gray-900 dark:text-white">{{ solicituds.total }}</span>
-                    <span>solicitudes</span>
+                    <span class="hidden sm:inline">solicitudes</span>
                 </div>
 
                 <Paginator 
@@ -180,6 +321,34 @@ watchDebounced(
     font-weight: 500;
 }
 
+/* Móvil: botones más pequeños */
+@media (max-width: 640px) {
+    :deep(.paginator-custom .p-paginator-page),
+    :deep(.paginator-custom .p-paginator-first),
+    :deep(.paginator-custom .p-paginator-prev),
+    :deep(.paginator-custom .p-paginator-next),
+    :deep(.paginator-custom .p-paginator-last) {
+        min-width: 2rem;
+        height: 2rem;
+        font-size: 0.875rem;
+    }
+
+    :deep(.paginator-custom .p-dropdown) {
+        font-size: 0.875rem;
+    }
+
+    /* Ocultar algunos números de página en móvil para ahorrar espacio */
+    :deep(.paginator-custom .p-paginator-pages .p-paginator-page) {
+        display: none;
+    }
+
+    :deep(.paginator-custom .p-paginator-pages .p-paginator-page.p-highlight),
+    :deep(.paginator-custom .p-paginator-pages .p-paginator-page:first-child),
+    :deep(.paginator-custom .p-paginator-pages .p-paginator-page:last-child) {
+        display: inline-flex;
+    }
+}
+
 :deep(.paginator-custom .p-paginator-page:not(.p-disabled):hover),
 :deep(.paginator-custom .p-paginator-first:not(.p-disabled):hover),
 :deep(.paginator-custom .p-paginator-prev:not(.p-disabled):hover),
@@ -220,5 +389,11 @@ watchDebounced(
 
 :deep(.paginator-custom .p-paginator-rpp-options) {
     margin-left: 1rem;
+}
+
+@media (max-width: 640px) {
+    :deep(.paginator-custom .p-paginator-rpp-options) {
+        margin-left: 0.5rem;
+    }
 }
 </style>

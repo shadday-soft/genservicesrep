@@ -45,7 +45,7 @@ class EquipoRepository extends BaseRepository implements EquipoInterface
                 'fecha_programada' => $fecha,
                 'fecha_mantenimiento' => $fecha,
                 'actividad' => $actividadMantenimiento->nombre,
-                'estado' => 'Programada',
+                'estado' => 'Nueva',
                 'prioridad' => 'Normal',
             ]);
         }
