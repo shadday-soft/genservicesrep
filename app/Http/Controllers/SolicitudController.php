@@ -81,15 +81,15 @@ class SolicitudController extends Controller
      */
     public function update(UpdateSolicitudRequest $request, Solicitud $solicitud)
     {
-        try {
+     
             DB::beginTransaction();
             $this->repository->update($solicitud->id, $request->validated());
             DB::commit();
 
             return back()->with('status', 'Solicitud updated successfully');
-        } catch (\Exception $e) {
-            return back()->withError('errors', 'Action no Disabled');
-        }
+        // } catch (\Exception $e) {
+        //     return back()->withError('errors', 'Action no Disabled');
+        // }
     }
 
     /**

@@ -41,7 +41,9 @@ class SolicitudRepository extends BaseRepository implements SolicitudInterface
                     });
             });
         }
-
+        if (auth()->user()->role === 'Tecnico') {
+            $query->where('user_id', auth()->user()->id);
+        }
         return $query->latest()->paginate($perPage);
     }
 }
