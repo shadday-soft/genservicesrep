@@ -34,7 +34,6 @@ class SolicitudController extends Controller
                 'per_page' => $perPage,
             ],
         ]);
-
     }
 
     /**
@@ -81,15 +80,10 @@ class SolicitudController extends Controller
      */
     public function update(UpdateSolicitudRequest $request, Solicitud $solicitud)
     {
-     
-            DB::beginTransaction();
-            $this->repository->update($solicitud->id, $request->validated());
-            DB::commit();
 
-            return back()->with('status', 'Solicitud updated successfully');
-        // } catch (\Exception $e) {
-        //     return back()->withError('errors', 'Action no Disabled');
-        // }
+        DB::beginTransaction();
+        $this->repository->update($solicitud->id, $request->validated());
+        DB::commit();
     }
 
     /**
