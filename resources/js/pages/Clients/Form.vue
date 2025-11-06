@@ -22,8 +22,8 @@ const form = clientService.form;
             <Input v-model="form.enterprise_name" label="Nombre de la empresa" :error="form.errors.enterprise_name"></Input>
             <Input v-model="form.contact_name" label="Nombre del contacto" :error="form.errors.contact_name"></Input>
             <Input v-model="form.email" label="Correo electrónico" type="email" :error="form.errors.email"></Input>
-            <Input v-model="form.phone_number" label="Teléfono" type="tel" :error="form.errors.phone_number"></Input>
-            <Input v-model:numeric="form.nit" label="NIT" type="number" :error="form.errors.nit"></Input>
+            <Input v-model:numeric="form.phone_number" label="Teléfono" type="number" :error="form.errors.phone_number"></Input>
+            <Input v-model="form.nit" label="NIT"  :error="form.errors.nit"></Input>
 
             <div class="mt-6 flex justify-end col-span-1 md:col-span-2">
                 <Button type="submit" label="Guardar" icon="pi pi-save" :loading="clientService.form.processing">

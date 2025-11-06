@@ -25,7 +25,7 @@ class StoreClientRequest extends FormRequest
             'enterprise_name' => 'required|string|max:255',
             'contact_name' => 'required|string|max:50',
             'email' => 'required|string|email|max:100',
-            'phone_number' => 'nullable|string|max:20',
+            'phone_number' => 'nullable',
             'nit' => 'required|numeric|unique:clients,nit',
         ];
     }

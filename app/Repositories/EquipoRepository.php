@@ -17,10 +17,10 @@ class EquipoRepository extends BaseRepository implements EquipoInterface
     public function create(array $data)
     {
         $equipo = parent::create($data);
+        array_push($data['proximas_fechas_mantenimiento'], $data['fecha_primer_mantenimiento']);
         if (isset($data['proximas_fechas_mantenimiento']) && is_array($data['proximas_fechas_mantenimiento'])) {
             $this->crearSolicitudesMantenimiento($equipo, $data['proximas_fechas_mantenimiento']);
         }
-
         return $equipo;
     }
 
@@ -29,13 +29,6 @@ class EquipoRepository extends BaseRepository implements EquipoInterface
      */
     protected function crearSolicitudesMantenimiento(Equipo $equipo, array $fechas): void
     {
-        // Buscar la actividad "Mantenimiento preventivo"
-        $actividadMantenimiento = Actividad::where('nombre', 'Mantenimiento preventivo')->first();
-
-        if (! $actividadMantenimiento) {
-            return;
-        }
-
         foreach ($fechas as $fecha) {
             Solicitud::create([
                 'client_id' => $equipo->client_id,
@@ -44,7 +37,7 @@ class EquipoRepository extends BaseRepository implements EquipoInterface
                 'user_id' => null,
                 'fecha_programada' => $fecha,
                 'fecha_mantenimiento' => $fecha,
-                'actividad' => $actividadMantenimiento->nombre,
+                'actividad' => 'Mantenimiento preventivo',
                 'estado' => 'Nueva',
                 'prioridad' => 'Normal',
             ]);

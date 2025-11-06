@@ -32,6 +32,7 @@ class DatabaseSeeder extends Seeder
         // Seed actividades
         $this->call([
             ActividadSeeder::class,
+            // TecnicoSeeder::class,
         ]);
     }
 }

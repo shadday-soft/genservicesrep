@@ -174,5 +174,23 @@ export interface PaginatedResponse<T> {
     total: number;
 }
 
+export interface Tecnico {
+    id: string;
+    user_id: string;
+    foto: string | null;
+    identificacion: string;
+    correo: string;
+    nombre_completo: string;
+    persona_contacto: string | null;
+    tipo_sangre: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-' | null;
+    eps: string | null;
+    fecha_nacimiento: string | null;
+    fecha_inicio_contrato: string;
+    fecha_fin_contrato: string | null;
+    tipo_contrato: 'Indefinido' | 'Fijo' | 'Obra o labor' | 'Prestación de servicios';
+    created_at: string;
+    updated_at: string;
+    user?: User;
+}
 
 export type BreadcrumbItemType = BreadcrumbItem;

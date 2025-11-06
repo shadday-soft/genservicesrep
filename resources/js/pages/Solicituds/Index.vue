@@ -23,6 +23,7 @@ interface Props {
     filters?: {
         search?: string;
         per_page?: number;
+        tipo?: string;
     };
 }
 
@@ -32,6 +33,7 @@ const props = defineProps<Props>();
 
 const searchQuery = ref(props.filters?.search || '');
 const perPage = ref(props.filters?.per_page || 15);
+const tipo = ref(props.filters?.tipo || '');
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -65,7 +67,8 @@ const performSearch = (page = 1) => {
     router.get('/solicituds', {
         page: page,
         per_page: perPage.value,
-        search: searchQuery.value || undefined
+        search: searchQuery.value || undefined,
+        tipo: tipo.value || undefined
     }, {
         preserveState: true,
         preserveScroll: page !== 1,

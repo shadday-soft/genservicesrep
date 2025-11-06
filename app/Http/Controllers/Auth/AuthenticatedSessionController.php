@@ -44,7 +44,7 @@ class AuthenticatedSessionController extends Controller
         Auth::login($user, $request->boolean('remember'));
 
         $request->session()->regenerate();
-        if(Auth::user()->role == 'Tecnico'){
+        if (Auth::user()->role == 'Tecnico') {
             // dd(Auth::user()->role);
             return redirect()->intended(route('solicituds.index', absolute: false));
         }

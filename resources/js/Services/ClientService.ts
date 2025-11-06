@@ -16,8 +16,8 @@ export default class Client extends GeneralService {
         enterprise_name: '',
         contact_name: '',
         email: '',
-        phone_number: '',
-        nit: 0,
+        phone_number: 0,
+        nit: '',
     });
 
 

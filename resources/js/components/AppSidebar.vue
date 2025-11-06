@@ -13,9 +13,10 @@ import {
 } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes';
 import clients from '@/routes/clients';
+import tecnicos  from '@/routes/tecnicos';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/vue3';
-import { BookOpen, Building, LayoutGrid, Users, SquareUser, CircuitBoard, UserCog, List, Calendar, AlertCircle } from 'lucide-vue-next';
+import { BookOpen, Building, LayoutGrid, Users, SquareUser, CircuitBoard, UserCog, List, Calendar, AlertCircle, ListFilterPlus } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 import sucursals from '@/routes/sucursals';
 import equipos from '@/routes/equipos';
@@ -34,12 +35,12 @@ const mainNavItems: NavItem[] = [
     {
         title: 'Actividades',
         href: actividads.index(),
-        icon: LayoutGrid,
+        icon: ListFilterPlus,
         show: validateRole('Administrador'),
     },
     {
         title: 'Tecnicos',
-        href: users.index({ query: { role: 'Tecnico' } }),
+        href: tecnicos.index(),
         icon: UserCog,
         show: validateRole('Administrador'),
     },
