@@ -31,6 +31,9 @@ class StoreEquipoRequest extends FormRequest
             'sucursal_id' => ['nullable', 'uuid', 'exists:sucursals,id'],
             'detalles' => ['nullable', 'string'],
             'tipo_equipo' => ['required', 'string', 'max:50'],
+            'proximas_fechas_mantenimiento' => ['nullable', 'array'],
+            'proximas_fechas_mantenimiento.*' => ['date'],
+            'fecha_primer_mantenimiento' => ['nullable', 'date'],
 
             // --- DETALLES DE PLANTA ELÉCTRICA ---
             // Estos campos son obligatorios sólo cuando tipo_equipo == 'Planta Eléctrica'
@@ -41,7 +44,7 @@ class StoreEquipoRequest extends FormRequest
             'serie_equipo' => ['nullable',  'max:100', 'unique:equipos,serie_equipo'],
             'serie_motor' => ['nullable',  'max:100', 'unique:equipos,serie_motor'],
             'marca_generador' => ['required_if:tipo_equipo,Planta Eléctrica',  'max:100'],
-            'horometro' => ['required_if:tipo_equipo,Planta Eléctrica', 'min:0'],
+            'horometro' => ['required_if:tipo_equipo,Planta Eléctrica', 'min:0', 'numeric'],
             'marca_motor' => ['required_if:tipo_equipo,Planta Eléctrica',  'max:100'],
 
             // --- DETALLES DE TABLERO ELÉCTRICO ---

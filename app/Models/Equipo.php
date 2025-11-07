@@ -15,10 +15,7 @@ class Equipo extends Model
 
     protected $guarded = [];
 
-    protected $casts = [
-        'proximas_fechas_mantenimiento' => 'array',
-        'fecha_primer_mantenimiento' => 'date',
-    ];
+   
 
     public function client()
     {

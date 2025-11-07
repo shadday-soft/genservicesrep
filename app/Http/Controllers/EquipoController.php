@@ -49,7 +49,7 @@ class EquipoController extends Controller
      */
     public function store(StoreEquipoRequest $request)
     {
-        try {
+        
             DB::beginTransaction();
             $equipo = $this->repository->create($request->validated());
 
@@ -64,11 +64,7 @@ class EquipoController extends Controller
             DB::commit();
 
             return back()->with('status', 'Equipo create successfully');
-        } catch (\Exception $e) {
-            DB::rollBack();
-
-            return back()->withError('errors', 'Action no Disabled');
-        }
+       
     }
 
     /**

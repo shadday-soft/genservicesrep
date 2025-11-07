@@ -73,6 +73,7 @@ watch(() => form.sucursal_id, async (newSucursalId) => {
     if (newSucursalId) {
         equiposList.value = await equipoService.getEquipos(newSucursalId);
         const sucursal = sucursalesList.value.find(s => s.id === newSucursalId);
+
         form.ubicacion = sucursal ? sucursal.address : '';
         form.telefono = sucursal ? sucursal.phone_number : '';
         form.mail = sucursal ? sucursal.email : '';
@@ -85,9 +86,9 @@ watch(() => form.sucursal_id, async (newSucursalId) => {
 onMounted(async () => {
     // Cargar clientes, técnicos y actividades
     clientsList.value = await clientService.getClients();
-    tecnicosList.value = await userService.getUsers();
+    tecnicosList.value = (await userService.getUsers()).filter((user: User) => user.role === 'Tecnico');
     actividadesList.value = await actividadService.getActividades();
-    
+
     if (props.solicitud) {
         if (props.solicitud.client_id) {
             sucursalesList.value = await sucursalService.getSucursals();
@@ -95,6 +96,10 @@ onMounted(async () => {
         if (props.solicitud.sucursal_id) {
             const equiposResponse = await equipoService.getEquipos(props.solicitud.sucursal_id);
             equiposList.value = equiposResponse.filter((e: Equipo) => e.sucursal_id === props.solicitud!.sucursal_id);
+            const sucursal = sucursalesList.value.find(s => s.id === props.solicitud!.sucursal_id);
+            form.ubicacion = sucursal ? sucursal.address : '';
+            form.telefono = sucursal ? sucursal.phone_number : '';
+            form.mail = sucursal ? sucursal.email : '';
         }
         if (props.solicitud.orden_trabajo) {
             myFiles.value = ['/storage/' + props.solicitud.orden_trabajo];
@@ -106,7 +111,8 @@ onMounted(async () => {
 
 <template>
     <div>
-        <form @submit.prevent="solicitudService.submit(() => emit('close'))" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <form @submit.prevent="solicitudService.submit(() => emit('close'))"
+            class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <!-- Número de Orden (Autogenerado) -->
             <!-- <Input v-model="form.numero_orden" label="Número de Orden" :error="form.errors.numero_orden"
                 placeholder="Generado automáticamente" disabled></Input> -->
@@ -156,18 +162,18 @@ onMounted(async () => {
             <Input v-model="form.quien_solicita" label="¿Quién solicita?" :error="form.errors.quien_solicita"></Input>
 
             <div class="col-span-1 md:col-span-3 flex flex-col md:flex-row  justify-between gap-x-4">
-                <Input v-model="form.detalles" class="w-full" type="textarea" label="Detalles" :error="form.errors.detalles"
-                    :textAreaRows="3"></Input>
+                <Input v-model="form.detalles" class="w-full" type="textarea" label="Detalles"
+                    :error="form.errors.detalles" :textAreaRows="3"></Input>
 
 
                 <!-- Archivo PDF -->
                 <div class="col-span-1 md:col-span-2 w-full">
-                    <label class="block text-gray-700 text-sm font-bold mb-2">Orden de compra</label>+
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Orden de compra</label>
                     <FilePond name="orden_trabajo" ref="pond" v-model="form.orden_trabajo" :allow-multiple="false"
                         accepted-file-types="application/pdf" :files="myFiles" @updatefiles="updatefiles"
                         :label-idle="'Arrastra y suelta tu archivo o <span class=\'filepond--label-action\'>Examinar</span>'" />
                     <div v-if="form.errors.orden_trabajo" class="text-red-600 text-sm mt-1">{{ form.errors.orden_trabajo
-                        }}
+                    }}
                     </div>
                 </div>
             </div>

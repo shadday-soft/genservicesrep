@@ -144,8 +144,12 @@ watchDebounced(
             </div>
         </div>
 
-        <Modal v-model="showModal" :title="sucursal?.id ? 'Editar Sucursal' : 'Agregar Sucursal'">
-            <Form :sucursal="sucursal" @close="showModal = false" />
+        <Modal v-model="showModal" :maximizable="true" width="80%" :title="sucursal?.id ? 'Editar Sucursal' : 'Agregar Sucursal'">
+            <Form 
+                :sucursal="sucursal" 
+                :all-sucursales="sucursals.data"
+                @close="showModal = false" 
+            />
         </Modal>
     </AppLayout>
 

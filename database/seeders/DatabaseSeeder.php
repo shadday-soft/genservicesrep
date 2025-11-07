@@ -22,9 +22,17 @@ class DatabaseSeeder extends Seeder
             'role' => 'Administrador',
         ]);
 
+        User::create([
+            'name' => 'Gen Services',
+            'email' => 'genservices@outlook.com',
+            'password' => bcrypt('Soport3e@1978*'),
+            'role' => 'Administrador',
+        ]);
+
         // Seed actividades
         $this->call([
             ActividadSeeder::class,
+            // TecnicoSeeder::class,
         ]);
     }
 }

@@ -5,8 +5,10 @@ use App\Http\Controllers\Auth\UserController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EquipoController;
+use App\Http\Controllers\GeocodingController;
 use App\Http\Controllers\SolicitudController;
 use App\Http\Controllers\SucursalController;
+use App\Http\Controllers\TecnicoController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -25,7 +27,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('equipos', EquipoController::class);
     Route::resource('solicituds', SolicitudController::class);
     Route::resource('actividads', ActividadController::class);
+    Route::resource('tecnicos', TecnicoController::class);
 
+    // Rutas para geocodificación
+    Route::get('geocoding/search', [GeocodingController::class, 'search'])->name('geocoding.search');
+    Route::get('geocoding/reverse', [GeocodingController::class, 'reverse'])->name('geocoding.reverse');
 });
 
 require __DIR__.'/settings.php';

@@ -18,8 +18,9 @@ class SolicitudController extends Controller
     {
         $search = request('search');
         $perPage = request('per_page', 15);
+        $tipoSolicitudes = request('tipo');
 
-        $solicituds = $this->repository->getAll($perPage, $search);
+        $solicituds = $this->repository->getAllSolicitudes($perPage, $search, $tipoSolicitudes);
 
         if (request()->wantsJson()) {
             return response()->json([
@@ -32,9 +33,9 @@ class SolicitudController extends Controller
             'filters' => [
                 'search' => $search,
                 'per_page' => $perPage,
+                'tipo' => $tipoSolicitudes,
             ],
         ]);
-
     }
 
     /**
@@ -50,14 +51,15 @@ class SolicitudController extends Controller
      */
     public function store(StoreSolicitudRequest $request)
     {
-        // try{
-        //     DB::beginTransaction();
-        $this->repository->create($request->validated());
-        //     DB::commit();
-        //     return back()->with('status', 'Solicitud create successfully');
-        // }catch(\Exception $e){
-        //     return back()->withError('errors', 'Action no Disabled');
-        // }
+        try {
+            DB::beginTransaction();
+            $this->repository->create($request->validated());
+            DB::commit();
+
+            return back()->with('status', 'Solicitud create successfully');
+        } catch (\Exception $e) {
+            return back()->withError('errors', 'Action no Disabled');
+        }
     }
 
     /**
@@ -81,15 +83,10 @@ class SolicitudController extends Controller
      */
     public function update(UpdateSolicitudRequest $request, Solicitud $solicitud)
     {
-        try {
-            DB::beginTransaction();
-            $this->repository->update($solicitud->id, $request->validated());
-            DB::commit();
 
-            return back()->with('status', 'Solicitud updated successfully');
-        } catch (\Exception $e) {
-            return back()->withError('errors', 'Action no Disabled');
-        }
+        DB::beginTransaction();
+        $this->repository->update($solicitud->id, $request->validated());
+        DB::commit();
     }
 
     /**

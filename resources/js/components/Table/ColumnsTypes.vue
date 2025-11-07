@@ -79,7 +79,7 @@ interface ColumnType {
 }
 
 interface props {
-  data: number | string | any[];
+  data?: number | string | any[] | boolean;
   type?: string;
   column?: ColumnType;
 }

@@ -20,6 +20,8 @@ export default class Sucursal extends GeneralService {
         contact_name: '',
         email: '',
         image: '',
+        latitude: null as number | null,
+        longitude: null as number | null,
     });
 
 

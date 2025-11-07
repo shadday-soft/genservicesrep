@@ -14,4 +14,11 @@ class Actividad extends Model
     use HasUuids;
 
     protected $guarded = [];
+
+    protected function casts(): array
+    {
+        return [
+            'active' => 'boolean',
+        ];
+    }
 }

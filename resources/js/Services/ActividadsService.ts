@@ -10,7 +10,7 @@ export default class Actividad extends GeneralService {
     actividad = ref<ActividadType | null>(null);
     form = useForm({
         nombre: '',
-        active: '1',
+        active: true as boolean,
     });
 
     constructor(actividad?: ActividadType | null) {

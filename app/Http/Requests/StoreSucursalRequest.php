@@ -29,6 +29,8 @@ class StoreSucursalRequest extends FormRequest
             'contact_name' => 'nullable|string|max:100',
             'image' => 'nullable|file',
             'email' => 'nullable|email|max:255',
+            'latitude' => 'nullable|numeric|between:-90,90',
+            'longitude' => 'nullable|numeric|between:-180,180',
         ];
     }
 }
