@@ -29,6 +29,11 @@
                         title="Restablecer">
                         <i class="pi pi-refresh"></i>
                     </button>
+                    <button @click="downloadExcel"
+                        class="rounded bg-green-600 px-2 py-1 text-xs font-medium text-white hover:bg-green-700"
+                        title="Descargar Excel">
+                        <i class="pi pi-file-excel"></i>
+                    </button>
                 </div>
             </div>
 
@@ -450,6 +455,40 @@ const getPrioridadSeverity = (prioridad: string) => {
         'Urgente': 'danger',
     };
     return severities[prioridad] || 'info';
+};
+
+// Exportar a Excel
+const downloadExcel = async () => {
+    try {
+        const { default: writeXlsxFile } = await import('write-excel-file');
+
+        // Construir schema para columnas
+        const schema = [
+            // { column: 'ID', value: (row: Solicitud) => row.id },
+            { column: 'Número de orden', value: (row: Solicitud) => row.numero_orden },
+            { column: 'Cliente', value: (row: Solicitud) => row.client?.enterprise_name || '' },
+            { column: 'Equipo', value: (row: Solicitud) => row.equipo?.nombre_equipo || '' },
+            { column: 'Actividad', value: (row: Solicitud) => row.actividad || '' },
+            { column: 'Estado', value: (row: Solicitud) => row.estado || '' },
+            { column: 'Prioridad', value: (row: Solicitud) => row.prioridad || '' },
+            { column: 'Fecha Programada', value: (row: Solicitud) => formatDate(row.fecha_programada) },
+            // { column: 'Detalles', value: (row: any) => row.detalles || '' },
+        ];
+
+        // Usar las solicitudes filtradas (vista actual)
+        const rows = filteredSolicitudes.value.map(s => s as any);
+
+        await writeXlsxFile(rows, {
+            schema,
+            fileName: 'solicitudes_cronograma.xlsx'
+        });
+    } catch (e) {
+        // Si ocurre error (p. ej. librería no instalada), abrir una alerta simple
+        // Aquí podríamos usar un toast, pero mantenemos algo simple
+        // eslint-disable-next-line no-console
+        console.error('Error exportando a Excel:', e);
+        alert('No fue posible generar el Excel. Asegúrese de tener instalada la dependencia write-excel-file.');
+    }
 };
 
 const zoomIn = () => {

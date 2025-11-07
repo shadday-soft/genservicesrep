@@ -17,9 +17,9 @@ export default class TecnicoService extends GeneralService {
         persona_contacto: '',
         tipo_sangre: '',
         eps: '',
-        fecha_nacimiento: '',
-        fecha_inicio_contrato: '',
-        fecha_fin_contrato: '',
+        fecha_nacimiento: new Date(),
+        fecha_inicio_contrato: new Date(),
+        fecha_fin_contrato: new Date(),
         tipo_contrato: 'Indefinido' as 'Indefinido' | 'Fijo' | 'Obra o labor' | 'Prestación de servicios',
     });
 
@@ -29,6 +29,9 @@ export default class TecnicoService extends GeneralService {
         if (tecnico) {
             this.tecnico.value = tecnico;
             this.assignMatchingKeys(tecnico, this.form);
+            this.form.fecha_nacimiento = tecnico.fecha_nacimiento ? new Date(tecnico.fecha_nacimiento) : new Date();
+            this.form.fecha_inicio_contrato = tecnico.fecha_inicio_contrato ? new Date(tecnico.fecha_inicio_contrato) : new Date();
+            this.form.fecha_fin_contrato = tecnico.fecha_fin_contrato ? new Date(tecnico.fecha_fin_contrato) : new Date();
         }
     }
 

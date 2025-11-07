@@ -25,6 +25,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::put('users/{user}/role', [\App\Http\Controllers\Auth\UserController::class, 'updateRole'])->name('users.updateRole');
     Route::resource('sucursals', SucursalController::class);
     Route::resource('equipos', EquipoController::class);
+    Route::post('equipos/{equipo}/renew', [EquipoController::class, 'renew'])->name('equipos.renew');
     Route::resource('solicituds', SolicitudController::class);
     Route::get('solicituds-cronograma', [SolicitudController::class, 'cronograma'])->name('solicituds.cronograma');
     Route::resource('actividads', ActividadController::class);

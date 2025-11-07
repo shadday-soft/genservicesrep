@@ -150,14 +150,9 @@ export default class Equipo extends GeneralService {
         }
         
         let fechaActual = new Date(primeraFecha);
-        // fechas.push(new Date(fechaActual));
-        // Calcular fechas hasta completar un año
         while (true) {
-            // Agregar los meses correspondientes
             fechaActual = new Date(fechaActual);
             fechaActual.setDate(fechaActual.getDate() + incremento);
-            
-            // Verificar si excede el límite de un año
             if (fechaActual >= fechaLimite) {
                 break;
             }

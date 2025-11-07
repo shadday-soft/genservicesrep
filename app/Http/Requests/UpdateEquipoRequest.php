@@ -24,7 +24,7 @@ class UpdateEquipoRequest extends FormRequest
     public function rules(): array
     {
 
-      return [
+        return [
             // --- DATOS GENERALES ---
             'nombre_equipo' => ['required', 'string', 'max:100'],
             'client_id' => ['nullable', 'uuid', 'exists:clients,id'],

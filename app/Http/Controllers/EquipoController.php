@@ -114,4 +114,28 @@ class EquipoController extends Controller
             ]);
         }
     }
+
+    /**
+     * Renueva el contrato: recibe un array de fechas y crea solicitudes de mantenimiento
+     */
+    public function renew(\Illuminate\Http\Request $request, Equipo $equipo)
+    {
+        $data = $request->validate([
+            'fechas' => ['required', 'array'],
+            'fechas.*' => ['required', 'date'],
+        ]);
+
+        try {
+            DB::beginTransaction();
+            $this->repository->crearSolicitudesMantenimiento($equipo, $data['fechas']);
+            DB::commit();
+
+            return back()->with('status', 'Renovación procesada correctamente, solicitudes creadas');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->withErrors([
+                'errors' => $e->getMessage(),
+            ]);
+        }
+    }
 }
