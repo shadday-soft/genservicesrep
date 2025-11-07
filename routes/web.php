@@ -26,6 +26,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('sucursals', SucursalController::class);
     Route::resource('equipos', EquipoController::class);
     Route::resource('solicituds', SolicitudController::class);
+    Route::get('solicituds-cronograma', [SolicitudController::class, 'cronograma'])->name('solicituds.cronograma');
     Route::resource('actividads', ActividadController::class);
     Route::resource('tecnicos', TecnicoController::class);
 

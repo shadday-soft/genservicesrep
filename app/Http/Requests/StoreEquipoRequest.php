@@ -44,7 +44,7 @@ class StoreEquipoRequest extends FormRequest
             'serie_equipo' => ['nullable',  'max:100', 'unique:equipos,serie_equipo'],
             'serie_motor' => ['nullable',  'max:100', 'unique:equipos,serie_motor'],
             'marca_generador' => ['required_if:tipo_equipo,Planta Eléctrica',  'max:100'],
-            'horometro' => ['required_if:tipo_equipo,Planta Eléctrica', 'min:0', 'numeric'],
+            'horometro' => ['required_if:tipo_equipo,Planta Eléctrica', 'min:0', 'numeric', 'nullable'],
             'marca_motor' => ['required_if:tipo_equipo,Planta Eléctrica',  'max:100'],
 
             // --- DETALLES DE TABLERO ELÉCTRICO ---

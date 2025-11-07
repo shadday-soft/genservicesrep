@@ -24,7 +24,7 @@ class UpdateEquipoRequest extends FormRequest
     public function rules(): array
     {
 
-        return [
+      return [
             // --- DATOS GENERALES ---
             'nombre_equipo' => ['required', 'string', 'max:100'],
             'client_id' => ['nullable', 'uuid', 'exists:clients,id'],
@@ -33,6 +33,7 @@ class UpdateEquipoRequest extends FormRequest
             'tipo_equipo' => ['required', 'string', 'max:50'],
             'proximas_fechas_mantenimiento' => ['nullable', 'array'],
             'proximas_fechas_mantenimiento.*' => ['date'],
+            'fecha_primer_mantenimiento' => ['nullable', 'date'],
 
             // --- DETALLES DE PLANTA ELÉCTRICA ---
             // Estos campos son obligatorios sólo cuando tipo_equipo == 'Planta Eléctrica'
@@ -43,7 +44,7 @@ class UpdateEquipoRequest extends FormRequest
             'serie_equipo' => ['nullable',  'max:100', 'unique:equipos,serie_equipo'],
             'serie_motor' => ['nullable',  'max:100', 'unique:equipos,serie_motor'],
             'marca_generador' => ['required_if:tipo_equipo,Planta Eléctrica',  'max:100'],
-            'horometro' => ['required_if:tipo_equipo,Planta Eléctrica', 'min:0'],
+            'horometro' => ['required_if:tipo_equipo,Planta Eléctrica', 'min:0', 'numeric', 'nullable'],
             'marca_motor' => ['required_if:tipo_equipo,Planta Eléctrica',  'max:100'],
 
             // --- DETALLES DE TABLERO ELÉCTRICO ---
@@ -77,7 +78,7 @@ class UpdateEquipoRequest extends FormRequest
             'filtro_aceite_2_referencia' => ['required_if:tipo_equipo,Planta Eléctrica',  'max:100'],
 
             'refrigerante_cantidad' => ['required_if:tipo_equipo,Planta Eléctrica', 'integer', 'min:0'],
-            'refrigerante_referencia' => ['required_if:tipo_equipo,Planta Eléctrica', 'string', 'max:100'],
+            'refrigerante_referencia' => ['required_if:tipo_equipo,Planta Eléctrica',  'max:100'],
 
             // --- PROGRAMACIÓN DE MANTENIMIENTOS ---
             'periodicidad' => ['nullable', 'string', 'max:200'],

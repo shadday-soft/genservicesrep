@@ -49,22 +49,14 @@ class EquipoController extends Controller
      */
     public function store(StoreEquipoRequest $request)
     {
-        
-            DB::beginTransaction();
-            $equipo = $this->repository->create($request->validated());
 
-            // Crear solicitudes de mantenimiento si hay fechas programadas
-            if (! empty($request->input('proximas_fechas_mantenimiento'))) {
-                $this->repository->crearSolicitudesMantenimiento(
-                    $equipo,
-                    $request->input('proximas_fechas_mantenimiento')
-                );
-            }
+        DB::beginTransaction();
+        $equipo = $this->repository->create($request->validated());
 
-            DB::commit();
+        DB::commit();
 
-            return back()->with('status', 'Equipo create successfully');
-       
+        return back()->with('status', 'Equipo create successfully');
+
     }
 
     /**
@@ -97,7 +89,10 @@ class EquipoController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
 
-            return back()->withError('errors', 'Action no Disabled');
+            return back()->withErrors([
+                'errors' => 'Action not completed',
+                'exception' => $e->getMessage(),
+            ]);
         }
     }
 
@@ -106,14 +101,17 @@ class EquipoController extends Controller
      */
     public function destroy(Equipo $equipo)
     {
+        DB::beginTransaction();
         try {
-            DB::beginTransaction();
             $this->repository->delete($equipo->id);
             DB::commit();
-
-            return back()->with('status', 'Equipo delete successfully');
         } catch (\Exception $e) {
-            return back()->withError('errors', 'Action no Disabled');
+            // dd($e->getMessage());
+            DB::rollBack();
+
+            return back()->withErrors([
+                'errors' => $e->getMessage(),
+            ]);
         }
     }
 }

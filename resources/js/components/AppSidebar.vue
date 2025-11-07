@@ -74,7 +74,6 @@ const mainNavItems: NavItem[] = [
                 }),
                 show: true,
                 icon: Calendar,
-                show: true
             },
             {
                 title: 'Por Demanda',
@@ -90,6 +89,12 @@ const mainNavItems: NavItem[] = [
                 icon: List,
                 show: true,
             },
+            {
+                title: 'Cronograma de Mantenimientos',
+                href: solicituds.cronograma(),
+                icon: Calendar,
+                show: validateRole('Administrador'),
+            }
         ],
     },
 ];

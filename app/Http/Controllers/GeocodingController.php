@@ -26,7 +26,7 @@ class GeocodingController extends Controller
             ];
 
             // Si se proporciona un viewbox dinámico, usarlo
-            if ($request->has('viewbox') && !empty($request->input('viewbox'))) {
+            if ($request->has('viewbox') && ! empty($request->input('viewbox'))) {
                 $params['viewbox'] = $request->input('viewbox');
                 $params['bounded'] = 1;
             }

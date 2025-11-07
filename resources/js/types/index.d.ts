@@ -112,7 +112,7 @@ export interface Equipo {
     filtro_aceite_2_referencia?: string | null;
     refrigerante_cantidad?: string | null;
     refrigerante_referencia?: string | null;
-
+    fecha_primer_mantenimiento?: string | null;
     // Relaciones opcionales para UI convenience
     client?: Client;
     sucursal?: Sucursal;

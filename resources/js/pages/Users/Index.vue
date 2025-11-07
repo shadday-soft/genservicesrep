@@ -8,7 +8,8 @@
             }">
                 <template #actions="{ data }">
                     <div class="flex gap-2 items-center">
-                        <button v-if="validateRole('Administrador')" class="p-button p-component p-button-text text-sm" type="button" @click="openAssignRoleModal(data)">
+                        <button v-if="validateRole('Administrador')" class="p-button p-component p-button-text text-sm"
+                            type="button" @click="openAssignRoleModal(data)">
                             <i class="pi pi-user-plus mr-2"></i>Asignar Rol
                         </button>
                     </div>
@@ -18,13 +19,8 @@
 
         <Modal v-model="showAssignRoleModal" title="Asignar Rol" @close="closeAssignRoleModal">
             <div class="space-y-4">
-                <Input 
-                    v-model="selectedRole" 
-                    label="Rol" 
-                    type="select" 
-                    :options="availableRoles.map(r => ({ label: r, value: r }))"
-                    placeholder="Selecciona un rol"
-                />
+                <Input v-model="selectedRole" label="Rol" type="select"
+                    :options="availableRoles.map(r => ({ label: r, value: r }))" placeholder="Selecciona un rol" />
 
                 <div class="flex justify-end gap-2">
                     <Button type="button" severity="secondary" label="Cancelar" @click="closeAssignRoleModal" />
@@ -87,8 +83,8 @@ const closeAssignRoleModal = () => {
 const assignRole = async () => {
     if (!selectedUser.value) return;
     try {
-       const { data } = await axios.put(`/users/${selectedUser.value.id}/role`, { role: selectedRole.value });
-       showAssignRoleModal.value = false;
+        const { data } = await axios.put(`/users/${selectedUser.value.id}/role`, { role: selectedRole.value });
+        showAssignRoleModal.value = false;
     } catch (error) {
         console.error('Error assigning role:', error);
     }

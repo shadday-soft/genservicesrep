@@ -13,7 +13,7 @@ class SolicitudRepository extends BaseRepository implements SolicitudInterface
         return Solicitud::class;
     }
 
-    public function getAllSolicitudes($perPage = 15, $search = null , $tipo = null)
+    public function getAllSolicitudes($perPage = 15, $search = null, $tipo = null)
     {
         $user = Auth::user();
         $query = Solicitud::with(['client', 'sucursal', 'equipo', 'user']);
@@ -43,7 +43,7 @@ class SolicitudRepository extends BaseRepository implements SolicitudInterface
                     });
             });
         }
-        if ($user->role === 'Tecnico' ) {
+        if ($user->role === 'Tecnico') {
             $query->where('user_id', $user->id);
         }
 
@@ -51,18 +51,36 @@ class SolicitudRepository extends BaseRepository implements SolicitudInterface
             $query->where('client_id', $user->id);
         }
 
-        if($tipo == 'Mantenimiento Preventivo') {
+        if ($tipo == 'Mantenimiento Preventivo') {
             $query->where('actividad', $tipo);
-        }
-        else if(isset($tipo)) {
+        } elseif (isset($tipo)) {
             $query->where('actividad', '!=', 'Mantenimiento Preventivo');
         }
 
-        if(isset($tipo)) {
+        if (isset($tipo)) {
             $query->where('estado', 'Nueva');
         }
         // dd($tipo);
 
         return $query->latest()->paginate($perPage);
+    }
+
+    public function getSolicitudesParaCronograma()
+    {
+        $user = Auth::user();
+        $query = Solicitud::with(['client', 'sucursal', 'equipo', 'user'])
+            ->whereNotNull('fecha_programada')
+            ->orderBy('fecha_programada', 'asc');
+
+        // Filtrar por rol de usuario
+        if ($user->role === 'Tecnico') {
+            $query->where('user_id', $user->id);
+        }
+
+        if ($user->role === 'Cliente') {
+            $query->where('client_id', $user->id);
+        }
+
+        return $query->get();
     }
 }

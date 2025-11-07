@@ -54,14 +54,16 @@ export default class Equipo extends GeneralService {
         // Programación de Mantenimientos (solo para Tableros)
         periodicidad: '',
         fecha_primer_mantenimiento: new Date(),
-        proximas_fechas_mantenimiento: [] as string[],
+        proximas_fechas_mantenimiento: [] as Date[],
     });
 
     constructor(equipo?: import('@/types').Equipo | null) {
         super();
         if (equipo) {
             this.equipo.value = equipo;
+            
             this.assignMatchingKeys(equipo, this.form);
+            this.form.fecha_primer_mantenimiento = equipo.fecha_primer_mantenimiento ? new Date(equipo.fecha_primer_mantenimiento) : new Date();
         }
     }
 
@@ -126,34 +128,34 @@ export default class Equipo extends GeneralService {
         fechas.push(new Date(primeraFecha));
         
         // Determinar incremento según periodicidad
-        let mesesIncremento = 0;
+        let incremento = 0;
         switch (this.form.periodicidad) {
             case 'Semanal':
-                mesesIncremento = 7;
+                incremento = 7;
                 break;
             case 'Mensual':
-                mesesIncremento = 30;
+                incremento = 31;
                 break;
             case 'Trimestral':
-                mesesIncremento = 90;
+                incremento = 365 / 4 + 1;
                 break;
             case 'Semestral':
-                mesesIncremento = 180;
+                incremento = 365 / 2 + 1;
                 break;
             case 'Anual':
-                mesesIncremento = 360;
+                incremento = 365;
                 break;
             default:
                 return fechas;
         }
         
         let fechaActual = new Date(primeraFecha);
-        
+        // fechas.push(new Date(fechaActual));
         // Calcular fechas hasta completar un año
         while (true) {
             // Agregar los meses correspondientes
             fechaActual = new Date(fechaActual);
-            fechaActual.setDate(fechaActual.getDate() + mesesIncremento);
+            fechaActual.setDate(fechaActual.getDate() + incremento);
             
             // Verificar si excede el límite de un año
             if (fechaActual >= fechaLimite) {
@@ -174,7 +176,7 @@ export default class Equipo extends GeneralService {
      */
     actualizarFechasMantenimiento() {
         const fechas = this.calcularProximasMantenimientos();
-        this.form.proximas_fechas_mantenimiento = fechas.map(f => f.toISOString().split('T')[0]);
+        this.form.proximas_fechas_mantenimiento = fechas;
     }
 
     async getEquipos(sucursal_id: string) {

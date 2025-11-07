@@ -3,10 +3,8 @@
 namespace App\Repositories;
 
 use App\Interfaces\EquipoInterface;
-use App\Models\Actividad;
 use App\Models\Equipo;
 use App\Models\Solicitud;
-use Illuminate\Support\Facades\Auth;
 
 class EquipoRepository extends BaseRepository implements EquipoInterface
 {
@@ -20,17 +18,17 @@ class EquipoRepository extends BaseRepository implements EquipoInterface
         $fecha_primer_mantenimiento = $data['fecha_primer_mantenimiento'];
         unset($data['fecha_primer_mantenimiento']);
         $equipo = parent::create($data);
-        array_push($data['proximas_fechas_mantenimiento'], $fecha_primer_mantenimiento);
+        // array_push($data['proximas_fechas_mantenimiento'], $fecha_primer_mantenimiento);
         if (isset($data['proximas_fechas_mantenimiento']) && is_array($data['proximas_fechas_mantenimiento'])) {
             $this->crearSolicitudesMantenimiento($equipo, $data['proximas_fechas_mantenimiento']);
         }
+
         return $equipo;
     }
 
     /**
      * Crea solicitudes de mantenimiento para cada fecha programada
      */
-
     public function getAll($perPage = 15, $search = null)
     {
         $query = Equipo::with(['client', 'sucursal']);
@@ -50,7 +48,6 @@ class EquipoRepository extends BaseRepository implements EquipoInterface
 
         return $query->latest()->paginate($perPage);
     }
-
 
     /**
      * Crea solicitudes de mantenimiento preventivo basadas en las fechas programadas

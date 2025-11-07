@@ -104,4 +104,16 @@ class SolicitudController extends Controller
             return back()->withError('errors', 'Action no Disabled');
         }
     }
+
+    /**
+     * Muestra el cronograma tipo Gantt de las solicitudes
+     */
+    public function cronograma()
+    {
+        $solicituds = $this->repository->getSolicitudesParaCronograma();
+
+        return inertia('Solicituds/Cronogram', [
+            'solicituds' => $solicituds,
+        ]);
+    }
 }

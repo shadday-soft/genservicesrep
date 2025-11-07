@@ -35,7 +35,7 @@ class TecnicoRepository extends BaseRepository implements TecnicoInterface
                     ->orWhere('eps', 'like', "%{$search}%");
             });
         }
- 
+
         if ($perPage === null || $perPage === 'all') {
             return $query->get();
         }
