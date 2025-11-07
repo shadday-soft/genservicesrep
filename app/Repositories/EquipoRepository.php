@@ -36,7 +36,7 @@ class EquipoRepository extends BaseRepository implements EquipoInterface
                 'sucursal_id' => $equipo->sucursal_id,
                 'equipo_id' => $equipo->id,
                 'user_id' => null,
-                'fecha_programada' => null,
+                'fecha_programada' => $fecha,
                 'fecha_mantenimiento' => $fecha,
                 'actividad' => 'Mantenimiento preventivo',
                 'estado' => 'Nueva',
