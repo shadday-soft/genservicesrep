@@ -76,6 +76,11 @@ class StoreEquipoRequest extends FormRequest
 
             'refrigerante_cantidad' => ['required_if:tipo_equipo,Planta Eléctrica', 'integer', 'min:0'],
             'refrigerante_referencia' => ['required_if:tipo_equipo,Planta Eléctrica',  'max:100'],
+
+            // --- PROGRAMACIÓN DE MANTENIMIENTOS ---
+            'periodicidad' => ['nullable', 'string', 'max:200'],
+            'fecha_primer_mantenimiento' => ['nullable', 'date'],
+            'proximas_fechas_mantenimiento' => ['nullable', 'array'],
         ];
     }
 }

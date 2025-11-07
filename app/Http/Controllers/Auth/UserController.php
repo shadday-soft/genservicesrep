@@ -16,7 +16,7 @@ class UserController extends Controller
 
     public function index(Request $request)
     {
-        $users = $this->repository->getAll(null , $request->query('role'));
+        $users = $this->repository->getAll(null, $request->query('role'));
         if ($request->wantsJson()) {
             return response()->json([
                 'users' => $users,
@@ -108,11 +108,11 @@ class UserController extends Controller
         // ]);
 
         // try {
-            DB::beginTransaction();
-            $this->repository->update($user->id, ['role' => $request->input('role')]);
-            DB::commit();
+        DB::beginTransaction();
+        $this->repository->update($user->id, ['role' => $request->input('role')]);
+        DB::commit();
 
-            // return response()->json(['ok' => true]);
+        // return response()->json(['ok' => true]);
         // } catch (\Exception $e) {
         //     DB::rollBack();
 

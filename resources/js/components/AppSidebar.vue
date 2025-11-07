@@ -59,7 +59,7 @@ const mainNavItems: NavItem[] = [
         title: 'Equipos',
         href: equipos.index(),
         icon: CircuitBoard,
-        show: validateRole('Tecnico') || validateRole('Administrador'),    
+        show: validateRole('Tecnico') || validateRole('Administrador'),
     },
     {
         title: 'Solicitudes',
@@ -72,6 +72,7 @@ const mainNavItems: NavItem[] = [
                     query: { tipo: 'Mantenimiento Preventivo' },
                 }),
                 icon: Calendar,
+                show: true
             },
             {
                 title: 'Por Demanda',
@@ -79,11 +80,13 @@ const mainNavItems: NavItem[] = [
                     query: { tipo: 'Mantenimiento Correctivo' },
                 }),
                 icon: AlertCircle,
+                show: true
             },
             {
                 title: 'Todas las Solicitudes',
                 href: solicituds.index(),
                 icon: List,
+                show: validateRole('Administrador') || validateRole('Cliente'),
             },
         ],
     },

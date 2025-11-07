@@ -51,11 +51,22 @@ class EquipoController extends Controller
     {
         try {
             DB::beginTransaction();
-            $this->repository->create($request->validated());
+            $equipo = $this->repository->create($request->validated());
+
+            // Crear solicitudes de mantenimiento si hay fechas programadas
+            if (! empty($request->input('proximas_fechas_mantenimiento'))) {
+                $this->repository->crearSolicitudesMantenimiento(
+                    $equipo,
+                    $request->input('proximas_fechas_mantenimiento')
+                );
+            }
+
             DB::commit();
 
             return back()->with('status', 'Equipo create successfully');
         } catch (\Exception $e) {
+            DB::rollBack();
+
             return back()->withError('errors', 'Action no Disabled');
         }
     }
@@ -88,6 +99,8 @@ class EquipoController extends Controller
 
             return back()->with('status', 'Equipo updated successfully');
         } catch (\Exception $e) {
+            DB::rollBack();
+
             return back()->withError('errors', 'Action no Disabled');
         }
     }

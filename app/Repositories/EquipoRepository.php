@@ -4,6 +4,8 @@ namespace App\Repositories;
 
 use App\Interfaces\EquipoInterface;
 use App\Models\Equipo;
+use App\Models\Solicitud;
+use Illuminate\Support\Facades\Auth;
 
 class EquipoRepository extends BaseRepository implements EquipoInterface
 {
@@ -30,5 +32,41 @@ class EquipoRepository extends BaseRepository implements EquipoInterface
         }
 
         return $query->latest()->paginate($perPage);
+    }
+
+    public function create(array $data): Equipo
+    {
+        $equipo = $this->model->create($data);
+        $this->crearSolicitudesMantenimiento(
+            $equipo,
+            $data['proximas_fechas_mantenimiento'] ?? []
+        );
+        return $equipo;
+    }
+
+    /**
+     * Crea solicitudes de mantenimiento preventivo basadas en las fechas programadas
+     */
+    public function crearSolicitudesMantenimiento(Equipo $equipo, array $fechasMantenimiento): void
+    {
+        if (empty($fechasMantenimiento)) {
+            return;
+        }
+
+        // Crear nuevas solicitudes para cada fecha
+        foreach ($fechasMantenimiento as $fecha) {
+            Solicitud::create([
+                'client_id' => $equipo->client_id,
+                'sucursal_id' => $equipo->sucursal_id,
+                'equipo_id' => $equipo->id,
+                'user_id' => null,
+                'fecha_programada' => $fecha,
+                'fecha_mantenimiento' => $fecha,
+                'actividad' => 'Mantenimiento preventivo',
+                'estado' => 'Nueva',
+                'prioridad' => 'Normal',
+                'detalles' => 'Mantenimiento preventivo programado automáticamente según periodicidad: '.$equipo->periodicidad,
+            ]);
+        }
     }
 }

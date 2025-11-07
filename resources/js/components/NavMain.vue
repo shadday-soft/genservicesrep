@@ -46,7 +46,7 @@ const page = usePage();
                                 <SidebarMenuSubItem v-for="subItem in item.items" :key="subItem.title">
                                     <SidebarMenuSubButton
                                         as-child
-                                        v-if="item.show"
+                                        v-if="subItem.show"
                                     >
                                         <Link :href="subItem.href">
                                             <component :is="subItem.icon" v-if="subItem.icon" />

@@ -8,7 +8,7 @@
             }">
                 <template #actions="{ data }">
                     <div class="flex gap-2 items-center">
-                        <button class="p-button p-component p-button-text text-sm" type="button" @click="openAssignRoleModal(data)">
+                        <button v-if="validateRole('Administrador')" class="p-button p-component p-button-text text-sm" type="button" @click="openAssignRoleModal(data)">
                             <i class="pi pi-user-plus mr-2"></i>Asignar Rol
                         </button>
                     </div>
@@ -45,7 +45,7 @@ import axios from 'axios';
 import Datatable from '@/components/Table/Datatable.vue';
 import Modal from '@/components/Modal.vue';
 import Input from '@/components/Input.vue';
-import { show } from '@/routes/clients';
+import { validateRole } from '@/composables/useCommonUtilities';
 
 interface Props {
     users: User[];

@@ -12,6 +12,7 @@ interface Props {
 const props = defineProps<Props>();
 
 const clientService = new Client(props.client);
+
 const form = clientService.form;
 
 </script>

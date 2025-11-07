@@ -25,7 +25,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('equipos', EquipoController::class);
     Route::resource('solicituds', SolicitudController::class);
     Route::resource('actividads', ActividadController::class);
-    
+
 });
 
 require __DIR__.'/settings.php';
