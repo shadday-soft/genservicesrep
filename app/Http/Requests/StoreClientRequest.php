@@ -26,7 +26,7 @@ class StoreClientRequest extends FormRequest
             'contact_name' => 'required|string|max:50',
             'email' => 'required|string|email|max:100',
             'phone_number' => 'nullable',
-            'nit' => 'required|numeric|unique:clients,nit',
+            'nit' => 'required|unique:clients,nit',
         ];
     }
 }
