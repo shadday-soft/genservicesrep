@@ -19,7 +19,6 @@ class EquipoRepository extends BaseRepository implements EquipoInterface
         $fecha_primer_mantenimiento = $data['fecha_primer_mantenimiento'];
         unset($data['fecha_primer_mantenimiento']);
         $equipo = parent::create($data);
-        array_push($data['proximas_fechas_mantenimiento'], $fecha_primer_mantenimiento);
         if (isset($data['proximas_fechas_mantenimiento']) && is_array($data['proximas_fechas_mantenimiento'])) {
             $this->crearSolicitudesMantenimiento($equipo, $data['proximas_fechas_mantenimiento']);
         }
