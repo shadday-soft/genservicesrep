@@ -14,6 +14,7 @@ const emit = defineEmits(['close']);
 
 interface Props {
     sucursal: SucursalType | null;
+    allSucursales?: SucursalType[];
 }
 
 const FilePond = vueFilePond(FilePondPluginImagePreview);
@@ -43,6 +44,10 @@ function updateCoordinates(value: { latitude: number | null; longitude: number |
     coordinates.value = value;
     form.latitude = value.latitude;
     form.longitude = value.longitude;
+}
+
+function updateAddress(address: string) {
+    form.address = address;
 }
 
 onMounted(async () => {
@@ -78,6 +83,9 @@ onMounted(async () => {
                 <MapPicker 
                     :model-value="coordinates"
                     @update:model-value="updateCoordinates"
+                    @update:address="updateAddress"
+                    :sucursales="props.allSucursales || []"
+                    :current-sucursal-id="props.sucursal?.id"
                     label="Ubicación de la sucursal en el mapa"
                 />
                 <div v-if="form.errors.latitude" class="text-red-600 text-sm mt-1">{{ form.errors.latitude }}</div>

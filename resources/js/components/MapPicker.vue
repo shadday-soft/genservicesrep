@@ -3,22 +3,36 @@ import { onMounted, onUnmounted, ref, watch } from 'vue';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
+interface Sucursal {
+    id: string;
+    name: string;
+    address: string;
+    latitude?: number | null;
+    longitude?: number | null;
+}
+
 interface Props {
     modelValue?: { latitude: number | null; longitude: number | null };
     label?: string;
+    sucursales?: Sucursal[];
+    currentSucursalId?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
     label: 'Ubicación en el mapa',
+    sucursales: () => [],
 });
 
 const emit = defineEmits<{
     'update:modelValue': [value: { latitude: number | null; longitude: number | null }];
+    'update:address': [address: string];
 }>();
 
 const mapContainer = ref<HTMLDivElement | null>(null);
 let map: L.Map | null = null;
 let marker: L.Marker | null = null;
+let otherMarkers: L.Marker[] = [];
+const isFullscreen = ref(false);
 
 // Coordenadas por defecto (Colombia - Bogotá)
 const defaultLat = 4.7110;
@@ -46,7 +60,7 @@ const locationInfo = ref<{
     address?: string;
 } | null>(null);
 
-// Icono personalizado del marcador (edificio)
+// Icono personalizado del marcador (edificio) - Marcador principal (azul)
 const customIcon = L.divIcon({
     html: '<i class="pi pi-building text-blue-600" style="font-size: 32px;"></i>',
     className: 'custom-building-marker',
@@ -54,6 +68,50 @@ const customIcon = L.divIcon({
     iconAnchor: [16, 32],
     popupAnchor: [0, -32]
 });
+
+// Icono para otras sucursales (gris)
+const otherSucursalIcon = L.divIcon({
+    html: '<i class="pi pi-building text-gray-500" style="font-size: 28px;"></i>',
+    className: 'custom-building-marker',
+    iconSize: [28, 28],
+    iconAnchor: [14, 28],
+    popupAnchor: [0, -28]
+});
+
+// Función para crear el contenido del popup para otras sucursales
+const createOtherSucursalPopup = (sucursal: Sucursal): string => {
+    return `
+        <div class="popup-content" style="min-width: 200px; max-width: 250px;">
+            <div style="font-weight: bold; font-size: 13px; margin-bottom: 8px; color: #6b7280; border-bottom: 2px solid #9ca3af; padding-bottom: 4px;">
+                <i class="pi pi-building" style="margin-right: 4px;"></i>
+                ${sucursal.name}
+            </div>
+            
+            <div style="margin-bottom: 6px; padding: 6px; background: #f9fafb; border-radius: 4px;">
+                <div style="font-size: 10px; color: #6b7280; margin-bottom: 2px;">
+                    <i class="pi pi-map-marker" style="margin-right: 4px;"></i>Dirección
+                </div>
+                <div style="font-size: 11px; color: #374151;">${sucursal.address}</div>
+            </div>
+            
+            <div style="font-size: 10px; color: #9ca3af; margin-top: 6px; padding: 4px; background: #f3f4f6; border-radius: 3px;">
+                <div style="margin-bottom: 2px;">
+                    <i class="pi pi-compass" style="margin-right: 3px;"></i>
+                    <strong>Lat:</strong> ${sucursal.latitude}
+                </div>
+                <div>
+                    <i class="pi pi-compass" style="margin-right: 3px;"></i>
+                    <strong>Lng:</strong> ${sucursal.longitude}
+                </div>
+            </div>
+            
+            <div style="font-size: 9px; color: #9ca3af; font-style: italic; text-align: center; padding-top: 4px; margin-top: 4px; border-top: 1px solid #e5e7eb;">
+                <i class="pi pi-info-circle" style="margin-right: 2px;"></i>
+                Otra sucursal registrada
+            </div>
+        </div>
+    `;
+};
 
 // Función para crear el contenido del popup
 const createPopupContent = (lat: number, lng: number): string => {
@@ -146,6 +204,9 @@ const initMap = () => {
         maxZoom: 19,
     }).addTo(map);
 
+    // Agregar marcadores de otras sucursales
+    addOtherSucursalesMarkers();
+
     // Agregar marcador si hay coordenadas
     if (currentLat.value && currentLng.value) {
         marker = L.marker([currentLat.value, currentLng.value], { 
@@ -155,7 +216,12 @@ const initMap = () => {
 
         // Agregar popup al marcador
         marker.bindPopup(createPopupContent(currentLat.value, currentLng.value), {
-            maxWidth: 300,
+            maxWidth: 280,
+            minWidth: 250,
+            maxHeight: 300,
+            autoPan: true,
+            autoPanPadding: [50, 50],
+            keepInView: true,
             className: 'custom-popup'
         }).openPopup();
 
@@ -181,13 +247,15 @@ const initMap = () => {
                 draggable: true 
             }).addTo(map!);
 
-            // Agregar popup al marcador
-            marker.bindPopup(createPopupContent(lat, lng), {
-                maxWidth: 350,
-                className: 'custom-popup'
-            }).openPopup();
-
-            marker.on('dragend', async (e) => {
+                marker.bindPopup(createPopupContent(lat, lng), {
+                    maxWidth: 280,
+                    minWidth: 250,
+                    maxHeight: 300,
+                    autoPan: true,
+                    autoPanPadding: [50, 50],
+                    keepInView: true,
+                    className: 'custom-popup'
+                }).openPopup();            marker.on('dragend', async (e) => {
                 const position = e.target.getLatLng();
                 await updateCoordinates(position.lat, position.lng);
                 marker!.setPopupContent(createPopupContent(position.lat, position.lng));
@@ -219,6 +287,44 @@ const fetchLocationInfo = async (lat: number, lng: number) => {
     }
 };
 
+// Función para agregar marcadores de otras sucursales
+const addOtherSucursalesMarkers = () => {
+    if (!map || !props.sucursales) return;
+
+    // Limpiar marcadores anteriores
+    otherMarkers.forEach(marker => {
+        if (map) {
+            map.removeLayer(marker);
+        }
+    });
+    otherMarkers = [];
+
+    // Agregar marcadores para cada sucursal
+    props.sucursales.forEach(sucursal => {
+        // No mostrar la sucursal actual
+        if (sucursal.id === props.currentSucursalId) return;
+        
+        // Solo mostrar si tiene coordenadas
+        if (sucursal.latitude && sucursal.longitude) {
+            const otherMarker = L.marker([sucursal.latitude, sucursal.longitude], {
+                icon: otherSucursalIcon,
+                draggable: false
+            }).addTo(map!);
+
+            otherMarker.bindPopup(createOtherSucursalPopup(sucursal), {
+                maxWidth: 250,
+                minWidth: 200,
+                maxHeight: 250,
+                autoPan: true,
+                autoPanPadding: [50, 50],
+                className: 'custom-popup other-sucursal-popup'
+            });
+
+            otherMarkers.push(otherMarker);
+        }
+    });
+};
+
 const updateCoordinates = async (lat: number, lng: number) => {
     currentLat.value = lat;
     currentLng.value = lng;
@@ -229,6 +335,11 @@ const updateCoordinates = async (lat: number, lng: number) => {
     
     // Obtener información de la ubicación
     await fetchLocationInfo(lat, lng);
+    
+    // Emitir la dirección si está disponible
+    if (locationInfo.value?.address) {
+        emit('update:address', locationInfo.value.address);
+    }
 };
 
 const clearLocation = () => {
@@ -299,15 +410,25 @@ const searchLocation = async () => {
     showResults.value = false;
 
     try {
-        const response = await fetch(
-            `/geocoding/search?query=${encodeURIComponent(searchQuery.value)}`
-        );
+        // Obtener los límites actuales del mapa
+        let viewboxParam = '';
+        if (map) {
+            const bounds = map.getBounds();
+            const sw = bounds.getSouthWest(); // Suroeste
+            const ne = bounds.getNorthEast(); // Noreste
+            
+            // Formato de viewbox para Nominatim: oeste,sur,este,norte (left,bottom,right,top)
+            viewboxParam = `${sw.lng},${sw.lat},${ne.lng},${ne.lat}`;
+        }
+
+        const url = `/geocoding/search?query=${encodeURIComponent(searchQuery.value)}${viewboxParam ? `&viewbox=${viewboxParam}` : ''}`;
+        
+        const response = await fetch(url);
         
         const data = await response.json();
         searchResults.value = data;
         showResults.value = true;
     } catch (error) {
-        console.error('Error buscando ubicación:', error);
         searchResults.value = [];
         showResults.value = false;
     } finally {
@@ -354,7 +475,12 @@ const selectSearchResult = async (result: { display_name: string; lat: string; l
             }).addTo(map);
 
             marker.bindPopup(createPopupContent(lat, lng), {
-                maxWidth: 350,
+                maxWidth: 280,
+                minWidth: 250,
+                maxHeight: 300,
+                autoPan: true,
+                autoPanPadding: [50, 50],
+                keepInView: true,
                 className: 'custom-popup'
             }).openPopup();
 
@@ -378,6 +504,18 @@ const handleClickOutside = (event: MouseEvent) => {
     }
 };
 
+// Función para pantalla completa
+const toggleFullscreen = () => {
+    isFullscreen.value = !isFullscreen.value;
+    
+    // Dar tiempo para que el CSS se aplique antes de invalidar el tamaño del mapa
+    setTimeout(() => {
+        if (map) {
+            map.invalidateSize();
+        }
+    }, 100);
+};
+
 watch(() => props.modelValue, async (newValue) => {
     if (newValue?.latitude && newValue?.longitude) {
         currentLat.value = newValue.latitude;
@@ -399,7 +537,12 @@ watch(() => props.modelValue, async (newValue) => {
                 }).addTo(map);
 
                 marker.bindPopup(createPopupContent(newValue.latitude, newValue.longitude), {
-                    maxWidth: 350,
+                    maxWidth: 280,
+                    minWidth: 250,
+                    maxHeight: 300,
+                    autoPan: true,
+                    autoPanPadding: [50, 50],
+                    keepInView: true,
                     className: 'custom-popup'
                 }).openPopup();
 
@@ -411,6 +554,11 @@ watch(() => props.modelValue, async (newValue) => {
             }
         }
     }
+}, { deep: true });
+
+// Watcher para actualizar marcadores cuando cambien las sucursales
+watch(() => props.sucursales, () => {
+    addOtherSucursalesMarkers();
 }, { deep: true });
 
 onMounted(() => {
@@ -430,13 +578,13 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <div class="map-picker">
-        <label class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">
+    <div class="map-picker" :class="{ 'fullscreen-mode': isFullscreen }">
+        <label v-if="!isFullscreen" class="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">
             {{ label }}
         </label>
         
         <!-- Buscador de ubicaciones -->
-        <div class="mb-3 relative search-container">
+        <div v-if="!isFullscreen" class="mb-3 relative search-container">
             <div class="relative">
                 <input
                     v-model="searchQuery"
@@ -494,7 +642,7 @@ onUnmounted(() => {
             </div>
         </div>
 
-        <div class="mb-2 flex gap-2 flex-wrap">
+        <div v-if="!isFullscreen" class="mb-2 flex gap-2 flex-wrap">
             <button
                 type="button"
                 @click="getCurrentLocation"
@@ -515,17 +663,27 @@ onUnmounted(() => {
             </button>
         </div>
 
-        <div 
-            ref="mapContainer" 
-            class="h-[400px] w-full rounded-lg border-2 border-gray-300 dark:border-gray-600 mb-2"
-        ></div>
+        <div class="relative">
+         
+            <!-- Indicador de sucursales -->
+            <div v-if="sucursales && sucursales.length > 0 && !isFullscreen" class="absolute top-2 right-2 z-[1000] px-3 py-2 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-lg shadow-lg text-xs border border-gray-300 dark:border-gray-600">
+                <i class="pi pi-building mr-1 text-gray-500"></i>
+                {{ sucursales.filter(s => s.latitude && s.longitude && s.id !== currentSucursalId).length }} sucursales
+            </div>
 
-        <div v-if="currentLat && currentLng" class="text-sm text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 p-3 rounded">
+            <div 
+                ref="mapContainer" 
+                :class="isFullscreen ? 'h-screen w-screen' : 'h-[60vh] w-full'"
+                class="rounded-lg border-2 border-gray-300 dark:border-gray-600 mb-2"
+            ></div>
+        </div>
+
+        <div v-if="currentLat && currentLng && !isFullscreen" class="text-sm text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 p-3 rounded">
             <p class="font-semibold mb-1">Coordenadas seleccionadas:</p>
             <p><strong>Latitud:</strong> {{ currentLat}}</p>
             <p><strong>Longitud:</strong> {{ currentLng }}</p>
         </div>
-        <div v-else class="text-sm text-gray-500 dark:text-gray-400 italic">
+        <div v-else-if="!isFullscreen" class="text-sm text-gray-500 dark:text-gray-400 italic">
             Haz clic en el mapa para seleccionar una ubicación
         </div>
     </div>
@@ -533,7 +691,20 @@ onUnmounted(() => {
 
 <style scoped>
 .map-picker {
-    @apply w-full;
+    width: 100%;
+}
+
+/* Modo pantalla completa */
+.map-picker.fullscreen-mode {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 9999;
+    background: white;
+    margin: 0;
+    padding: 0;
 }
 
 /* Estilos para el mapa en modo oscuro */
@@ -547,21 +718,73 @@ onUnmounted(() => {
     border: none;
 }
 
-/* Estilos para el popup */
-/* :deep(.custom-popup .leaflet-popup-content-wrapper) {
-    @apply bg-white dark:bg-gray-800 rounded-lg shadow-lg;
-    padding: 12px;
-} */
-
-/* :deep(.custom-popup .leaflet-popup-tip) {
-    @apply bg-white dark:bg-gray-800;
-} */
+/* Estilos para el popup con scroll interno */
+:deep(.custom-popup .leaflet-popup-content-wrapper) {
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 0;
+}
 
 :deep(.custom-popup .leaflet-popup-content) {
     margin: 0;
+    max-height: 300px;
+    overflow-y: auto;
 }
 
 :deep(.custom-popup .popup-content) {
     font-family: inherit;
+}
+
+/* Scrollbar personalizado para el popup */
+:deep(.custom-popup .leaflet-popup-content::-webkit-scrollbar) {
+    width: 6px;
+}
+
+:deep(.custom-popup .leaflet-popup-content::-webkit-scrollbar-track) {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+:deep(.custom-popup .leaflet-popup-content::-webkit-scrollbar-thumb) {
+    background: #888;
+    border-radius: 3px;
+}
+
+:deep(.custom-popup .leaflet-popup-content::-webkit-scrollbar-thumb:hover) {
+    background: #555;
+}
+
+/* Estilos para el popup de otras sucursales */
+:deep(.other-sucursal-popup .leaflet-popup-content-wrapper) {
+    background-color: #f9fafb;
+    border: 1px solid #e5e7eb;
+}
+
+/* Estilos para el botón de pantalla completa */
+:deep(.leaflet-control-fullscreen) {
+    background-color: white;
+    border-radius: 4px;
+    box-shadow: 0 1px 5px rgba(0,0,0,0.4);
+}
+
+:deep(.leaflet-control-fullscreen a) {
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    background-color: white;
+    color: #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+:deep(.leaflet-control-fullscreen a:hover) {
+    background-color: #f4f4f4;
+}
+
+/* Ajustar el mapa en pantalla completa */
+:deep(.leaflet-fullscreen-on) {
+    width: 100% !important;
+    height: 100% !important;
 }
 </style>

@@ -14,17 +14,26 @@ class GeocodingController extends Controller
     {
         $request->validate([
             'query' => 'required|string|min:3',
+            'viewbox' => 'nullable|string',
         ]);
 
         try {
-            $response = Http::withHeaders([
-                'User-Agent' => 'GenServicesApp/1.0',
-            ])->get('https://nominatim.openstreetmap.org/search', [
+            $params = [
                 'format' => 'json',
                 'q' => $request->input('query'),
-                'limit' => 5,
+                'limit' => 10,
                 'countrycodes' => 'co',
-            ]);
+            ];
+
+            // Si se proporciona un viewbox dinámico, usarlo
+            if ($request->has('viewbox') && !empty($request->input('viewbox'))) {
+                $params['viewbox'] = $request->input('viewbox');
+                $params['bounded'] = 1;
+            }
+
+            $response = Http::withHeaders([
+                'User-Agent' => 'GenServicesApp/1.0',
+            ])->get('https://nominatim.openstreetmap.org/search', $params);
 
             if ($response->successful()) {
                 return response()->json($response->json());
