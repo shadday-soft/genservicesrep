@@ -23,7 +23,7 @@ class StoreTecnicoRequest extends FormRequest
     {
         return [
             'foto' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
-            'identificacion' => ['required', 'string', 'max:255', 'unique:tecnicos,identificacion'],
+            'identificacion' => ['required', 'string', 'max:255', 'min:8', 'unique:tecnicos,identificacion'],
             'correo' => ['required', 'email', 'max:255', 'unique:tecnicos,correo', 'unique:users,email'],
             'nombre_completo' => ['required', 'string', 'max:255'],
             'persona_contacto' => ['nullable', 'string', 'max:255'],
