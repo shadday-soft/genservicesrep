@@ -128,7 +128,7 @@ const footerNavItems: NavItem[] = [
         </SidebarContent>
 
         <SidebarFooter>
-            <NavFooter :items="footerNavItems" />
+            <NavFooter :items="footerNavItems"  v-if="validateRole('Administrador')"/>
             <NavUser />
         </SidebarFooter>
     </Sidebar>

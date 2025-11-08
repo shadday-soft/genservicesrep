@@ -11,11 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('equipos', function (Blueprint $table) {
-            $table->string('periodicidad')->nullable()->after('refrigerante_referencia')->comment('Periodicidad del mantenimiento: Semanal, Mensual, Trimestral, Semestral, Anual');
-            $table->date('fecha_primer_mantenimiento')->nullable()->after('periodicidad')->comment('Fecha del primer mantenimiento programado');
-            $table->json('proximas_fechas_mantenimiento')->nullable()->after('fecha_primer_mantenimiento')->comment('Array de fechas calculadas para los próximos mantenimientos');
-        });
+        // Las columnas de esta migración ya fueron agregadas previamente
+        // Esta migración se mantiene vacía para evitar conflictos
     }
 
     /**
@@ -23,8 +20,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('equipos', function (Blueprint $table) {
-            $table->dropColumn(['periodicidad', 'fecha_primer_mantenimiento', 'proximas_fechas_mantenimiento']);
-        });
+        // No hay columnas que revertir en esta migración
     }
 };

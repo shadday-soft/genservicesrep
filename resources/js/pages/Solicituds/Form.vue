@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import Input from '@/components/Input.vue';
+import RichTextEditor from '@/components/RichTextEditor.vue';
 import SolicitudService from '@/Services/SolicitudsService';
 import Client from '@/Services/ClientService';
 import SucursalService from '@/Services/SucursalsService';
@@ -161,13 +162,16 @@ onMounted(async () => {
             <!-- Quien Solicita -->
             <Input v-model="form.quien_solicita" label="¿Quién solicita?" :error="form.errors.quien_solicita"></Input>
 
-            <div class="col-span-1 md:col-span-3 flex flex-col md:flex-row  justify-between gap-x-4">
-                <Input v-model="form.detalles" class="w-full" type="textarea" label="Detalles"
-                    :error="form.errors.detalles" :textAreaRows="3"></Input>
-
+            <div class="col-span-1 md:col-span-3 flex flex-col  justify-between gap-x-4">
+                <RichTextEditor 
+                    v-model="form.detalles" 
+                    label="Detalles"
+                    :error="form.errors.detalles"
+                    placeholder="Describe los detalles de la solicitud..."
+                />
 
                 <!-- Archivo PDF -->
-                <div class="col-span-1 md:col-span-2 w-full">
+                <div class="w-full mt-4">
                     <label class="block text-gray-700 text-sm font-bold mb-2">Orden de compra</label>
                     <FilePond name="orden_trabajo" ref="pond" v-model="form.orden_trabajo" :allow-multiple="false"
                         accepted-file-types="application/pdf" :files="myFiles" @updatefiles="updatefiles"

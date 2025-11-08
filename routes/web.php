@@ -10,6 +10,7 @@ use App\Http\Controllers\SolicitudController;
 use App\Http\Controllers\SucursalController;
 use App\Http\Controllers\TecnicoController;
 use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
 
 Route::get('/', function () {
     return redirect('dashboard');
@@ -30,6 +31,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('solicituds-cronograma', [SolicitudController::class, 'cronograma'])->name('solicituds.cronograma');
     Route::resource('actividads', ActividadController::class);
     Route::resource('tecnicos', TecnicoController::class);
+
+    Route::get('informe', function () {
+        // Lógica para generar el informe
+        return Inertia::render('Solicituds/Informe/Form');
+    })->name('informe');
 
     // Rutas para geocodificación
     Route::get('geocoding/search', [GeocodingController::class, 'search'])->name('geocoding.search');
