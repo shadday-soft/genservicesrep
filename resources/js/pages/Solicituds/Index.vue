@@ -8,7 +8,7 @@ import InputIcon from 'primevue/inputicon';
 import IconField from 'primevue/iconfield';
 import type { BreadcrumbItem, Solicitud, PaginatedResponse } from "@/types";
 import { columns } from "./Columns";
-import { Head, router } from '@inertiajs/vue3';
+import { Head, router, usePage } from '@inertiajs/vue3';
 import Datatable from '@/components/Table/Datatable.vue';
 
 import Modal from '@/components/Modal.vue';
@@ -17,6 +17,9 @@ import Form from '@/pages/Solicituds/Form.vue';
 import { watchDebounced } from '@vueuse/core';
 
 
+const isAutorized = () => {
+   return usePage().props.auth.user.role === 'Administrador';
+}
 
 interface Props {
     solicituds: PaginatedResponse<Solicitud>;
@@ -107,7 +110,7 @@ watchDebounced(
                         />
                     </IconField>
                 </div>
-                <Button label="Agregar Solicitud" icon="pi pi-plus" size="small" @click="add" />
+                <Button label="Agregar Solicitud" v-if="isAutorized()" icon="pi pi-plus" size="small" @click="add" />
             </div>
 
             <!-- Vista de Tabla para pantallas grandes -->
@@ -117,8 +120,8 @@ watchDebounced(
                         <!-- Removido porque ahora está arriba -->
                     </template>
                     <template #actions="{ data }">
-                        <Button icon="pi pi-pencil" size="small" severity="warn" text v-tooltip.left="`Editar`" @click="edit(data)" />
-                        <Button icon="pi pi-trash" size="small" severity="danger" text
+                        <Button icon="pi pi-pencil" size="small" v-if="isAutorized()" severity="warn" text v-tooltip.left="`Editar`" @click="edit(data)" />
+                        <Button icon="pi pi-trash" size="small" severity="danger" text v-if="isAutorized()"
                             @click="solicitudService.delete(data.id)" />
                     </template>
                 </Datatable>
@@ -253,13 +256,7 @@ watchDebounced(
                                     target="_blank"
                                     rel="noopener"
                                 >
-                                    <Button
-                                        text
-                                        icon="pi pi-map-marker"
-                                        size="small"
-                                        v-tooltip.top="'Abrir en Waze'"
-                                        class="!p-1.5"
-                                    />
+                                <img src="/svg/waze.svg" class="size-4" alt="">
                                 </a>
                             </template>
 
@@ -282,11 +279,13 @@ watchDebounced(
                             v-tooltip.top="'Editar'"
                             @click="edit(solicitudItem)"
                             class="!p-1.5"
+                            v-if="isAutorized()"
                         />
                         <Button 
                             icon="pi pi-trash" 
                             size="small" 
                             severity="danger"
+                            v-if="isAutorized()"
                             text
                             v-tooltip.top="'Eliminar'"
                             @click="solicitudService.delete(solicitudItem.id)"

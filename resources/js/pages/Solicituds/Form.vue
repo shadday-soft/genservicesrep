@@ -102,7 +102,7 @@ onMounted(async () => {
             form.mail = sucursal ? sucursal.email : '';
         }
         if (props.solicitud.orden_trabajo) {
-            myFiles.value = ['/storage/' + props.solicitud.orden_trabajo];
+            myFiles.value = ['/uploads/' + props.solicitud.orden_trabajo];
         }
     }
 });

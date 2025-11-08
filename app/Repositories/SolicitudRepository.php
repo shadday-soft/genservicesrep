@@ -83,4 +83,15 @@ class SolicitudRepository extends BaseRepository implements SolicitudInterface
 
         return $query->get();
     }
+
+    public function create(array $data): Solicitud
+    {
+
+        if($data['orden_trabajo']){
+            $data['orden_trabajo'] = $data['orden_trabajo']->store('solicitus', 'public');
+        }
+        $solicitus =  parent::create($data);
+
+        return $solicitus;
+    }
 }

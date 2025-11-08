@@ -24,10 +24,10 @@
               <i class="pi pi-camera"></i>
             </template>
             <template #image>
-              <img :src="'/storage/' + String(data)" alt="image" class="rounded-lg p-2 bg-gray-200 size-12 object-cover" />
+              <img :src="'/uploads/' + String(data)" alt="image" class="rounded-lg p-2 bg-gray-200 size-12 object-cover" />
             </template>
             <template #preview="slotProps">
-              <img :src="'/storage/' + String(data)" alt="preview" :style="slotProps.style"
+              <img :src="'/uploads/' + String(data)" alt="preview" :style="slotProps.style"
                 @click="slotProps.onClick" />
             </template>
           </Image>
