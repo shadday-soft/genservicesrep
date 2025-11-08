@@ -90,7 +90,7 @@ const mainNavItems: NavItem[] = [
                 show: true,
             },
             {
-                title: 'Cronograma de Mantenimientos',
+                title: 'Cronograma',
                 href: solicituds.cronograma(),
                 icon: Calendar,
                 show: validateRole('Administrador'),

@@ -66,7 +66,7 @@ const openRenewModal = (equipoData: any) => {
     // valores por defecto
     renewPeriodicidad.value = equipoData.periodicidad || 'Mensual';
     // si tiene fecha_primer_mantenimiento, usarla
-    renewFecha.value = equipoData.fecha_primer_mantenimiento ? new Date(equipoData.fecha_primer_mantenimiento).toISOString().slice(0,10) : new Date().toISOString().slice(0,10);
+    renewFecha.value = equipoData.fecha_primer_mantenimiento ? new Date(equipoData.fecha_primer_mantenimiento).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10);
     renewModalVisible.value = true;
 };
 
@@ -202,11 +202,7 @@ watchDebounced(
                         <InputIcon>
                             <i class="pi pi-search" />
                         </InputIcon>
-                        <Input 
-                            v-model="searchQuery" 
-                            placeholder="Buscar equipos..." 
-                            class="w-full"
-                        />
+                        <Input v-model="searchQuery" placeholder="Buscar equipos..." class="w-full" />
                     </IconField>
                 </div>
                 <Button label="Agregar Equipo" icon="pi pi-plus" size="small" @click="add" />
@@ -218,8 +214,10 @@ watchDebounced(
                 </template>
                 <template #actions="{ data }">
 
-                    <Button icon="pi pi-sync" size="small" severity="info" text v-tooltip.left="`Renovar Contrato`" @click="openRenewModal(data)" />
-                    <Button icon="pi pi-pencil" size="small" severity="warn" text v-tooltip.left="`Editar`" @click="edit(data)" />
+                    <Button icon="pi pi-sync" size="small" severity="info" text v-tooltip.left="`Renovar Contrato`"
+                        @click="openRenewModal(data)" />
+                    <Button icon="pi pi-pencil" size="small" severity="warn" text v-tooltip.left="`Editar`"
+                        @click="edit(data)" />
                     <Button icon="pi pi-trash" size="small" severity="danger" text
                         @click="equipoService.delete(data.id)" />
                 </template>
@@ -240,24 +238,21 @@ watchDebounced(
                     <span>equipos</span>
                 </div>
 
-                <Paginator 
-                    :rows="equipos.per_page"
-                    :totalRecords="equipos.total"
-                    :first="(equipos.current_page - 1) * equipos.per_page"
-                    :rowsPerPageOptions="[10, 15, 20, 30, 50]"
+                <Paginator :rows="equipos.per_page" :totalRecords="equipos.total"
+                    :first="(equipos.current_page - 1) * equipos.per_page" :rowsPerPageOptions="[10, 15, 20, 30, 50]"
                     @page="onPageChange"
                     template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
-                    class="paginator-custom"
-                />
+                    class="paginator-custom" />
             </div>
         </div>
 
-        <Modal v-model="showModal" :title="equipo?.id ? 'Editar Equipo' : 'Agregar Equipo'" width="80vw" :maximizable="true">
+        <Modal v-model="showModal" :title="equipo?.id ? 'Editar Equipo' : 'Agregar Equipo'" width="80vw"
+            :maximizable="true">
             <Form :equipo="equipo" @close="showModal = false" />
         </Modal>
 
         <!-- Modal de Renovación de Contrato -->
-        <Modal v-model="renewModalVisible" title="Renovar Contrato" width="30rem">
+        <Modal v-model="renewModalVisible" title="Renovar Contrato" width="50vw" :maximizable="true">
             <div class="space-y-4">
                 <div>
                     <label class="block text-xs text-gray-600">Fecha inicio</label>
@@ -275,27 +270,36 @@ watchDebounced(
                     </select>
                 </div>
 
-                <div class="text-xs text-gray-600">Se generarán solicitudes de mantenimiento para el equipo seleccionado según la periodicidad y la fecha inicial.</div>
+                <div class="text-xs text-gray-600">Se generarán solicitudes de mantenimiento para el equipo seleccionado
+                    según
+                    la periodicidad y la fecha inicial.</div>
 
                 <div class="pt-2">
                     <div class="text-xs font-semibold text-gray-700 mb-1">Fechas previstas</div>
                     <div v-if="previewFechas.length === 0" class="text-xs text-gray-500">No hay fechas calculadas</div>
 
                     <div v-else>
-                        <div class="mb-2 text-xs text-gray-600">Resumen por mes:</div>
-                        <div class="flex flex-wrap gap-2 mb-2">
-                            <span v-for="item in monthlyCounts" :key="item.month" class="text-xs bg-gray-100 px-2 py-0.5 rounded">{{ item.month }}: {{ item.count }}</span>
-                        </div>
-
-                        <ul class="space-y-1">
-                            <li v-for="(f, idx) in previewFechas" :key="idx" class="text-xs text-gray-800 dark:text-gray-200 flex items-center justify-between">
-                                <div>
-                                    • <span class="font-medium">{{ (f as any).fechaFormatted }}</span>
-                                    <span v-if="(f as any).avoided" class="ml-2 text-[11px] text-yellow-600">(ajustada desde {{ (f as any).rawFormatted }})</span>
+                        <div
+                            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 bg-blue-100 p-2 rounded-md mb-3">
+                            <div v-for="(f, idx) in previewFechas" :key="idx"
+                                class="bg-white rounded-md p-3 border border-blue-200 hover:border-blue-400 transition-colors">
+                                <div class="flex items-center gap-2 justify-between">
+                                    <div>
+                                        <div class="font-bold text-sm text-blue-700">{{ (f as any).fechaFormatted }}
+                                        </div>
+                                        <div v-if="(f as any).avoided" class="text-xs text-yellow-800">ajustada desde {{
+                                            (f as
+                                            any).rawFormatted }}</div>
+                                    </div>
+                                    <div class="text-[11px] italic">
+                                        {{ (f as any).fecha.toLocaleDateString('es-CO', {
+                                            weekday: 'long'
+                                        }) }}
+                                    </div>
                                 </div>
-                                <div class="text-[11px] text-gray-500">{{ (f as any).avoided ? 'Ajustada' : 'OK' }}</div>
-                            </li>
-                        </ul>
+                                <div class="text-xs text-gray-800 italic" v-if="(f as any).avoided">Ajustada</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -303,7 +307,8 @@ watchDebounced(
             <template #footer>
                 <div class="flex justify-end gap-2">
                     <Button label="Cancelar" severity="secondary" size="small" @click="closeRenew" />
-                    <Button :disabled="!renewPeriodicidad || previewFechas.length === 0" label="Generar" icon="pi pi-check" size="small" @click="submitRenew" />
+                    <Button :disabled="!renewPeriodicidad || previewFechas.length === 0" label="Generar"
+                        icon="pi pi-check" size="small" @click="submitRenew" />
                 </div>
             </template>
         </Modal>
