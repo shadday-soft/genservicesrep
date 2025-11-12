@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -23,11 +24,12 @@ class UpdateTecnicoRequest extends FormRequest
     public function rules(): array
     {
         $tecnicoId = $this->route('tecnico');
+        $userId = User::where('email', $this->input('correo'))->value('id');
 
         return [
             'foto' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
             'identificacion' => ['required', 'string', 'max:255', Rule::unique('tecnicos')->ignore($tecnicoId)],
-            'correo' => ['required', 'email', 'max:255', Rule::unique('tecnicos')->ignore($tecnicoId)],
+            'correo' => ['required', 'email', 'max:255', Rule::unique('tecnicos')->ignore($tecnicoId), Rule::unique('users', 'email')->ignore($userId)],
             'nombre_completo' => ['required', 'string', 'max:255'],
             'persona_contacto' => ['nullable', 'string', 'max:255'],
             'tipo_sangre' => ['nullable', 'in:A+,A-,B+,B-,AB+,AB-,O+,O-'],

@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Interfaces\SolicitudInterface;
 use App\Models\Solicitud;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class SolicitudRepository extends BaseRepository implements SolicitudInterface
 {
@@ -93,5 +94,22 @@ class SolicitudRepository extends BaseRepository implements SolicitudInterface
         $solicitus =  parent::create($data);
 
         return $solicitus;
+    }
+
+    public function update($id, array $data)
+    {
+        $solicitus = $this->find($id);
+
+        if (isset($data['orden_trabajo']) && $data['orden_trabajo']) {
+            if (is_object($data['orden_trabajo']) && method_exists($data['orden_trabajo'], 'store')) {
+                
+                if ($solicitus->orden_trabajo) {
+                    Storage::disk('public')->delete($solicitus->orden_trabajo);
+                }
+                $data['orden_trabajo'] = 'uploads/'.$data['orden_trabajo']->store('solicitus', 'public');
+            }
+        }
+
+        return parent::update($id, $data);
     }
 }

@@ -74,4 +74,12 @@ export const columns: Column[] = [
         filter: true,
         filterPlaceholder: 'Buscar por técnico',
     },
+    {
+        header: 'Orden de Compra',
+        field: 'orden_trabajo',
+        sortable: true,
+        type: 'document',
+        filter: true,
+        filterPlaceholder: 'Buscar por orden de compra',
+    }
 ]

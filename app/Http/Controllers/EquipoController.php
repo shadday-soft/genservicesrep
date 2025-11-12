@@ -82,7 +82,8 @@ class EquipoController extends Controller
     {
         try {
             DB::beginTransaction();
-            $this->repository->update($equipo->id, $request->validated());
+            $validatedData = $request->validated();
+            $this->repository->update($equipo->id, $validatedData);
             DB::commit();
 
             return back()->with('status', 'Equipo updated successfully');

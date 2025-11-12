@@ -48,7 +48,7 @@ const page = usePage();
                                         as-child
                                         v-if="subItem.show"
                                     >
-                                        <Link :href="subItem.href">
+                                        <Link prefetch :href="subItem.href">
                                             <component :is="subItem.icon" v-if="subItem.icon" />
                                             <span>{{ subItem.title }}</span>
                                         </Link>
@@ -67,7 +67,7 @@ const page = usePage();
                         :tooltip="item.title"
                         v-if="item.show"
                     >
-                        <Link :href="item.href">
+                        <Link prefetch :href="item.href">
                             <component :is="item.icon" v-if="item.icon" />
                             <span>{{ item.title }}</span>
                         </Link>

@@ -24,6 +24,7 @@ class UpdateEquipoRequest extends FormRequest
     public function rules(): array
     {
 
+        $equipo = $this->route('equipo');
         return [
             // --- DATOS GENERALES ---
             'nombre_equipo' => ['required', 'string', 'max:100'],
@@ -41,8 +42,8 @@ class UpdateEquipoRequest extends FormRequest
             'modelo_equipo' => ['required_if:tipo_equipo,Planta Eléctrica',  'max:100'],
             'modelo_motor' => ['required_if:tipo_equipo,Planta Eléctrica',  'max:100'],
             'tension_operacion' => ['required_if:tipo_equipo,Planta Eléctrica',  'max:50'],
-            'serie_equipo' => ['nullable',  'max:100', 'unique:equipos,serie_equipo'],
-            'serie_motor' => ['nullable',  'max:100', 'unique:equipos,serie_motor'],
+            'serie_equipo' => ['nullable',  'max:100', 'unique:equipos,serie_equipo,' . $equipo->id],
+            'serie_motor' => ['nullable',  'max:100', 'unique:equipos,serie_motor,' . $equipo->id],
             'marca_generador' => ['required_if:tipo_equipo,Planta Eléctrica',  'max:100'],
             'horometro' => ['required_if:tipo_equipo,Planta Eléctrica', 'min:0', 'numeric', 'nullable'],
             'marca_motor' => ['required_if:tipo_equipo,Planta Eléctrica',  'max:100'],
@@ -80,10 +81,7 @@ class UpdateEquipoRequest extends FormRequest
             'refrigerante_cantidad' => ['required_if:tipo_equipo,Planta Eléctrica', 'integer', 'min:0'],
             'refrigerante_referencia' => ['required_if:tipo_equipo,Planta Eléctrica',  'max:100'],
 
-            // --- PROGRAMACIÓN DE MANTENIMIENTOS ---
-            'periodicidad' => ['nullable', 'string', 'max:200'],
-            'fecha_primer_mantenimiento' => ['nullable', 'date'],
-            'proximas_fechas_mantenimiento' => ['nullable', 'array'],
+           
         ];
     }
 }
