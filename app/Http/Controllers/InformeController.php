@@ -6,27 +6,26 @@ use App\Http\Requests\StoreInformeRequest;
 use App\Http\Requests\UpdateInformeRequest;
 use App\Interfaces\InformeInterface;
 use App\Models\Informe;
+use App\Models\Solicitud;
 use Illuminate\Support\Facades\DB;
+use Inertia\Inertia;
 
 class InformeController extends Controller
 {
     public function __construct(
         private InformeInterface $repository,
-    )
-    {
-    }
+    ) {}
 
-    public function index()
-    {
-        //
-    }
+    public function index() {}
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Solicitud $solicitud)
     {
-        //
+        return Inertia::render('Solicituds/Informe/Form', [
+            'solicitud' => $solicitud,
+        ]);
     }
 
     /**
@@ -34,12 +33,15 @@ class InformeController extends Controller
      */
     public function store(StoreInformeRequest $request)
     {
-        try{
+        try {
             DB::beginTransaction();
             $this->repository->create($request->validated());
             DB::commit();
+
             return back()->with('status', 'Informe create successfully');
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
+            dd($e->getMessage());
+
             return back()->withErrors(['errors' => 'Action no Disabled']);
         }
     }
@@ -65,12 +67,15 @@ class InformeController extends Controller
      */
     public function update(UpdateInformeRequest $request, Informe $informe)
     {
-          try{
+        try {
             DB::beginTransaction();
-            $this->repository->update($informe->id,$request->validated());
+            $this->repository->update($informe->id, $request->validated());
             DB::commit();
+
             return back()->with('status', 'Informe updated successfully');
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
+            dd($e->getMessage());
+
             return back()->withErrors(['errors' => 'Action no Disabled']);
         }
     }
@@ -80,12 +85,13 @@ class InformeController extends Controller
      */
     public function destroy(Informe $informe)
     {
-        try{
+        try {
             DB::beginTransaction();
             $this->repository->delete($informe->id);
             DB::commit();
+
             return back()->with('status', 'Informe delete successfully');
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             return back()->withErrors(['errors' => 'Action no Disabled']);
         }
     }

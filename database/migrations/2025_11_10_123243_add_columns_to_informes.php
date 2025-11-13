@@ -65,8 +65,11 @@ return new class extends Migration
             // FOTOS ANTES
 
             $table->text('foto_uno_antes');
+            $table->text('pie_foto_uno_antes');
             $table->text('foto_dos_antes');
+            $table->text('pie_foto_dos_antes');
             $table->text('foto_tres_antes');
+            $table->text('pie_foto_tres_antes');
 
             // POSICION DE INSTRUMENTOS AL CONCLUIR EL SERVICIOS
 
@@ -133,17 +136,26 @@ return new class extends Migration
             // FOTOS DURANTE
 
             $table->text('foto_uno_durante');
+            $table->text('pie_foto_uno_durante');
             $table->text('foto_dos_durante');
+            $table->text('pie_foto_dos_durante');
             $table->text('foto_tres_durante');
+            $table->text('pie_foto_tres_durante');
             $table->text('foto_cuatro_durante');
+            $table->text('pie_foto_cuatro_durante');
             $table->text('foto_cinco_durante');
+            $table->text('pie_foto_cinco_durante');
             $table->text('foto_seis_durante');
+            $table->text('pie_foto_seis_durante');
 
             // FOTOS DESPUES
 
             $table->text('foto_uno_despues');
+            $table->text('pie_foto_uno_despues');
             $table->text('foto_dos_despues');
+            $table->text('pie_foto_dos_despues');
             $table->text('foto_tres_despues');
+            $table->text('pie_foto_tres_despues');
 
             // RECOMENDACIONES
 
@@ -162,7 +174,6 @@ return new class extends Migration
             $table->text('cedula_cliente');
             $table->text('firma_cliente');
             $table->text('calificacion_servicio');
-
 
             // Continúa agregando campos según tu modelo de datos
             $table->timestamps();

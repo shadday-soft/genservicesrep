@@ -88,6 +88,13 @@ watchDebounced(
     { debounce: 500 }
 );
 
+const generateReport = (solicitudData: Solicitud) => {
+    router.get(`/informe/${solicitudData.id}`, {}, {
+        preserveState: true,
+        preserveScroll: true,
+    });
+};
+
 </script>
 
 <template>
@@ -120,6 +127,8 @@ watchDebounced(
                         <!-- Removido porque ahora está arriba -->
                     </template>
                     <template #actions="{ data }">
+                        <Button text v-tooltip.top="`Ver Informe`" @click="generateReport(data)" icon="pi pi-file-pdf"></Button>
+                        <Button icon="pi pi-file" size="small" v-if="isAutorized()" severity="info" text v-tooltip.left="`Generar Informe`" @click="generateReport(data)" />
                         <Button icon="pi pi-pencil" size="small" v-if="isAutorized()" severity="warn" text v-tooltip.left="`Editar`" @click="edit(data)" />
                         <Button icon="pi pi-trash" size="small" severity="danger" text v-if="isAutorized()"
                             @click="solicitudService.delete(data.id)" />

@@ -3,72 +3,98 @@ import { ref } from 'vue';
 import Input from '@/components/Input.vue';
 import RichTextEditor from '@/components/RichTextEditor.vue';
 import SignaturePad from '@/components/SignaturePad.vue';
+import RadioGroup from '@/components/RadioGroup.vue';
 import { Button } from 'primevue';
 import RadioButton from 'primevue/radiobutton';
 import AppLayout from '@/layouts/AppLayout.vue';
 import vueFilePond from 'vue-filepond';
+import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
+import { BreadcrumbItem, Solicitud } from '@/types';
+import { Head, router, useForm } from '@inertiajs/vue3';
+import { informe, StoreInforme } from '@/routes';
+import { getErrorMessage, getSuccessMessage } from '@/composables/Toast';
 
-const FilePond = vueFilePond();
+
+const FilePond = vueFilePond(FilePondPluginImagePreview);
+// const FilePond = vueFilePond();
 
 const emit = defineEmits(['close']);
 
 interface Props {
     informe?: any | null;
+    solicitud: Solicitud;
 }
 
 const props = defineProps<Props>();
 
 // Form data
-const form = ref({
+const form = useForm({
+    solicitud_id: props.solicitud.id,
     tipo_servicio: 'Mantenimiento',
     observaciones_iniciales: '',
-    nivel_aceite: '',
-    nivel_refrigerante: '',
+    nivel_aceite: 'N/A',
+    nivel_refrigerante: 'N/A',
     nivel_combustible: '',
     capacidad_tanque: '',
     fugas: '',
-    mangueras: '',
+    mangueras: 'N/A',
     // Estado inicial - adicionales
-    sellos: '',
-    tuberias: '',
-    radiador: '',
-    guardas: '',
-    correas_ventilador: '',
-    correas_alternador: '',
-    amortiguadores: '',
-    precalentador_estado_inicial: '',
-    bateria: '',
-    nivel_electrolito: '',
-    voltaje_bateria_estado: '',
-    estado_cargador: '',
+    sellos: 'N/A',
+    tuberias: 'N/A',
+    radiador: 'N/A',
+    guardas: 'N/A',
+    correas_ventilador: 'N/A',
+    correas_alternador: 'N/A',
+    amortiguadores: 'N/A',
+    precalentador_estado_inicial: 'N/A',
+    bateria: 'N/A',
+    nivel_electrolito: 'N/A',
+    voltaje_bateria: 'N/A',
+    estado_cargador: 'N/A',
     voltaje_cargador: '',
     tipo_control: '',
     voltaje_alternador: '',
-    conexiones_control: '',
-    conexiones_potencia: '',
-    limpieza_general: '',
+    conexiones_control: 'N/A',
+    conexiones_potencia: 'N/A',
+    limpieza_general: 'N/A',
+    // Filtros y cantidades (añadidos)
+    cantidad_filtro_aire: '',
+    referencia_filtro_aire: '',
+    cantidad_filtro_aceite: '',
+    referencia_filtro_aceite: '',
+    cantidad_filtro_combustible: '',
+    referencia_filtro_combustible: '',
+    cantidad_filtro_separador: '',
+    referencia_filtro_separador: '',
+    cantidad_filtro_agua: '',
+    referencia_filtro_agua: '',
+    cantidad_cantidad_aceite: '',
+    referencia_cantidad_aceite: '',
     // Fotos antes
     foto_uno_antes: null as File | null,
+    pie_foto_uno_antes: '',
     foto_dos_antes: null as File | null,
+    pie_foto_dos_antes: '',
     foto_tres_antes: null as File | null,
+    pie_foto_tres_antes: '',
     // Actividad realizada
     actividad_realizada: '',
     // Pruebas con equipo operando - Motor
-    presion_aceite_valor: '',
-    presion_aceite_unidad: '',
-    temp_refrigerante_valor: '',
-    temp_refrigerante_unidad: '',
-    temp_aceite_valor: '',
-    temp_aceite_unidad: '',
-    temp_turbo_valor: '',
-    temp_turbo_unidad: '',
-    rpm_valor: '',
-    rpm_unidad: '',
-    voltaje_bateria_valor: '',
-    voltaje_bateria_unidad: '',
+    valor_presion_aceite: '',
+    cantidad_presion_aceite: '',
+    valor_temp_refrigerante: '',
+    cantidad_temp_refrigerante: '',
+    valor_temp_aceite: '',
+    cantidad_temp_aceite: '',
+    valor_temp_turbo: '',
+    cantidad_temp_turbo: '',
+    valor_rpm: '',
+    cantidad_rpm: '',
+    valor_voltaje_bateria: '',
+    cantidad_voltaje_bateria: '',
     // Caída voltaje de batería
-    caida_voltaje_bat_valor: '',
-    caida_voltaje_bat_unidad: '',
+    valor_caida_voltaje_bat: '',
+    cantidad_caida_voltaje_bat: '',
     // Generador - VAC Fases
     vac_fases_l1_l2: '',
     vac_fases_l2_l3: '',
@@ -78,9 +104,9 @@ const form = ref({
     amperios_l2: '',
     amperios_l3: '',
     // Generador - VAC Fase N
-    vac_fase_n_l1: '',
-    vac_fase_n_l2: '',
-    vac_fase_n_l3: '',
+    vac_fase_n_l1n: '',
+    vac_fase_n_l2n: '',
+    vac_fase_n_l3n: '',
     // Generador - Potencia - HZ - FP
     potencia: '',
     hz: '',
@@ -88,18 +114,27 @@ const form = ref({
     // Protecciones
     baja_presion: '',
     alta_temperatura: '',
-    bajo_nivel_regrigerante: '',
+    bajo_nivel_refrigerante: '',
     bajo_voltaje_ac: '',
     // Fotos durante
     foto_uno_durante: null as File | null,
+    pie_foto_uno_durante: '',
     foto_dos_durante: null as File | null,
+    pie_foto_dos_durante: '',
     foto_tres_durante: null as File | null,
+    pie_foto_tres_durante: '',
     foto_cuatro_durante: null as File | null,
+    pie_foto_cuatro_durante: '',
     foto_cinco_durante: null as File | null,
+    pie_foto_cinco_durante: '',
     foto_seis_durante: null as File | null,
+    pie_foto_seis_durante: '',
     foto_siete_durante: null as File | null,
+    pie_foto_siete_durante: '',
     foto_ocho_durante: null as File | null,
+    pie_foto_ocho_durante: '',
     foto_nueve_durante: null as File | null,
+    pie_foto_nueve_durante: '',
     // Recomendaciones
     recomendaciones: '',
     // Llegada y salida técnico
@@ -115,8 +150,11 @@ const form = ref({
     precalentador_posicion: '',
     // Fotos después
     foto_uno_despues: null as File | null,
+    pie_foto_uno_despues: '',
     foto_dos_despues: null as File | null,
+    pie_foto_dos_despues: '',
     foto_tres_despues: null as File | null,
+    pie_foto_tres_despues: '',
     // Firmas y datos técnico
     firma_tecnico: '',
     nombre_tecnico: '',
@@ -157,108 +195,120 @@ const myFilesFotoTresDespues = ref<any[]>([]);
 
 const updateFilesFotoUno = (files: any) => {
     if (files && files.length > 0) {
-        form.value.foto_uno_antes = files[0].file;
+        form.foto_uno_antes = files[0].file;
     }
 };
 
 const updateFilesFotoDos = (files: any) => {
     if (files && files.length > 0) {
-        form.value.foto_dos_antes = files[0].file;
+        form.foto_dos_antes = files[0].file;
     }
 };
 
 const updateFilesFotoTres = (files: any) => {
     if (files && files.length > 0) {
-        form.value.foto_tres_antes = files[0].file;
+        form.foto_tres_antes = files[0].file;
     }
 };
 
 const updateFilesFotoUnoDurante = (files: any) => {
     if (files && files.length > 0) {
-        form.value.foto_uno_durante = files[0].file;
+        form.foto_uno_durante = files[0].file;
     }
 };
 
 const updateFilesFotoDosDurante = (files: any) => {
     if (files && files.length > 0) {
-        form.value.foto_dos_durante = files[0].file;
+        form.foto_dos_durante = files[0].file;
     }
 };
 
 const updateFilesFotoTresDurante = (files: any) => {
     if (files && files.length > 0) {
-        form.value.foto_tres_durante = files[0].file;
+        form.foto_tres_durante = files[0].file;
     }
 };
 
 const updateFilesFotoCuatroDurante = (files: any) => {
     if (files && files.length > 0) {
-        form.value.foto_cuatro_durante = files[0].file;
+        form.foto_cuatro_durante = files[0].file;
     }
 };
 
 const updateFilesFotoCincoDurante = (files: any) => {
     if (files && files.length > 0) {
-        form.value.foto_cinco_durante = files[0].file;
+        form.foto_cinco_durante = files[0].file;
     }
 };
 
 const updateFilesFotoSeisDurante = (files: any) => {
     if (files && files.length > 0) {
-        form.value.foto_seis_durante = files[0].file;
+        form.foto_seis_durante = files[0].file;
     }
 };
 
 const updateFilesFotoSieteDurante = (files: any) => {
     if (files && files.length > 0) {
-        form.value.foto_siete_durante = files[0].file;
+        form.foto_siete_durante = files[0].file;
     }
 };
 
 const updateFilesFotoOchoDurante = (files: any) => {
     if (files && files.length > 0) {
-        form.value.foto_ocho_durante = files[0].file;
+        form.foto_ocho_durante = files[0].file;
     }
 };
 
 const updateFilesFotoNueveDurante = (files: any) => {
     if (files && files.length > 0) {
-        form.value.foto_nueve_durante = files[0].file;
+        form.foto_nueve_durante = files[0].file;
     }
 };
 
 const updateFilesFotoUnoDespues = (files: any) => {
     if (files && files.length > 0) {
-        form.value.foto_uno_despues = files[0].file;
+        form.foto_uno_despues = files[0].file;
     }
 };
 
 const updateFilesFotoDosDespues = (files: any) => {
     if (files && files.length > 0) {
-        form.value.foto_dos_despues = files[0].file;
+        form.foto_dos_despues = files[0].file;
     }
 };
 
 const updateFilesFotoTresDespues = (files: any) => {
     if (files && files.length > 0) {
-        form.value.foto_tres_despues = files[0].file;
+        form.foto_tres_despues = files[0].file;
     }
 };
 
 const handleSubmit = () => {
-    form.value.processing = true;
-    // Aquí iría la lógica de envío del formulario
-    console.log('Form data:', form.value);
+    console.log('Submitting form...', StoreInforme.url());
+    form.post(StoreInforme.url(), {
+        preserveState: true,
+        onSuccess: () => {
+            getSuccessMessage('Informe generado con éxito.');
+        },
+        onError: (error) => {
+            getErrorMessage('Ocurrió un error al enviar el formulario.');
+        }
+    });
     
-    setTimeout(() => {
-        form.value.processing = false;
-        emit('close');
-    }, 1000);
 };
+
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: "Generar Informe #" + props.solicitud?.numero_orden,
+        href: "/solicituds",
+    },
+];
+
 </script>
 
 <template>
-    <AppLayout class="p-4">
+    <AppLayout class="p-4" :breadcrumbs="breadcrumbs">
+        <Head :title="`Generar Informe #${props.solicitud?.numero_orden}`" />
         <form @submit.prevent="handleSubmit" class="flex flex-col gap-6">
             <!-- Tipo servicio -->
             <div class="flex flex-col gap-3">
@@ -298,44 +348,22 @@ const handleSubmit = () => {
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <!-- Nivel aceite -->
-                    <div class="flex flex-col gap-2">
-                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Nivel aceite
-                        </label>
-                        <div class="flex flex-wrap gap-3">
-                            <div v-for="nivel in nivelesOptions" :key="'aceite_' + nivel" class="flex items-center gap-2">
-                                <RadioButton 
-                                    v-model="form.nivel_aceite" 
-                                    :inputId="'aceite_' + nivel" 
-                                    :value="nivel"
-                                />
-                                <label :for="'aceite_' + nivel" class="text-sm cursor-pointer">{{ nivel }}</label>
-                            </div>
-                        </div>
-                        <span v-if="form.errors.nivel_aceite" class="text-xs italic text-red-500">
-                            {{ form.errors.nivel_aceite }}
-                        </span>
-                    </div>
+                    <RadioGroup 
+                        v-model="form.nivel_aceite"
+                        label="Nivel aceite"
+                        :options="nivelesOptions"
+                        unique-id="aceite"
+                        :error="form.errors.nivel_aceite"
+                    />
 
                     <!-- Nivel refrigerante -->
-                    <div class="flex flex-col gap-2">
-                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Nivel refrigerante
-                        </label>
-                        <div class="flex flex-wrap gap-3">
-                            <div v-for="nivel in nivelesOptions" :key="'refrigerante_' + nivel" class="flex items-center gap-2">
-                                <RadioButton 
-                                    v-model="form.nivel_refrigerante" 
-                                    :inputId="'refrigerante_' + nivel" 
-                                    :value="nivel"
-                                />
-                                <label :for="'refrigerante_' + nivel" class="text-sm cursor-pointer">{{ nivel }}</label>
-                            </div>
-                        </div>
-                        <span v-if="form.errors.nivel_refrigerante" class="text-xs italic text-red-500">
-                            {{ form.errors.nivel_refrigerante }}
-                        </span>
-                    </div>
+                    <RadioGroup 
+                        v-model="form.nivel_refrigerante"
+                        label="Nivel refrigerante"
+                        :options="nivelesOptions"
+                        unique-id="refrigerante"
+                        :error="form.errors.nivel_refrigerante"
+                    />
 
                     <!-- Nivel combustible -->
                     <div class="flex flex-col gap-2">
@@ -376,264 +404,121 @@ const handleSubmit = () => {
                     </div>
 
                     <!-- Mangueras -->
-                    <div class="flex flex-col gap-2">
-                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Mangueras
-                        </label>
-                        <div class="flex flex-wrap gap-3">
-                            <div v-for="nivel in nivelesOptions" :key="'mangueras_' + nivel" class="flex items-center gap-2">
-                                <RadioButton 
-                                    v-model="form.mangueras" 
-                                    :inputId="'mangueras_' + nivel" 
-                                    :value="nivel"
-                                />
-                                <label :for="'mangueras_' + nivel" class="text-sm cursor-pointer">{{ nivel }}</label>
-                            </div>
-                        </div>
-                        <span v-if="form.errors.mangueras" class="text-xs italic text-red-500">
-                            {{ form.errors.mangueras }}
-                        </span>
-                    </div>
+                    <RadioGroup 
+                        v-model="form.mangueras"
+                        label="Mangueras"
+                        :options="nivelesOptions"
+                        unique-id="mangueras"
+                        :error="form.errors.mangueras"
+                    />
 
                     <!-- Sellos -->
-                    <div class="flex flex-col gap-2">
-                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Sellos
-                        </label>
-                        <div class="flex flex-wrap gap-3">
-                            <div v-for="nivel in nivelesOptions" :key="'sellos_' + nivel" class="flex items-center gap-2">
-                                <RadioButton 
-                                    v-model="form.sellos" 
-                                    :inputId="'sellos_' + nivel" 
-                                    :value="nivel"
-                                />
-                                <label :for="'sellos_' + nivel" class="text-sm cursor-pointer">{{ nivel }}</label>
-                            </div>
-                        </div>
-                        <span v-if="form.errors.sellos" class="text-xs italic text-red-500">
-                            {{ form.errors.sellos }}
-                        </span>
-                    </div>
+                    <RadioGroup 
+                        v-model="form.sellos"
+                        label="Sellos"
+                        :options="nivelesOptions"
+                        unique-id="sellos"
+                        :error="form.errors.sellos"
+                    />
 
                     <!-- Tuberías -->
-                    <div class="flex flex-col gap-2">
-                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Tuberías
-                        </label>
-                        <div class="flex flex-wrap gap-3">
-                            <div v-for="nivel in nivelesOptions" :key="'tuberias_' + nivel" class="flex items-center gap-2">
-                                <RadioButton 
-                                    v-model="form.tuberias" 
-                                    :inputId="'tuberias_' + nivel" 
-                                    :value="nivel"
-                                />
-                                <label :for="'tuberias_' + nivel" class="text-sm cursor-pointer">{{ nivel }}</label>
-                            </div>
-                        </div>
-                        <span v-if="form.errors.tuberias" class="text-xs italic text-red-500">
-                            {{ form.errors.tuberias }}
-                        </span>
-                    </div>
+                    <RadioGroup 
+                        v-model="form.tuberias"
+                        label="Tuberías"
+                        :options="nivelesOptions"
+                        unique-id="tuberias"
+                        :error="form.errors.tuberias"
+                    />
 
                     <!-- Radiador -->
-                    <div class="flex flex-col gap-2">
-                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Radiador
-                        </label>
-                        <div class="flex flex-wrap gap-3">
-                            <div v-for="nivel in nivelesOptions" :key="'radiador_' + nivel" class="flex items-center gap-2">
-                                <RadioButton 
-                                    v-model="form.radiador" 
-                                    :inputId="'radiador_' + nivel" 
-                                    :value="nivel"
-                                />
-                                <label :for="'radiador_' + nivel" class="text-sm cursor-pointer">{{ nivel }}</label>
-                            </div>
-                        </div>
-                        <span v-if="form.errors.radiador" class="text-xs italic text-red-500">
-                            {{ form.errors.radiador }}
-                        </span>
-                    </div>
+                    <RadioGroup 
+                        v-model="form.radiador"
+                        label="Radiador"
+                        :options="nivelesOptions"
+                        unique-id="radiador"
+                        :error="form.errors.radiador"
+                    />
 
                     <!-- Guardas -->
-                    <div class="flex flex-col gap-2">
-                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Guardas
-                        </label>
-                        <div class="flex flex-wrap gap-3">
-                            <div v-for="nivel in nivelesOptions" :key="'guardas_' + nivel" class="flex items-center gap-2">
-                                <RadioButton 
-                                    v-model="form.guardas" 
-                                    :inputId="'guardas_' + nivel" 
-                                    :value="nivel"
-                                />
-                                <label :for="'guardas_' + nivel" class="text-sm cursor-pointer">{{ nivel }}</label>
-                            </div>
-                        </div>
-                        <span v-if="form.errors.guardas" class="text-xs italic text-red-500">
-                            {{ form.errors.guardas }}
-                        </span>
-                    </div>
+                    <RadioGroup 
+                        v-model="form.guardas"
+                        label="Guardas"
+                        :options="nivelesOptions"
+                        unique-id="guardas"
+                        :error="form.errors.guardas"
+                    />
 
                     <!-- Correas ventilador -->
-                    <div class="flex flex-col gap-2">
-                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Correas ventilador
-                        </label>
-                        <div class="flex flex-wrap gap-3">
-                            <div v-for="nivel in nivelesOptions" :key="'correas_ventilador_' + nivel" class="flex items-center gap-2">
-                                <RadioButton 
-                                    v-model="form.correas_ventilador" 
-                                    :inputId="'correas_ventilador_' + nivel" 
-                                    :value="nivel"
-                                />
-                                <label :for="'correas_ventilador_' + nivel" class="text-sm cursor-pointer">{{ nivel }}</label>
-                            </div>
-                        </div>
-                        <span v-if="form.errors.correas_ventilador" class="text-xs italic text-red-500">
-                            {{ form.errors.correas_ventilador }}
-                        </span>
-                    </div>
+                    <RadioGroup 
+                        v-model="form.correas_ventilador"
+                        label="Correas ventilador"
+                        :options="nivelesOptions"
+                        unique-id="correas_ventilador"
+                        :error="form.errors.correas_ventilador"
+                    />
 
                     <!-- Correas alternador -->
-                    <div class="flex flex-col gap-2">
-                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Correas alternador
-                        </label>
-                        <div class="flex flex-wrap gap-3">
-                            <div v-for="nivel in nivelesOptions" :key="'correas_alternador_' + nivel" class="flex items-center gap-2">
-                                <RadioButton 
-                                    v-model="form.correas_alternador" 
-                                    :inputId="'correas_alternador_' + nivel" 
-                                    :value="nivel"
-                                />
-                                <label :for="'correas_alternador_' + nivel" class="text-sm cursor-pointer">{{ nivel }}</label>
-                            </div>
-                        </div>
-                        <span v-if="form.errors.correas_alternador" class="text-xs italic text-red-500">
-                            {{ form.errors.correas_alternador }}
-                        </span>
-                    </div>
+                    <RadioGroup 
+                        v-model="form.correas_alternador"
+                        label="Correas alternador"
+                        :options="nivelesOptions"
+                        unique-id="correas_alternador"
+                        :error="form.errors.correas_alternador"
+                    />
 
                     <!-- Amortiguadores -->
-                    <div class="flex flex-col gap-2">
-                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Amortiguadores
-                        </label>
-                        <div class="flex flex-wrap gap-3">
-                            <div v-for="nivel in nivelesOptions" :key="'amortiguadores_' + nivel" class="flex items-center gap-2">
-                                <RadioButton 
-                                    v-model="form.amortiguadores" 
-                                    :inputId="'amortiguadores_' + nivel" 
-                                    :value="nivel"
-                                />
-                                <label :for="'amortiguadores_' + nivel" class="text-sm cursor-pointer">{{ nivel }}</label>
-                            </div>
-                        </div>
-                        <span v-if="form.errors.amortiguadores" class="text-xs italic text-red-500">
-                            {{ form.errors.amortiguadores }}
-                        </span>
-                    </div>
+                    <RadioGroup 
+                        v-model="form.amortiguadores"
+                        label="Amortiguadores"
+                        :options="nivelesOptions"
+                        unique-id="amortiguadores"
+                        :error="form.errors.amortiguadores"
+                    />
 
                     <!-- Precalentador estado inicial -->
-                    <div class="flex flex-col gap-2">
-                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Precalentador estado inicial
-                        </label>
-                        <div class="flex flex-wrap gap-3">
-                            <div v-for="nivel in nivelesOptions" :key="'precalentador_estado_inicial_' + nivel" class="flex items-center gap-2">
-                                <RadioButton 
-                                    v-model="form.precalentador_estado_inicial" 
-                                    :inputId="'precalentador_estado_inicial_' + nivel" 
-                                    :value="nivel"
-                                />
-                                <label :for="'precalentador_estado_inicial_' + nivel" class="text-sm cursor-pointer">{{ nivel }}</label>
-                            </div>
-                        </div>
-                        <span v-if="form.errors.precalentador_estado_inicial" class="text-xs italic text-red-500">
-                            {{ form.errors.precalentador_estado_inicial }}
-                        </span>
-                    </div>
+                    <RadioGroup 
+                        v-model="form.precalentador_estado_inicial"
+                        label="Precalentador estado inicial"
+                        :options="nivelesOptions"
+                        unique-id="precalentador_estado_inicial"
+                        :error="form.errors.precalentador_estado_inicial"
+                    />
 
                     <!-- Bateria -->
-                    <div class="flex flex-col gap-2">
-                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Batería
-                        </label>
-                        <div class="flex flex-wrap gap-3">
-                            <div v-for="nivel in nivelesOptions" :key="'bateria_' + nivel" class="flex items-center gap-2">
-                                <RadioButton 
-                                    v-model="form.bateria" 
-                                    :inputId="'bateria_' + nivel" 
-                                    :value="nivel"
-                                />
-                                <label :for="'bateria_' + nivel" class="text-sm cursor-pointer">{{ nivel }}</label>
-                            </div>
-                        </div>
-                        <span v-if="form.errors.bateria" class="text-xs italic text-red-500">
-                            {{ form.errors.bateria }}
-                        </span>
-                    </div>
+                    <RadioGroup 
+                        v-model="form.bateria"
+                        label="Batería"
+                        :options="nivelesOptions"
+                        unique-id="bateria"
+                        :error="form.errors.bateria"
+                    />
 
                     <!-- Nivel electrolito -->
-                    <div class="flex flex-col gap-2">
-                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Nivel electrolito
-                        </label>
-                        <div class="flex flex-wrap gap-3">
-                            <div v-for="nivel in nivelesOptions" :key="'nivel_electrolito_' + nivel" class="flex items-center gap-2">
-                                <RadioButton 
-                                    v-model="form.nivel_electrolito" 
-                                    :inputId="'nivel_electrolito_' + nivel" 
-                                    :value="nivel"
-                                />
-                                <label :for="'nivel_electrolito_' + nivel" class="text-sm cursor-pointer">{{ nivel }}</label>
-                            </div>
-                        </div>
-                        <span v-if="form.errors.nivel_electrolito" class="text-xs italic text-red-500">
-                            {{ form.errors.nivel_electrolito }}
-                        </span>
-                    </div>
+                    <RadioGroup 
+                        v-model="form.nivel_electrolito"
+                        label="Nivel electrolito"
+                        :options="nivelesOptions"
+                        unique-id="nivel_electrolito"
+                        :error="form.errors.nivel_electrolito"
+                    />
 
                     <!-- Voltaje batería -->
-                    <div class="flex flex-col gap-2">
-                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Voltaje batería
-                        </label>
-                        <div class="flex flex-wrap gap-3">
-                            <div v-for="nivel in nivelesOptions" :key="'voltaje_bateria_estado_' + nivel" class="flex items-center gap-2">
-                                <RadioButton 
-                                    v-model="form.voltaje_bateria_estado" 
-                                    :inputId="'voltaje_bateria_estado_' + nivel" 
-                                    :value="nivel"
-                                />
-                                <label :for="'voltaje_bateria_estado_' + nivel" class="text-sm cursor-pointer">{{ nivel }}</label>
-                            </div>
-                        </div>
-                        <span v-if="form.errors.voltaje_bateria_estado" class="text-xs italic text-red-500">
-                            {{ form.errors.voltaje_bateria_estado }}
-                        </span>
-                    </div>
+                    <RadioGroup 
+                        v-model="form.voltaje_bateria"
+                        label="Voltaje batería"
+                        :options="nivelesOptions"
+                        unique-id="voltaje_bateria"
+                        :error="form.errors.voltaje_bateria"
+                    />
 
                     <!-- Estado cargador -->
-                    <div class="flex flex-col gap-2">
-                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Estado cargador
-                        </label>
-                        <div class="flex flex-wrap gap-3">
-                            <div v-for="nivel in nivelesOptions" :key="'estado_cargador_' + nivel" class="flex items-center gap-2">
-                                <RadioButton 
-                                    v-model="form.estado_cargador" 
-                                    :inputId="'estado_cargador_' + nivel" 
-                                    :value="nivel"
-                                />
-                                <label :for="'estado_cargador_' + nivel" class="text-sm cursor-pointer">{{ nivel }}</label>
-                            </div>
-                        </div>
-                        <span v-if="form.errors.estado_cargador" class="text-xs italic text-red-500">
-                            {{ form.errors.estado_cargador }}
-                        </span>
-                    </div>
+                    <RadioGroup 
+                        v-model="form.estado_cargador"
+                        label="Estado cargador"
+                        :options="nivelesOptions"
+                        unique-id="estado_cargador"
+                        :error="form.errors.estado_cargador"
+                    />
 
                     <!-- Voltaje cargador -->
                     <div class="flex flex-col gap-2">
@@ -672,63 +557,126 @@ const handleSubmit = () => {
                     </div>
 
                     <!-- Conexiones control -->
-                    <div class="flex flex-col gap-2">
-                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Conexiones control
-                        </label>
-                        <div class="flex flex-wrap gap-3">
-                            <div v-for="nivel in nivelesOptions" :key="'conexiones_control_' + nivel" class="flex items-center gap-2">
-                                <RadioButton 
-                                    v-model="form.conexiones_control" 
-                                    :inputId="'conexiones_control_' + nivel" 
-                                    :value="nivel"
-                                />
-                                <label :for="'conexiones_control_' + nivel" class="text-sm cursor-pointer">{{ nivel }}</label>
-                            </div>
-                        </div>
-                        <span v-if="form.errors.conexiones_control" class="text-xs italic text-red-500">
-                            {{ form.errors.conexiones_control }}
-                        </span>
-                    </div>
+                    <RadioGroup 
+                        v-model="form.conexiones_control"
+                        label="Conexiones control"
+                        :options="nivelesOptions"
+                        unique-id="conexiones_control"
+                        :error="form.errors.conexiones_control"
+                    />
 
                     <!-- Conexiones potencia -->
-                    <div class="flex flex-col gap-2">
-                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Conexiones potencia
-                        </label>
-                        <div class="flex flex-wrap gap-3">
-                            <div v-for="nivel in nivelesOptions" :key="'conexiones_potencia_' + nivel" class="flex items-center gap-2">
-                                <RadioButton 
-                                    v-model="form.conexiones_potencia" 
-                                    :inputId="'conexiones_potencia_' + nivel" 
-                                    :value="nivel"
-                                />
-                                <label :for="'conexiones_potencia_' + nivel" class="text-sm cursor-pointer">{{ nivel }}</label>
-                            </div>
-                        </div>
-                        <span v-if="form.errors.conexiones_potencia" class="text-xs italic text-red-500">
-                            {{ form.errors.conexiones_potencia }}
-                        </span>
-                    </div>
+                    <RadioGroup 
+                        v-model="form.conexiones_potencia"
+                        label="Conexiones potencia"
+                        :options="nivelesOptions"
+                        unique-id="conexiones_potencia"
+                        :error="form.errors.conexiones_potencia"
+                    />
 
                     <!-- Limpieza General -->
-                    <div class="flex flex-col gap-2">
-                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Limpieza General
-                        </label>
-                        <div class="flex flex-wrap gap-3">
-                            <div v-for="nivel in nivelesOptions" :key="'limpieza_general_' + nivel" class="flex items-center gap-2">
-                                <RadioButton 
-                                    v-model="form.limpieza_general" 
-                                    :inputId="'limpieza_general_' + nivel" 
-                                    :value="nivel"
-                                />
-                                <label :for="'limpieza_general_' + nivel" class="text-sm cursor-pointer">{{ nivel }}</label>
+                    <RadioGroup 
+                        v-model="form.limpieza_general"
+                        label="Limpieza General"
+                        :options="nivelesOptions"
+                        unique-id="limpieza_general"
+                        :error="form.errors.limpieza_general"
+                    />
+                </div>
+
+                <!-- REPUESTOS / CANTIDADES (después de Limpieza General) -->
+                <div class="mt-4">
+                    <h4 class="text-sm font-bold text-gray-700 dark:text-gray-300 mb-4">Repuestos y cantidades</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <!-- FILTRO DE AIRE -->
+                        <div class="p-3 border rounded bg-white dark:bg-gray-800">
+                            <h5 class="font-semibold text-sm mb-2">FILTRO DE AIRE</h5>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <label class="text-xs text-gray-600 dark:text-gray-400">Cantidad</label>
+                                    <Input v-model="form.cantidad_filtro_aire" placeholder="" :error="form.errors.cantidad_filtro_aire" />
+                                </div>
+                                <div>
+                                    <label class="text-xs text-gray-600 dark:text-gray-400">Referencia</label>
+                                    <Input v-model="form.referencia_filtro_aire" placeholder="" :error="form.errors.referencia_filtro_aire" />
+                                </div>
                             </div>
                         </div>
-                        <span v-if="form.errors.limpieza_general" class="text-xs italic text-red-500">
-                            {{ form.errors.limpieza_general }}
-                        </span>
+
+                        <!-- FILTRO DE ACEITE -->
+                        <div class="p-3 border rounded bg-white dark:bg-gray-800">
+                            <h5 class="font-semibold text-sm mb-2">FILTRO DE ACEITE</h5>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <label class="text-xs text-gray-600 dark:text-gray-400">Cantidad</label>
+                                    <Input v-model="form.cantidad_filtro_aceite" placeholder="" :error="form.errors.cantidad_filtro_aceite" />
+                                </div>
+                                <div>
+                                    <label class="text-xs text-gray-600 dark:text-gray-400">Referencia</label>
+                                    <Input v-model="form.referencia_filtro_aceite" placeholder="" :error="form.errors.referencia_filtro_aceite" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FILTRO DE COMBUSTIBLE -->
+                        <div class="p-3 border rounded bg-white dark:bg-gray-800">
+                            <h5 class="font-semibold text-sm mb-2">FILTRO DE COMBUSTIBLE</h5>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <label class="text-xs text-gray-600 dark:text-gray-400">Cantidad</label>
+                                    <Input v-model="form.cantidad_filtro_combustible" placeholder="" :error="form.errors.cantidad_filtro_combustible" />
+                                </div>
+                                <div>
+                                    <label class="text-xs text-gray-600 dark:text-gray-400">Referencia</label>
+                                    <Input v-model="form.referencia_filtro_combustible" placeholder="" :error="form.errors.referencia_filtro_combustible" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FILTRO SEPARADOR -->
+                        <div class="p-3 border rounded bg-white dark:bg-gray-800">
+                            <h5 class="font-semibold text-sm mb-2">FILTRO SEPARADOR</h5>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <label class="text-xs text-gray-600 dark:text-gray-400">Cantidad</label>
+                                    <Input v-model="form.cantidad_filtro_separador" placeholder="" :error="form.errors.cantidad_filtro_separador" />
+                                </div>
+                                <div>
+                                    <label class="text-xs text-gray-600 dark:text-gray-400">Referencia</label>
+                                    <Input v-model="form.referencia_filtro_separador" placeholder="" :error="form.errors.referencia_filtro_separador" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FILTRO DE AGUA -->
+                        <div class="p-3 border rounded bg-white dark:bg-gray-800">
+                            <h5 class="font-semibold text-sm mb-2">FILTRO DE AGUA</h5>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <label class="text-xs text-gray-600 dark:text-gray-400">Cantidad</label>
+                                    <Input v-model="form.cantidad_filtro_agua" placeholder="" :error="form.errors.cantidad_filtro_agua" />
+                                </div>
+                                <div>
+                                    <label class="text-xs text-gray-600 dark:text-gray-400">Referencia</label>
+                                    <Input v-model="form.referencia_filtro_agua" placeholder="" :error="form.errors.referencia_filtro_agua" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- CANTIDAD DE ACEITE -->
+                        <div class="p-3 border rounded bg-white dark:bg-gray-800">
+                            <h5 class="font-semibold text-sm mb-2">CANTIDAD DE ACEITE</h5>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <label class="text-xs text-gray-600 dark:text-gray-400">Cantidad</label>
+                                    <Input v-model="form.cantidad_cantidad_aceite" placeholder="" :error="form.errors.cantidad_cantidad_aceite" />
+                                </div>
+                                <div>
+                                    <label class="text-xs text-gray-600 dark:text-gray-400">Referencia</label>
+                                    <Input v-model="form.referencia_cantidad_aceite" placeholder="" :error="form.errors.referencia_cantidad_aceite" />
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -756,6 +704,11 @@ const handleSubmit = () => {
                         <span v-if="form.errors.foto_uno_antes" class="text-xs italic text-red-500">
                             {{ form.errors.foto_uno_antes }}
                         </span>
+                        <Input 
+                            v-model="form.pie_foto_uno_antes" 
+                            placeholder="Pie de página para esta foto" 
+                            :error="form.errors.pie_foto_uno_antes"
+                        />
                     </div>
 
                     <!-- Foto dos antes -->
@@ -774,6 +727,11 @@ const handleSubmit = () => {
                         <span v-if="form.errors.foto_dos_antes" class="text-xs italic text-red-500">
                             {{ form.errors.foto_dos_antes }}
                         </span>
+                        <Input 
+                            v-model="form.pie_foto_dos_antes" 
+                            placeholder="Pie de página para esta foto" 
+                            :error="form.errors.pie_foto_dos_antes"
+                        />
                     </div>
 
                     <!-- Foto tres antes -->
@@ -792,6 +750,11 @@ const handleSubmit = () => {
                         <span v-if="form.errors.foto_tres_antes" class="text-xs italic text-red-500">
                             {{ form.errors.foto_tres_antes }}
                         </span>
+                        <Input 
+                            v-model="form.pie_foto_tres_antes" 
+                            placeholder="Pie de página para esta foto" 
+                            :error="form.errors.pie_foto_tres_antes"
+                        />
                     </div>
                 </div>
             </div>
@@ -831,17 +794,17 @@ const handleSubmit = () => {
                                 <div>
                                     <label class="text-xs text-gray-600 dark:text-gray-400">Valor</label>
                                     <Input 
-                                        v-model="form.presion_aceite_valor" 
+                                        v-model="form.valor_presion_aceite" 
                                         placeholder="" 
-                                        :error="form.errors.presion_aceite_valor"
+                                        :error="form.errors.valor_presion_aceite"
                                     />
                                 </div>
                                 <div>
                                     <label class="text-xs text-gray-600 dark:text-gray-400">Unidad</label>
                                     <Input 
-                                        v-model="form.presion_aceite_unidad" 
+                                        v-model="form.cantidad_presion_aceite" 
                                         placeholder="" 
-                                        :error="form.errors.presion_aceite_unidad"
+                                        :error="form.errors.cantidad_presion_aceite"
                                     />
                                 </div>
                             </div>
@@ -856,17 +819,17 @@ const handleSubmit = () => {
                                 <div>
                                     <label class="text-xs text-gray-600 dark:text-gray-400">Valor</label>
                                     <Input 
-                                        v-model="form.temp_refrigerante_valor" 
+                                        v-model="form.valor_temp_refrigerante" 
                                         placeholder="" 
-                                        :error="form.errors.temp_refrigerante_valor"
+                                        :error="form.errors.valor_temp_refrigerante"
                                     />
                                 </div>
                                 <div>
                                     <label class="text-xs text-gray-600 dark:text-gray-400">Unidad (Galones)</label>
                                     <Input 
-                                        v-model="form.temp_refrigerante_unidad" 
+                                        v-model="form.cantidad_temp_refrigerante" 
                                         placeholder="" 
-                                        :error="form.errors.temp_refrigerante_unidad"
+                                        :error="form.errors.cantidad_temp_refrigerante"
                                     />
                                 </div>
                             </div>
@@ -881,17 +844,17 @@ const handleSubmit = () => {
                                 <div>
                                     <label class="text-xs text-gray-600 dark:text-gray-400">Valor</label>
                                     <Input 
-                                        v-model="form.temp_aceite_valor" 
+                                        v-model="form.valor_temp_aceite" 
                                         placeholder="" 
-                                        :error="form.errors.temp_aceite_valor"
+                                        :error="form.errors.valor_temp_aceite"
                                     />
                                 </div>
                                 <div>
                                     <label class="text-xs text-gray-600 dark:text-gray-400">Unidad (Galones)</label>
                                     <Input 
-                                        v-model="form.temp_aceite_unidad" 
+                                        v-model="form.cantidad_temp_aceite" 
                                         placeholder="" 
-                                        :error="form.errors.temp_aceite_unidad"
+                                        :error="form.errors.cantidad_temp_aceite"
                                     />
                                 </div>
                             </div>
@@ -906,17 +869,17 @@ const handleSubmit = () => {
                                 <div>
                                     <label class="text-xs text-gray-600 dark:text-gray-400">Valor</label>
                                     <Input 
-                                        v-model="form.temp_turbo_valor" 
+                                        v-model="form.valor_temp_turbo" 
                                         placeholder="" 
-                                        :error="form.errors.temp_turbo_valor"
+                                        :error="form.errors.valor_temp_turbo"
                                     />
                                 </div>
                                 <div>
                                     <label class="text-xs text-gray-600 dark:text-gray-400">Unidad</label>
                                     <Input 
-                                        v-model="form.temp_turbo_unidad" 
+                                        v-model="form.cantidad_temp_turbo" 
                                         placeholder="" 
-                                        :error="form.errors.temp_turbo_unidad"
+                                        :error="form.errors.cantidad_temp_turbo"
                                     />
                                 </div>
                             </div>
@@ -931,17 +894,17 @@ const handleSubmit = () => {
                                 <div>
                                     <label class="text-xs text-gray-600 dark:text-gray-400">Valor</label>
                                     <Input 
-                                        v-model="form.rpm_valor" 
+                                        v-model="form.valor_rpm" 
                                         placeholder="" 
-                                        :error="form.errors.rpm_valor"
+                                        :error="form.errors.valor_rpm"
                                     />
                                 </div>
                                 <div>
                                     <label class="text-xs text-gray-600 dark:text-gray-400">Unidad</label>
                                     <Input 
-                                        v-model="form.rpm_unidad" 
+                                        v-model="form.cantidad_rpm" 
                                         placeholder="" 
-                                        :error="form.errors.rpm_unidad"
+                                        :error="form.errors.cantidad_rpm"
                                     />
                                 </div>
                             </div>
@@ -956,17 +919,17 @@ const handleSubmit = () => {
                                 <div>
                                     <label class="text-xs text-gray-600 dark:text-gray-400">Valor</label>
                                     <Input 
-                                        v-model="form.voltaje_bateria_valor" 
+                                        v-model="form.valor_voltaje_bateria" 
                                         placeholder="" 
-                                        :error="form.errors.voltaje_bateria_valor"
+                                        :error="form.errors.valor_voltaje_bateria"
                                     />
                                 </div>
                                 <div>
                                     <label class="text-xs text-gray-600 dark:text-gray-400">Unidad</label>
                                     <Input 
-                                        v-model="form.voltaje_bateria_unidad" 
+                                        v-model="form.cantidad_voltaje_bateria" 
                                         placeholder="" 
-                                        :error="form.errors.voltaje_bateria_unidad"
+                                        :error="form.errors.cantidad_voltaje_bateria"
                                     />
                                 </div>
                             </div>
@@ -984,17 +947,17 @@ const handleSubmit = () => {
                         <div>
                             <label class="text-xs text-gray-600 dark:text-gray-400">Valor</label>
                             <Input 
-                                v-model="form.caida_voltaje_bat_valor" 
+                                v-model="form.valor_caida_voltaje_bat" 
                                 placeholder="" 
-                                :error="form.errors.caida_voltaje_bat_valor"
+                                :error="form.errors.valor_caida_voltaje_bat"
                             />
                         </div>
                         <div>
                             <label class="text-xs text-gray-600 dark:text-gray-400">Unidad</label>
                             <Input 
-                                v-model="form.caida_voltaje_bat_unidad" 
+                                v-model="form.cantidad_caida_voltaje_bat" 
                                 placeholder="" 
-                                :error="form.errors.caida_voltaje_bat_unidad"
+                                :error="form.errors.cantidad_caida_voltaje_bat"
                             />
                         </div>
                     </div>
@@ -1081,25 +1044,25 @@ const handleSubmit = () => {
                             <div>
                                 <label class="text-xs text-gray-600 dark:text-gray-400">L1</label>
                                 <Input 
-                                    v-model="form.vac_fase_n_l1" 
+                                    v-model="form.vac_fase_n_l1n" 
                                     placeholder="" 
-                                    :error="form.errors.vac_fase_n_l1"
+                                    :error="form.errors.vac_fase_n_l1n"
                                 />
                             </div>
                             <div>
                                 <label class="text-xs text-gray-600 dark:text-gray-400">L2</label>
                                 <Input 
-                                    v-model="form.vac_fase_n_l2" 
+                                    v-model="form.vac_fase_n_l2n" 
                                     placeholder="" 
-                                    :error="form.errors.vac_fase_n_l2"
+                                    :error="form.errors.vac_fase_n_l2n"
                                 />
                             </div>
                             <div>
                                 <label class="text-xs text-gray-600 dark:text-gray-400">L3</label>
                                 <Input 
-                                    v-model="form.vac_fase_n_l3" 
+                                    v-model="form.vac_fase_n_l3n" 
                                     placeholder="" 
-                                    :error="form.errors.vac_fase_n_l3"
+                                    :error="form.errors.vac_fase_n_l3n"
                                 />
                             </div>
                         </div>
@@ -1174,9 +1137,9 @@ const handleSubmit = () => {
                             Bajo nivel de regrigerante
                         </label>
                         <Input 
-                            v-model="form.bajo_nivel_regrigerante" 
+                            v-model="form.bajo_nivel_refrigerante" 
                             placeholder="" 
-                            :error="form.errors.bajo_nivel_regrigerante"
+                            :error="form.errors.bajo_nivel_refrigerante"
                         />
                     </div>
 
@@ -1216,6 +1179,11 @@ const handleSubmit = () => {
                         <span v-if="form.errors.foto_uno_durante" class="text-xs italic text-red-500">
                             {{ form.errors.foto_uno_durante }}
                         </span>
+                        <Input 
+                            v-model="form.pie_foto_uno_durante" 
+                            placeholder="Pie de página para esta foto" 
+                            :error="form.errors.pie_foto_uno_durante"
+                        />
                     </div>
 
                     <!-- Foto dos durante -->
@@ -1234,6 +1202,11 @@ const handleSubmit = () => {
                         <span v-if="form.errors.foto_dos_durante" class="text-xs italic text-red-500">
                             {{ form.errors.foto_dos_durante }}
                         </span>
+                        <Input 
+                            v-model="form.pie_foto_dos_durante" 
+                            placeholder="Pie de página para esta foto" 
+                            :error="form.errors.pie_foto_dos_durante"
+                        />
                     </div>
 
                     <!-- Foto tres durante -->
@@ -1252,6 +1225,11 @@ const handleSubmit = () => {
                         <span v-if="form.errors.foto_tres_durante" class="text-xs italic text-red-500">
                             {{ form.errors.foto_tres_durante }}
                         </span>
+                        <Input 
+                            v-model="form.pie_foto_tres_durante" 
+                            placeholder="Pie de página para esta foto" 
+                            :error="form.errors.pie_foto_tres_durante"
+                        />
                     </div>
 
                     <!-- Foto cuatro durante -->
@@ -1270,6 +1248,11 @@ const handleSubmit = () => {
                         <span v-if="form.errors.foto_cuatro_durante" class="text-xs italic text-red-500">
                             {{ form.errors.foto_cuatro_durante }}
                         </span>
+                        <Input 
+                            v-model="form.pie_foto_cuatro_durante" 
+                            placeholder="Pie de página para esta foto" 
+                            :error="form.errors.pie_foto_cuatro_durante"
+                        />
                     </div>
 
                     <!-- Foto cinco durante -->
@@ -1288,6 +1271,11 @@ const handleSubmit = () => {
                         <span v-if="form.errors.foto_cinco_durante" class="text-xs italic text-red-500">
                             {{ form.errors.foto_cinco_durante }}
                         </span>
+                        <Input 
+                            v-model="form.pie_foto_cinco_durante" 
+                            placeholder="Pie de página para esta foto" 
+                            :error="form.errors.pie_foto_cinco_durante"
+                        />
                     </div>
 
                     <!-- Foto seis durante -->
@@ -1306,6 +1294,11 @@ const handleSubmit = () => {
                         <span v-if="form.errors.foto_seis_durante" class="text-xs italic text-red-500">
                             {{ form.errors.foto_seis_durante }}
                         </span>
+                        <Input 
+                            v-model="form.pie_foto_seis_durante" 
+                            placeholder="Pie de página para esta foto" 
+                            :error="form.errors.pie_foto_seis_durante"
+                        />
                     </div>
 
                     <!-- Foto siete durante -->
@@ -1324,6 +1317,11 @@ const handleSubmit = () => {
                         <span v-if="form.errors.foto_siete_durante" class="text-xs italic text-red-500">
                             {{ form.errors.foto_siete_durante }}
                         </span>
+                        <Input 
+                            v-model="form.pie_foto_siete_durante" 
+                            placeholder="Pie de página para esta foto" 
+                            :error="form.errors.pie_foto_siete_durante"
+                        />
                     </div>
 
                     <!-- Foto ocho durante -->
@@ -1342,6 +1340,11 @@ const handleSubmit = () => {
                         <span v-if="form.errors.foto_ocho_durante" class="text-xs italic text-red-500">
                             {{ form.errors.foto_ocho_durante }}
                         </span>
+                        <Input 
+                            v-model="form.pie_foto_ocho_durante" 
+                            placeholder="Pie de página para esta foto" 
+                            :error="form.errors.pie_foto_ocho_durante"
+                        />
                     </div>
 
                     <!-- Foto nueve durante -->
@@ -1360,6 +1363,11 @@ const handleSubmit = () => {
                         <span v-if="form.errors.foto_nueve_durante" class="text-xs italic text-red-500">
                             {{ form.errors.foto_nueve_durante }}
                         </span>
+                        <Input 
+                            v-model="form.pie_foto_nueve_durante" 
+                            placeholder="Pie de página para esta foto" 
+                            :error="form.errors.pie_foto_nueve_durante"
+                        />
                     </div>
                 </div>
             </div>
@@ -1416,35 +1424,12 @@ const handleSubmit = () => {
                     CALIFICACIÓN DE SERVICIO (Cliente)
                 </h3>
                 
-                <div class="flex flex-wrap gap-4">
-                    <div class="flex items-center gap-2">
-                        <RadioButton 
-                            v-model="form.calificacion_servicio" 
-                            inputId="calificacion_bueno" 
-                            value="Bueno"
-                        />
-                        <label for="calificacion_bueno" class="text-sm cursor-pointer">Bueno</label>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <RadioButton 
-                            v-model="form.calificacion_servicio" 
-                            inputId="calificacion_regular" 
-                            value="Regular"
-                        />
-                        <label for="calificacion_regular" class="text-sm cursor-pointer">Regular</label>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <RadioButton 
-                            v-model="form.calificacion_servicio" 
-                            inputId="calificacion_malo" 
-                            value="Malo"
-                        />
-                        <label for="calificacion_malo" class="text-sm cursor-pointer">Malo</label>
-                    </div>
-                </div>
-                <span v-if="form.errors.calificacion_servicio" class="text-xs italic text-red-500">
-                    {{ form.errors.calificacion_servicio }}
-                </span>
+                <RadioGroup 
+                    v-model="form.calificacion_servicio"
+                    :options="['Bueno', 'Regular', 'Malo']"
+                    unique-id="calificacion"
+                    :error="form.errors.calificacion_servicio"
+                />
             </div>
 
             <!-- POSICIÓN DE LOS INSTRUMENTOS AL CONCLUIR EL SERVICIO Section -->
@@ -1455,160 +1440,49 @@ const handleSubmit = () => {
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <!-- Control -->
-                    <div class="flex flex-col gap-2">
-                        <label class="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase">
-                            Control
-                        </label>
-                        <div class="flex flex-wrap gap-3">
-                            <div class="flex items-center gap-2">
-                                <RadioButton 
-                                    v-model="form.control" 
-                                    inputId="control_m" 
-                                    value="M"
-                                />
-                                <label for="control_m" class="text-sm cursor-pointer">M</label>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <RadioButton 
-                                    v-model="form.control" 
-                                    inputId="control_a" 
-                                    value="A"
-                                />
-                                <label for="control_a" class="text-sm cursor-pointer">A</label>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <RadioButton 
-                                    v-model="form.control" 
-                                    inputId="control_off" 
-                                    value="OFF"
-                                />
-                                <label for="control_off" class="text-sm cursor-pointer">OFF</label>
-                            </div>
-                        </div>
-                        <span v-if="form.errors.control" class="text-xs italic text-red-500">
-                            {{ form.errors.control }}
-                        </span>
-                    </div>
+                    <RadioGroup 
+                        v-model="form.control"
+                        label="Control"
+                        :options="['M', 'A', 'OFF']"
+                        unique-id="control"
+                        :error="form.errors.control"
+                    />
 
                     <!-- Transferencia -->
-                    <div class="flex flex-col gap-2">
-                        <label class="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase">
-                            Transferencia
-                        </label>
-                        <div class="flex flex-wrap gap-3">
-                            <div class="flex items-center gap-2">
-                                <RadioButton 
-                                    v-model="form.transferencia" 
-                                    inputId="transferencia_m" 
-                                    value="M"
-                                />
-                                <label for="transferencia_m" class="text-sm cursor-pointer">M</label>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <RadioButton 
-                                    v-model="form.transferencia" 
-                                    inputId="transferencia_a" 
-                                    value="A"
-                                />
-                                <label for="transferencia_a" class="text-sm cursor-pointer">A</label>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <RadioButton 
-                                    v-model="form.transferencia" 
-                                    inputId="transferencia_off" 
-                                    value="OFF"
-                                />
-                                <label for="transferencia_off" class="text-sm cursor-pointer">OFF</label>
-                            </div>
-                        </div>
-                        <span v-if="form.errors.transferencia" class="text-xs italic text-red-500">
-                            {{ form.errors.transferencia }}
-                        </span>
-                    </div>
+                    <RadioGroup 
+                        v-model="form.transferencia"
+                        label="Transferencia"
+                        :options="['M', 'A', 'OFF']"
+                        unique-id="transferencia"
+                        :error="form.errors.transferencia"
+                    />
 
                     <!-- Posición cargador -->
-                    <div class="flex flex-col gap-2">
-                        <label class="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase">
-                            Posición cargador
-                        </label>
-                        <div class="flex flex-wrap gap-3">
-                            <div class="flex items-center gap-2">
-                                <RadioButton 
-                                    v-model="form.posicion_cargador" 
-                                    inputId="cargador_on" 
-                                    value="ON"
-                                />
-                                <label for="cargador_on" class="text-sm cursor-pointer">ON</label>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <RadioButton 
-                                    v-model="form.posicion_cargador" 
-                                    inputId="cargador_off" 
-                                    value="OFF"
-                                />
-                                <label for="cargador_off" class="text-sm cursor-pointer">OFF</label>
-                            </div>
-                        </div>
-                        <span v-if="form.errors.posicion_cargador" class="text-xs italic text-red-500">
-                            {{ form.errors.posicion_cargador }}
-                        </span>
-                    </div>
+                    <RadioGroup 
+                        v-model="form.posicion_cargador"
+                        label="Posición cargador"
+                        :options="['ON', 'OFF']"
+                        unique-id="cargador"
+                        :error="form.errors.posicion_cargador"
+                    />
 
                     <!-- Totalizador -->
-                    <div class="flex flex-col gap-2">
-                        <label class="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase">
-                            Totalizador
-                        </label>
-                        <div class="flex flex-wrap gap-3">
-                            <div class="flex items-center gap-2">
-                                <RadioButton 
-                                    v-model="form.totalizador" 
-                                    inputId="totalizador_on" 
-                                    value="ON"
-                                />
-                                <label for="totalizador_on" class="text-sm cursor-pointer">ON</label>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <RadioButton 
-                                    v-model="form.totalizador" 
-                                    inputId="totalizador_off" 
-                                    value="OFF"
-                                />
-                                <label for="totalizador_off" class="text-sm cursor-pointer">OFF</label>
-                            </div>
-                        </div>
-                        <span v-if="form.errors.totalizador" class="text-xs italic text-red-500">
-                            {{ form.errors.totalizador }}
-                        </span>
-                    </div>
+                    <RadioGroup 
+                        v-model="form.totalizador"
+                        label="Totalizador"
+                        :options="['ON', 'OFF']"
+                        unique-id="totalizador"
+                        :error="form.errors.totalizador"
+                    />
 
                     <!-- Precalentador posición -->
-                    <div class="flex flex-col gap-2">
-                        <label class="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase">
-                            Precalentador posición
-                        </label>
-                        <div class="flex flex-wrap gap-3">
-                            <div class="flex items-center gap-2">
-                                <RadioButton 
-                                    v-model="form.precalentador_posicion" 
-                                    inputId="precalentador_on" 
-                                    value="ON"
-                                />
-                                <label for="precalentador_on" class="text-sm cursor-pointer">ON</label>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <RadioButton 
-                                    v-model="form.precalentador_posicion" 
-                                    inputId="precalentador_off" 
-                                    value="OFF"
-                                />
-                                <label for="precalentador_off" class="text-sm cursor-pointer">OFF</label>
-                            </div>
-                        </div>
-                        <span v-if="form.errors.precalentador_posicion" class="text-xs italic text-red-500">
-                            {{ form.errors.precalentador_posicion }}
-                        </span>
-                    </div>
+                    <RadioGroup 
+                        v-model="form.precalentador_posicion"
+                        label="Precalentador posición"
+                        :options="['ON', 'OFF']"
+                        unique-id="precalentador"
+                        :error="form.errors.precalentador_posicion"
+                    />
                 </div>
             </div>
 
@@ -1635,6 +1509,11 @@ const handleSubmit = () => {
                         <span v-if="form.errors.foto_uno_despues" class="text-xs italic text-red-500">
                             {{ form.errors.foto_uno_despues }}
                         </span>
+                        <Input 
+                            v-model="form.pie_foto_uno_despues" 
+                            placeholder="Pie de página para esta foto" 
+                            :error="form.errors.pie_foto_uno_despues"
+                        />
                     </div>
 
                     <!-- Foto dos despues -->
@@ -1653,6 +1532,11 @@ const handleSubmit = () => {
                         <span v-if="form.errors.foto_dos_despues" class="text-xs italic text-red-500">
                             {{ form.errors.foto_dos_despues }}
                         </span>
+                        <Input 
+                            v-model="form.pie_foto_dos_despues" 
+                            placeholder="Pie de página para esta foto" 
+                            :error="form.errors.pie_foto_dos_despues"
+                        />
                     </div>
 
                     <!-- Foto tres despues -->
@@ -1671,6 +1555,11 @@ const handleSubmit = () => {
                         <span v-if="form.errors.foto_tres_despues" class="text-xs italic text-red-500">
                             {{ form.errors.foto_tres_despues }}
                         </span>
+                        <Input 
+                            v-model="form.pie_foto_tres_despues" 
+                            placeholder="Pie de página para esta foto" 
+                            :error="form.errors.pie_foto_tres_despues"
+                        />
                     </div>
                 </div>
             </div>

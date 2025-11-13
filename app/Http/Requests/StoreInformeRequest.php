@@ -23,6 +23,7 @@ class StoreInformeRequest extends FormRequest
     {
         return [
             // Información básica
+            'solicitud_id' => ['required', 'exists:solicituds,id'],
             'tipo_servicio' => ['required', 'string', 'in:Mantenimiento,Servicio,Inspeccion,Soporte,Emergencia'],
             'observaciones_iniciales' => ['nullable', 'string'],
 
@@ -52,29 +53,46 @@ class StoreInformeRequest extends FormRequest
             'conexiones_potencia' => ['nullable', 'string', 'max:10'],
             'limpieza_general' => ['nullable', 'string', 'max:10'],
 
+            // Filtros y cantidades - nuevos campos
+            'cantidad_filtro_aire' => ['nullable', 'string', 'max:50'],
+            'referencia_filtro_aire' => ['nullable', 'string', 'max:100'],
+            'cantidad_filtro_aceite' => ['nullable', 'string', 'max:50'],
+            'referencia_filtro_aceite' => ['nullable', 'string', 'max:100'],
+            'cantidad_filtro_combustible' => ['nullable', 'string', 'max:50'],
+            'referencia_filtro_combustible' => ['nullable', 'string', 'max:100'],
+            'cantidad_filtro_separador' => ['nullable', 'string', 'max:50'],
+            'referencia_filtro_separador' => ['nullable', 'string', 'max:100'],
+            'cantidad_filtro_agua' => ['nullable', 'string', 'max:50'],
+            'referencia_filtro_agua' => ['nullable', 'string', 'max:100'],
+            'cantidad_cantidad_aceite' => ['nullable', 'string', 'max:50'],
+            'referencia_cantidad_aceite' => ['nullable', 'string', 'max:100'],
+
             // Fotos antes (archivos de imagen)
             'foto_uno_antes' => ['nullable', 'file', 'image', 'max:5120'], // 5MB
+            'pie_foto_uno_antes' => ['nullable', 'string', 'max:255'],
             'foto_dos_antes' => ['nullable', 'file', 'image', 'max:5120'],
+            'pie_foto_dos_antes' => ['nullable', 'string', 'max:255'],
             'foto_tres_antes' => ['nullable', 'file', 'image', 'max:5120'],
+            'pie_foto_tres_antes' => ['nullable', 'string', 'max:255'],
 
             // Actividad realizada
             'actividad_realizada' => ['nullable', 'string'],
 
             // Pruebas con equipo operando - Motor
-            'presion_aceite_valor' => ['nullable', 'string', 'max:50'],
-            'presion_aceite_unidad' => ['nullable', 'string', 'max:20'],
-            'temp_refrigerante_valor' => ['nullable', 'string', 'max:50'],
-            'temp_refrigerante_unidad' => ['nullable', 'string', 'max:20'],
-            'temp_aceite_valor' => ['nullable', 'string', 'max:50'],
-            'temp_aceite_unidad' => ['nullable', 'string', 'max:20'],
-            'temp_turbo_valor' => ['nullable', 'string', 'max:50'],
-            'temp_turbo_unidad' => ['nullable', 'string', 'max:20'],
-            'rpm_valor' => ['nullable', 'string', 'max:50'],
-            'rpm_unidad' => ['nullable', 'string', 'max:20'],
-            'voltaje_bateria_valor' => ['nullable', 'string', 'max:50'],
-            'voltaje_bateria_unidad' => ['nullable', 'string', 'max:20'],
-            'caida_voltaje_bat_valor' => ['nullable', 'string', 'max:50'],
-            'caida_voltaje_bat_unidad' => ['nullable', 'string', 'max:20'],
+            'valor_presion_aceite' => ['nullable', 'string', 'max:50'],
+            'cantidad_presion_aceite' => ['nullable', 'string', 'max:20'],
+            'valor_temp_refrigerante' => ['nullable', 'string', 'max:50'],
+            'cantidad_temp_refrigerante' => ['nullable', 'string', 'max:20'],
+            'valor_temp_aceite' => ['nullable', 'string', 'max:50'],
+            'cantidad_temp_aceite' => ['nullable', 'string', 'max:20'],
+            'valor_temp_turbo' => ['nullable', 'string', 'max:50'],
+            'cantidad_temp_turbo' => ['nullable', 'string', 'max:20'],
+            'valor_rpm' => ['nullable', 'string', 'max:50'],
+            'cantidad_rpm' => ['nullable', 'string', 'max:20'],
+            'valor_voltaje_bateria' => ['nullable', 'string', 'max:50'],
+            'cantidad_voltaje_bateria' => ['nullable', 'string', 'max:20'],
+            'valor_caida_voltaje_bat' => ['nullable', 'string', 'max:50'],
+            'cantidad_caida_voltaje_bat' => ['nullable', 'string', 'max:20'],
 
             // Generador - VAC Fases
             'vac_fases_l1_l2' => ['nullable', 'string', 'max:50'],
@@ -87,9 +105,9 @@ class StoreInformeRequest extends FormRequest
             'amperios_l3' => ['nullable', 'string', 'max:50'],
 
             // Generador - VAC Fase N
-            'vac_fase_n_l1' => ['nullable', 'string', 'max:50'],
-            'vac_fase_n_l2' => ['nullable', 'string', 'max:50'],
-            'vac_fase_n_l3' => ['nullable', 'string', 'max:50'],
+            'vac_fase_n_l1n' => ['nullable', 'string', 'max:50'],
+            'vac_fase_n_l2n' => ['nullable', 'string', 'max:50'],
+            'vac_fase_n_l3n' => ['nullable', 'string', 'max:50'],
 
             // Generador - Potencia - HZ - FP
             'potencia' => ['nullable', 'string', 'max:50'],
@@ -99,19 +117,28 @@ class StoreInformeRequest extends FormRequest
             // Protecciones
             'baja_presion' => ['nullable', 'string', 'max:50'],
             'alta_temperatura' => ['nullable', 'string', 'max:50'],
-            'bajo_nivel_regrigerante' => ['nullable', 'string', 'max:50'],
+            'bajo_nivel_refrigerante' => ['nullable', 'string', 'max:50'],
             'bajo_voltaje_ac' => ['nullable', 'string', 'max:50'],
 
             // Fotos durante (archivos de imagen)
             'foto_uno_durante' => ['nullable', 'file', 'image', 'max:5120'],
+            'pie_foto_uno_durante' => ['nullable', 'string', 'max:255'],
             'foto_dos_durante' => ['nullable', 'file', 'image', 'max:5120'],
+            'pie_foto_dos_durante' => ['nullable', 'string', 'max:255'],
             'foto_tres_durante' => ['nullable', 'file', 'image', 'max:5120'],
+            'pie_foto_tres_durante' => ['nullable', 'string', 'max:255'],
             'foto_cuatro_durante' => ['nullable', 'file', 'image', 'max:5120'],
+            'pie_foto_cuatro_durante' => ['nullable', 'string', 'max:255'],
             'foto_cinco_durante' => ['nullable', 'file', 'image', 'max:5120'],
+            'pie_foto_cinco_durante' => ['nullable', 'string', 'max:255'],
             'foto_seis_durante' => ['nullable', 'file', 'image', 'max:5120'],
+            'pie_foto_seis_durante' => ['nullable', 'string', 'max:255'],
             'foto_siete_durante' => ['nullable', 'file', 'image', 'max:5120'],
+            'pie_foto_siete_durante' => ['nullable', 'string', 'max:255'],
             'foto_ocho_durante' => ['nullable', 'file', 'image', 'max:5120'],
+            'pie_foto_ocho_durante' => ['nullable', 'string', 'max:255'],
             'foto_nueve_durante' => ['nullable', 'file', 'image', 'max:5120'],
+            'pie_foto_nueve_durante' => ['nullable', 'string', 'max:255'],
 
             // Recomendaciones
             'recomendaciones' => ['nullable', 'string'],
@@ -132,8 +159,11 @@ class StoreInformeRequest extends FormRequest
 
             // Fotos después (archivos de imagen)
             'foto_uno_despues' => ['nullable', 'file', 'image', 'max:5120'],
+            'pie_foto_uno_despues' => ['nullable', 'string', 'max:255'],
             'foto_dos_despues' => ['nullable', 'file', 'image', 'max:5120'],
+            'pie_foto_dos_despues' => ['nullable', 'string', 'max:255'],
             'foto_tres_despues' => ['nullable', 'file', 'image', 'max:5120'],
+            'pie_foto_tres_despues' => ['nullable', 'string', 'max:255'],
 
             // Firmas (almacenadas como base64 data URLs)
             'firma_tecnico' => ['nullable', 'string'],
