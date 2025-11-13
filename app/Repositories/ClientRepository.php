@@ -7,11 +7,11 @@ use App\Models\Client;
 
 class ClientRepository extends BaseRepository implements ClientInterface
 {
-    private $userRepository;
+    private UserRepository $userRepository;
 
-    public function __construct(UserRepository $userRepository)
+    public function __construct()
     {
-        $this->userRepository = $userRepository;
+        $this->userRepository = new UserRepository;
         $this->makeModel();
     }
 
@@ -54,5 +54,10 @@ class ClientRepository extends BaseRepository implements ClientInterface
         $clientData = $data;
 
         return parent::create($clientData);
+    }
+
+    public function findByUserId($userId)
+    {
+        return Client::where('user_id', $userId)->first();
     }
 }

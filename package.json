@@ -46,6 +46,7 @@
         "festivos-colombianos": "^1.1.0",
         "filepond": "^4.32.9",
         "filepond-plugin-image-preview": "^4.6.12",
+        "filepond-plugin-pdf-preview": "^1.0.4",
         "laravel-vite-plugin": "^2.0.0",
         "leaflet": "^1.9.4",
         "lucide-vue-next": "^0.468.0",

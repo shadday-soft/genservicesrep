@@ -20,7 +20,7 @@ return new class extends Migration
             $table->foreignUuid('equipo_id')->constrained();
             $table->foreignid('user_id')->nullable()->constrained()->onDelete('set null');
             // Campos principales
-            $table->dateTime('fecha_programada')->nullable();
+            $table->string('fecha_programada')->nullable();
             $table->string('quien_solicita')->nullable();
             $table->string('telefono')->nullable();
             $table->string('mail')->nullable();
@@ -30,7 +30,7 @@ return new class extends Migration
             $table->enum('estado', ['Nueva', 'Proceso', 'Revisión', 'Finalizada', 'Anulada', 'Programada'])->default('Nueva');
             $table->string('actividad');
             $table->string('mantenimiento_id')->nullable();
-            $table->date('fecha_mantenimiento')->nullable();
+            $table->string('fecha_mantenimiento')->nullable();
 
             $table->string('numero_orden')->unique()->nullable(); // Generado automáticamente
             // Información de mantenimiento

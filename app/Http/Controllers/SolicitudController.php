@@ -106,6 +106,41 @@ class SolicitudController extends Controller
     }
 
     /**
+     * Cancelar una solicitud (cambiar estado a Finalizada)
+     */
+    public function cancelar(Solicitud $solicitud)
+    {
+        try {
+            $razonCancelacion = request('razon_cancelacion');
+
+            if (! $razonCancelacion) {
+                return response()->json([
+                    'error' => 'La razón de cancelación es requerida',
+                ], 422);
+            }
+
+            DB::beginTransaction();
+
+            $solicitud->estado = 'Finalizada';
+            $solicitud->razon_cancelacion = $razonCancelacion;
+            $solicitud->save();
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Solicitud cancelada exitosamente',
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'error' => 'Error al cancelar la solicitud',
+            ], 500);
+        }
+    }
+
+    /**
      * Muestra el cronograma tipo Gantt de las solicitudes
      */
     public function cronograma()

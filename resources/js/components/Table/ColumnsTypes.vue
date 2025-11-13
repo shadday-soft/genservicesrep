@@ -1,5 +1,5 @@
 <template>
-  <div class="text-sm ">
+  <div class="text-sm">
     <span v-if="data == null">
       <span class="text-gray-500 dark:text-gray-400 italic">Sin datos</span>
     </span>
@@ -55,8 +55,8 @@
       <div v-else-if="type == 'boolean'">
         <Tag :value="data ? 'Sí' : 'No'" :severity="data ? 'success' : 'danger'"></Tag>
       </div>
-      <span v-else>
-        {{ data }}
+      <span v-else v-tooltip="`${String(data)}`">
+        {{ truncateString(String(data), 30) }}
       </span>
     </div>
   </div>
@@ -65,7 +65,7 @@
 import { useCommonUtilities } from "@/composables/useCommonUtilities";
 import { Image, Tag } from "primevue";
 
-const { currencyFormat, formatDate, formatDateTime } = useCommonUtilities();
+const { currencyFormat, formatDate, formatDateTime, truncateString } = useCommonUtilities();
 
 interface TagType {
   value: string | number;

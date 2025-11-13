@@ -9,6 +9,14 @@ use Illuminate\Support\Facades\Storage;
 
 class SolicitudRepository extends BaseRepository implements SolicitudInterface
 {
+    private ClientRepository $clientRepository;
+
+    public function __construct()
+    {
+        $this->clientRepository = new ClientRepository;
+        $this->makeModel();
+    }
+
     public function model()
     {
         return Solicitud::class;
@@ -49,7 +57,8 @@ class SolicitudRepository extends BaseRepository implements SolicitudInterface
         }
 
         if ($user->role === 'Cliente') {
-            $query->where('client_id', $user->id);
+            $client = $this->clientRepository->findByUserId($user->id);
+            $query->where('client_id', $client->id);
         }
 
         if ($tipo == 'Mantenimiento Preventivo') {
@@ -88,10 +97,10 @@ class SolicitudRepository extends BaseRepository implements SolicitudInterface
     public function create(array $data): Solicitud
     {
 
-        if($data['orden_trabajo']){
+        if ($data['orden_trabajo']) {
             $data['orden_trabajo'] = $data['orden_trabajo']->store('solicitus', 'public');
         }
-        $solicitus =  parent::create($data);
+        $solicitus = parent::create($data);
 
         return $solicitus;
     }
@@ -102,7 +111,7 @@ class SolicitudRepository extends BaseRepository implements SolicitudInterface
 
         if (isset($data['orden_trabajo']) && $data['orden_trabajo']) {
             if (is_object($data['orden_trabajo']) && method_exists($data['orden_trabajo'], 'store')) {
-                
+
                 if ($solicitus->orden_trabajo) {
                     Storage::disk('public')->delete($solicitus->orden_trabajo);
                 }

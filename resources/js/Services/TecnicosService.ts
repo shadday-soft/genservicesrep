@@ -15,6 +15,8 @@ export default class TecnicoService extends GeneralService {
         correo: '',
         nombre_completo: '',
         persona_contacto: '',
+        telefono_contacto: '',
+        direccion_contacto: '',
         tipo_sangre: '',
         eps: '',
         fecha_nacimiento: new Date(),

@@ -10,6 +10,7 @@ import vueFilePond from 'vue-filepond';
 import type { Solicitud as SolicitudType, Sucursal, Equipo, User, Actividad } from '@/types';
 import type { Client as ClientTypes } from '@/types/client';
 import UserService from '@/Services/UserService';
+import FilePondPluginPdfPreview from "filepond-plugin-pdf-preview";
 import { Button } from 'primevue';
 import { onMounted, ref, useTemplateRef, watch } from 'vue';
 const emit = defineEmits(['close']);
@@ -18,7 +19,7 @@ interface Props {
     solicitud: SolicitudType | null;
 }
 
-const FilePond = vueFilePond();
+const FilePond = vueFilePond(FilePondPluginPdfPreview);
 
 const props = defineProps<Props>();
 
@@ -103,7 +104,7 @@ onMounted(async () => {
             form.mail = sucursal ? sucursal.email : '';
         }
         if (props.solicitud.orden_trabajo) {
-            myFiles.value = ['/uploads/' + props.solicitud.orden_trabajo];
+            myFiles.value = [props.solicitud.orden_trabajo];
         }
     }
 });

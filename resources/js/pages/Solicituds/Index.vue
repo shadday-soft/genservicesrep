@@ -12,13 +12,14 @@ import { Head, router, usePage } from '@inertiajs/vue3';
 import Datatable from '@/components/Table/Datatable.vue';
 
 import Modal from '@/components/Modal.vue';
+import CancelSolicitudModal from '@/components/CancelSolicitudModal.vue';
 import SolicitudService from '@/Services/SolicitudsService';
 import Form from '@/pages/Solicituds/Form.vue';
 import { watchDebounced } from '@vueuse/core';
 
 
 const isAutorized = () => {
-   return usePage().props.auth.user.role === 'Administrador';
+    return usePage().props.auth.user.role === 'Administrador';
 }
 
 interface Props {
@@ -31,6 +32,7 @@ interface Props {
 }
 
 const solicitud = ref<Solicitud | null>(null);
+const solicitudToCancel = ref<Solicitud | null>(null);
 
 const props = defineProps<Props>();
 
@@ -46,6 +48,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 const showModal = ref(false);
+const showCancelModal = ref(false);
 
 const add = () => {
     solicitud.value = null;
@@ -59,6 +62,20 @@ const edit = (solicitudData: Solicitud) => {
     solicitud.value = solicitudData;
     console.log(solicitud.value);
     showModal.value = true;
+};
+
+const openCancelModal = (solicitudData: Solicitud) => {
+    solicitudToCancel.value = solicitudData;
+    showCancelModal.value = true;
+};
+
+const handleCancelConfirm = (razon: string) => {
+    if (solicitudToCancel.value) {
+        solicitudService.cancelar(solicitudToCancel.value.id, razon, () => {
+            showCancelModal.value = false;
+            solicitudToCancel.value = null;
+        });
+    }
 };
 
 const onPageChange = (event: any) => {
@@ -128,10 +145,10 @@ const generateReport = (solicitudData: Solicitud) => {
                     </template>
                     <template #actions="{ data }">
                         <Button text v-tooltip.top="`Ver Informe`" @click="generateReport(data)" icon="pi pi-file-pdf"></Button>
-                        <Button icon="pi pi-file" size="small" v-if="isAutorized()" severity="info" text v-tooltip.left="`Generar Informe`" @click="generateReport(data)" />
+                        <Button icon="pi pi-file" size="small" severity="info" text v-tooltip.left="`Generar Informe`" @click="generateReport(data)" />
                         <Button icon="pi pi-pencil" size="small" v-if="isAutorized()" severity="warn" text v-tooltip.left="`Editar`" @click="edit(data)" />
-                        <Button icon="pi pi-trash" size="small" severity="danger" text v-if="isAutorized()"
-                            @click="solicitudService.delete(data.id)" />
+                        <Button icon="pi pi-ban" size="small" severity="danger" text v-if="isAutorized()" v-tooltip.left="`Cancelar`"
+                            @click="openCancelModal(data)" />
                     </template>
                 </Datatable>
             </div>
@@ -173,7 +190,7 @@ const generateReport = (solicitudData: Solicitud) => {
                                     <span>Cliente</span>
                                 </p>
                                 <p class="text-xs font-medium text-gray-900 dark:text-white truncate">
-                                    {{ solicitudItem.empresa?.enterprise_name || 'N/A' }}
+                                    {{ solicitudItem.client?.contact_name|| 'N/A' }}
                                 </p>
                             </div>
                             <div class="min-w-0">
@@ -192,19 +209,19 @@ const generateReport = (solicitudData: Solicitud) => {
                             <div class="min-w-0">
                                 <p class="text-[10px] text-gray-500 dark:text-gray-400 mb-0.5 flex items-center gap-1">
                                     <i class="pi pi-cog text-[9px]"></i>
-                                    <span>Equipo</span>
+                                    <span>Direccion</span>
                                 </p>
                                 <p class="text-xs font-medium text-gray-900 dark:text-white truncate">
-                                    {{ solicitudItem.equipo?.nombre_equipo || 'N/A' }}
+                                    {{ solicitudItem.sucursal?.address || 'N/A' }}
                                 </p>
                             </div>
                             <div class="min-w-0">
                                 <p class="text-[10px] text-gray-500 dark:text-gray-400 mb-0.5 flex items-center gap-1">
                                     <i class="pi pi-user text-[9px]"></i>
-                                    <span>Técnico</span>
+                                    <span>Contcto</span>
                                 </p>
                                 <p class="text-xs font-medium text-gray-900 dark:text-white truncate">
-                                    {{ solicitudItem.user?.name || 'Sin asignar' }}
+                                    {{ solicitudItem.sucursal?.contact_name || 'Sin asignar' }}
                                 </p>
                             </div>
                         </div>
@@ -213,15 +230,12 @@ const generateReport = (solicitudData: Solicitud) => {
                         <div class="grid grid-cols-2 gap-2 pt-1.5 border-t border-gray-100 dark:border-gray-700">
                             <div class="min-w-0">
                                 <p class="text-[10px] text-gray-500 dark:text-gray-400 mb-0.5 flex items-center gap-1">
-                                    <i class="pi pi-calendar text-[9px]"></i>
-                                    <span>Creada</span>
+                                    <i class="pi pi-phone text-[9px]"></i>
+                                    <span>Telefono</span>
                                 </p>
-                                <p class="text-[11px] font-medium text-gray-900 dark:text-white">
-                                    {{ new Date(solicitudItem.created_at).toLocaleDateString('es-ES', { 
-                                        day: '2-digit', 
-                                        month: 'short'
-                                    }) }}
-                                </p>
+                                <a :href="`tel:${solicitudItem.telefono}`" class="text-[11px] font-medium text-gray-900 dark:text-white">
+                                    {{ solicitudItem.telefono || 'N/A' }}
+                                </a>
                             </div>
                             <div class="min-w-0">
                                 <p class="text-[10px] text-gray-500 dark:text-gray-400 mb-0.5 flex items-center gap-1">
@@ -280,6 +294,22 @@ const generateReport = (solicitudData: Solicitud) => {
                                 class="!p-1.5"
                             />
                         </div>
+                        <Button
+                            text
+                            v-tooltip.top="`Ver Informe`"
+                            @click="generateReport(solicitudItem)"
+                            icon="pi pi-file-pdf"
+                            class="!p-1.5"
+                        />
+                        <Button 
+                            icon="pi pi-file" 
+                            size="small" 
+                            severity="info"
+                            text
+                            v-tooltip.top="'Generar Informe'"
+                            @click="generateReport(solicitudItem)"
+                            class="!p-1.5"
+                        />
                         <Button 
                             icon="pi pi-pencil" 
                             size="small"
@@ -291,13 +321,13 @@ const generateReport = (solicitudData: Solicitud) => {
                             v-if="isAutorized()"
                         />
                         <Button 
-                            icon="pi pi-trash" 
+                            icon="pi pi-ban" 
                             size="small" 
                             severity="danger"
                             v-if="isAutorized()"
                             text
-                            v-tooltip.top="'Eliminar'"
-                            @click="solicitudService.delete(solicitudItem.id)"
+                            v-tooltip.top="'Cancelar'"
+                            @click="openCancelModal(solicitudItem)"
                             class="!p-1.5"
                         />
                     </div>
@@ -340,9 +370,15 @@ const generateReport = (solicitudData: Solicitud) => {
             </div>
         </div>
 
-        <Modal v-model="showModal" :title="solicitud?.id ? 'Editar Solicitud' : 'Agregar Solicitud'" :maximizable="true" width="80vw">
-            <Form :solicitud="solicitud" @close="showModal = false" />
+        <Modal v-model="showModal" :title="(solicitud?.id ? 'Editar Solicitud ' : 'Agregar Solicitud ') + (filters?.tipo ?? '')" :maximizable="true" width="80vw">
+            <Form :solicitud="solicitud" @close="showModal = false" :tipo="filters?.tipo" />
         </Modal>
+
+        <CancelSolicitudModal 
+            v-model="showCancelModal" 
+            :solicitud-numero="solicitudToCancel?.numero_orden || undefined"
+            @confirm="handleCancelConfirm"
+        />
     </AppLayout>
 
 </template>

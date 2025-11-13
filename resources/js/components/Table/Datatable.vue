@@ -80,7 +80,7 @@ initializeFilters();
             severity="success"></Button>
         </template>
         <template #body="{ data }">
-          <ColumnsTypes :type="column.type" :column="column" :data="column.field.includes('.')
+          <ColumnsTypes :type="column.type"  :column="column" :data="column.field.includes('.')
               ? column.field.split('.').reduce((acc, key) => acc?.[key], data)
               : data[column.field]
             "></ColumnsTypes>

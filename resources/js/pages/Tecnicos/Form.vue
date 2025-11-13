@@ -38,7 +38,7 @@ const tiposContrato = [
 ];
 
 const fotoPreview = ref<string | null>(
-    props.tecnico?.foto ? `/storage/${props.tecnico.foto}` : null
+    props.tecnico?.foto ? `/uploads/${props.tecnico.foto}` : null
 );
 
 const onFileSelect = (event: any) => {
@@ -109,7 +109,9 @@ const onFileRemove = () => {
             <Input v-model="form.eps" label="EPS" :error="form.errors.eps" />
             
             <!-- Información de contacto -->
-            <Input v-model="form.persona_contacto" label="Persona de Contacto" :error="form.errors.persona_contacto" />
+            <Input v-model="form.persona_contacto" label="Persona de Contacto" :error="form.errors.persona_contacto" class="col-span-full md:col-span-1" />
+            <Input v-model="form.telefono_contacto" label="Teléfono de Contacto" :error="form.errors.telefono_contacto" class="col-span-full md:col-span-1" />
+            <Input v-model="form.direccion_contacto" label="Dirección de Contacto" :error="form.errors.direccion_contacto" class="col-span-full" />
             
             <div class="w-full">
                 <label class="block text-sm font-medium mb-2">Fecha de Nacimiento</label>

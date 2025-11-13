@@ -60,7 +60,7 @@ const mainNavItems: NavItem[] = [
         title: 'Equipos',
         href: equipos.index(),
         icon: CircuitBoard,
-        show: validateRole('Tecnico') || validateRole('Administrador'),
+        show: validateRole('Administrador'),
     },
     {
         title: 'Solicitudes',

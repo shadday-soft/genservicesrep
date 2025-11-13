@@ -60,7 +60,20 @@ export default class Solicitud extends GeneralService {
         return super.store(store(), this.form, onSuccessCallback);
     }
 
-    async delete(id: string) {
-        questionDeleteMessage(destroy(id), 'Esta acción eliminará la solicitud', 'Solicitud');
+    async cancelar(id: string, razonCancelacion: string, onSuccessCallback?: () => void) {
+        try {
+            const response = await axios.post(`/solicituds/${id}/cancelar`, {
+                razon_cancelacion: razonCancelacion
+            });
+            
+            if (response.data) {
+                router.reload({ only: ['solicituds'] });
+                if (onSuccessCallback) {
+                    onSuccessCallback();
+                }
+            }
+        } catch (error) {
+            getErrorMessage('Error al cancelar la solicitud');
+        }
     }
 }

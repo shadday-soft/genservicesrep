@@ -54,7 +54,7 @@ onMounted(async () => {
     const response = await clientService.getClients();
     clientsList.value = Array.isArray(response) ? response : Object.values(response);
     if (props.sucursal && props.sucursal.image) {
-        myFiles.value = ['/storage/' + props.sucursal.image];
+        myFiles.value = ['/uploads/' + props.sucursal.image];
     }
 });
 

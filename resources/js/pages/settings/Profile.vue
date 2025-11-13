@@ -12,14 +12,15 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/AppLayout.vue';
 import SettingsLayout from '@/layouts/settings/Layout.vue';
-import { type BreadcrumbItem } from '@/types';
+import { type BreadcrumbItem, type Tecnico } from '@/types';
 
 interface Props {
     mustVerifyEmail: boolean;
     status?: string;
+    tecnico?: Tecnico | null;
 }
 
-defineProps<Props>();
+const props = defineProps<Props>();
 
 const breadcrumbItems: BreadcrumbItem[] = [
     {
@@ -30,6 +31,7 @@ const breadcrumbItems: BreadcrumbItem[] = [
 
 const page = usePage();
 const user = page.props.auth.user;
+const isTecnico = user.role === 'Tecnico';
 </script>
 
 <template>
@@ -39,8 +41,8 @@ const user = page.props.auth.user;
         <SettingsLayout>
             <div class="flex flex-col space-y-6">
                 <HeadingSmall
-                    title="Información del Perfil"
-                    description="Actualiza tu nombre y dirección de correo electrónico"
+                    :title="isTecnico ? 'Información del Técnico' : 'Información del Perfil'"
+                    :description="isTecnico ? 'Actualiza tu información personal y de contacto' : 'Actualiza tu nombre y dirección de correo electrónico'"
                 />
 
                 <Form
@@ -48,34 +50,119 @@ const user = page.props.auth.user;
                     class="space-y-6"
                     v-slot="{ errors, processing, recentlySuccessful }"
                 >
-                    <div class="grid gap-2">
-                        <Label for="name">Nombre</Label>
-                        <Input
-                            id="name"
-                            class="mt-1 block w-full"
-                            name="name"
-                            :default-value="user.name"
-                            required
-                            autocomplete="name"
-                            placeholder="Nombre completo"
-                        />
-                        <InputError class="mt-2" :message="errors.name" />
-                    </div>
+                    <!-- Campos para técnicos -->
+                    <template v-if="isTecnico && props.tecnico">
+                        <div class="grid gap-2">
+                            <Label for="nombre_completo">Nombre Completo</Label>
+                            <Input
+                                id="nombre_completo"
+                                class="mt-1 block w-full"
+                                name="nombre_completo"
+                                :default-value="props.tecnico.nombre_completo"
+                                required
+                                autocomplete="name"
+                                placeholder="Nombre completo"
+                            />
+                            <InputError class="mt-2" :message="errors.nombre_completo" />
+                        </div>
 
-                    <div class="grid gap-2">
-                        <Label for="email">Correo Electrónico</Label>
-                        <Input
-                            id="email"
-                            type="email"
-                            class="mt-1 block w-full"
-                            name="email"
-                            :default-value="user.email"
-                            required
-                            autocomplete="username"
-                            placeholder="Correo electrónico"
-                        />
-                        <InputError class="mt-2" :message="errors.email" />
-                    </div>
+                        <div class="grid gap-2">
+                            <Label for="identificacion">Identificación</Label>
+                            <Input
+                                id="identificacion"
+                                class="mt-1 block w-full"
+                                name="identificacion"
+                                :default-value="props.tecnico.identificacion"
+                                required
+                                placeholder="Número de identificación"
+                            />
+                            <InputError class="mt-2" :message="errors.identificacion" />
+                        </div>
+
+                        <div class="grid gap-2">
+                            <Label for="correo">Correo Electrónico</Label>
+                            <Input
+                                id="correo"
+                                type="email"
+                                class="mt-1 block w-full"
+                                name="correo"
+                                :default-value="props.tecnico.correo"
+                                required
+                                autocomplete="email"
+                                placeholder="Correo electrónico"
+                            />
+                            <InputError class="mt-2" :message="errors.correo" />
+                        </div>
+
+                        <div class="grid gap-2">
+                            <Label for="persona_contacto">Persona de Contacto</Label>
+                            <Input
+                                id="persona_contacto"
+                                class="mt-1 block w-full"
+                                name="persona_contacto"
+                                :default-value="props.tecnico.persona_contacto ?? ''"
+                                placeholder="Nombre de la persona de contacto"
+                            />
+                            <InputError class="mt-2" :message="errors.persona_contacto" />
+                        </div>
+
+                        <div class="grid gap-2">
+                            <Label for="telefono_contacto">Teléfono de Contacto</Label>
+                            <Input
+                                id="telefono_contacto"
+                                type="tel"
+                                class="mt-1 block w-full"
+                                name="telefono_contacto"
+                                :default-value="props.tecnico.telefono_contacto ?? ''"
+                                placeholder="Número de teléfono"
+                            />
+                            <InputError class="mt-2" :message="errors.telefono_contacto" />
+                        </div>
+
+                        <div class="grid gap-2">
+                            <Label for="direccion_contacto">Dirección de Contacto</Label>
+                            <Input
+                                id="direccion_contacto"
+                                class="mt-1 block w-full"
+                                name="direccion_contacto"
+                                :default-value="props.tecnico.direccion_contacto ?? ''"
+                                placeholder="Dirección completa"
+                            />
+                            <InputError class="mt-2" :message="errors.direccion_contacto" />
+                        </div>
+                    </template>
+
+                    <!-- Campos para usuarios regulares -->
+                    <template v-else>
+                        <div class="grid gap-2">
+                            <Label for="name">Nombre</Label>
+                            <Input
+                                id="name"
+                                class="mt-1 block w-full"
+                                name="name"
+                                :default-value="user.name"
+                                required
+                                autocomplete="name"
+                                placeholder="Nombre completo"
+                            />
+                            <InputError class="mt-2" :message="errors.name" />
+                        </div>
+
+                        <div class="grid gap-2">
+                            <Label for="email">Correo Electrónico</Label>
+                            <Input
+                                id="email"
+                                type="email"
+                                class="mt-1 block w-full"
+                                name="email"
+                                :default-value="user.email"
+                                required
+                                autocomplete="username"
+                                placeholder="Correo electrónico"
+                            />
+                            <InputError class="mt-2" :message="errors.email" />
+                        </div>
+                    </template>
 
                     <div v-if="mustVerifyEmail && !user.email_verified_at">
                         <p class="-mt-4 text-sm text-muted-foreground">

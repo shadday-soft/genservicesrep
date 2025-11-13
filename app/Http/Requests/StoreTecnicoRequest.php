@@ -27,6 +27,8 @@ class StoreTecnicoRequest extends FormRequest
             'correo' => ['required', 'email', 'max:255', 'unique:tecnicos,correo', 'unique:users,email'],
             'nombre_completo' => ['required', 'string', 'max:255'],
             'persona_contacto' => ['nullable', 'string', 'max:255'],
+            'telefono_contacto' => ['nullable', 'string', 'max:20'],
+            'direccion_contacto' => ['nullable', 'string', 'max:500'],
             'tipo_sangre' => ['nullable', 'in:A+,A-,B+,B-,AB+,AB-,O+,O-'],
             'eps' => ['nullable', 'string', 'max:255'],
             'fecha_nacimiento' => ['nullable', 'date', 'before:today'],

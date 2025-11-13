@@ -137,6 +137,7 @@ export interface Solicitud {
     prioridad: 'Normal' | 'Intermedio' | 'Urgente';
     detalles?: string | null;
     estado: 'Nueva' | 'Proceso' | 'Revisión' | 'Finalizada' | 'Anulada' | 'Programada';
+    razon_cancelacion?: string | null;
     mantenimiento_id?: string | null;
     fecha_mantenimiento?: string | null;
     telefono?: string | null;
@@ -148,7 +149,7 @@ export interface Solicitud {
     created_at: string;
     updated_at: string;
 
-    empresa?: Client;
+    client?: Client;
     sucursal?: Sucursal;
     equipo?: Equipo;
     user?: User;
@@ -182,6 +183,8 @@ export interface Tecnico {
     correo: string;
     nombre_completo: string;
     persona_contacto: string | null;
+    telefono_contacto: string | null;
+    direccion_contacto: string | null;
     tipo_sangre: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-' | null;
     eps: string | null;
     fecha_nacimiento: string | null;

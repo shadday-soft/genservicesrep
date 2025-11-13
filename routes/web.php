@@ -10,6 +10,7 @@ use App\Http\Controllers\InformeController;
 use App\Http\Controllers\SolicitudController;
 use App\Http\Controllers\SucursalController;
 use App\Http\Controllers\TecnicoController;
+use App\Http\Middleware\VerifyadminRole;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -18,19 +19,20 @@ Route::get('/', function () {
 
 Route::get('dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
-    ->name('dashboard');
+    ->name('dashboard')->middleware(VerifyadminRole::class);
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::resource('clients', ClientController::class);
-    Route::resource('users', UserController::class);
-    Route::put('users/{user}/role', [\App\Http\Controllers\Auth\UserController::class, 'updateRole'])->name('users.updateRole');
-    Route::resource('sucursals', SucursalController::class);
-    Route::resource('equipos', EquipoController::class);
-    Route::post('equipos/{equipo}/renew', [EquipoController::class, 'renew'])->name('equipos.renew');
+    Route::resource('clients', ClientController::class)->middleware(VerifyadminRole::class);
+    Route::resource('users', UserController::class)->middleware(VerifyadminRole::class);
+    Route::put('users/{user}/role', [\App\Http\Controllers\Auth\UserController::class, 'updateRole'])->name('users.updateRole')->middleware(VerifyadminRole::class);
+    Route::resource('sucursals', SucursalController::class)->middleware(VerifyadminRole::class);
+    Route::resource('equipos', EquipoController::class)->middleware(VerifyadminRole::class);
+    Route::post('equipos/{equipo}/renew', [EquipoController::class, 'renew'])->name('equipos.renew')->middleware(VerifyadminRole::class);
     Route::resource('solicituds', SolicitudController::class);
+    Route::post('solicituds/{solicitud}/cancelar', [SolicitudController::class, 'cancelar'])->name('solicituds.cancelar')->middleware(VerifyadminRole::class);
     Route::get('solicituds-cronograma', [SolicitudController::class, 'cronograma'])->name('solicituds.cronograma');
-    Route::resource('actividads', ActividadController::class);
-    Route::resource('tecnicos', TecnicoController::class);
+    Route::resource('actividads', ActividadController::class)->middleware(VerifyadminRole::class);
+    Route::resource('tecnicos', TecnicoController::class)->middleware(VerifyadminRole::class);
 
     Route::post('StoreInforme', [InformeController::class, 'store'])->name('StoreInforme');
     Route::get('informe/{solicitud}', [InformeController::class, 'create'])->name('informe');
