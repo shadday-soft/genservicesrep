@@ -191,6 +191,7 @@ export interface Tecnico {
     fecha_inicio_contrato: string;
     fecha_fin_contrato: string | null;
     tipo_contrato: 'Indefinido' | 'Fijo' | 'Obra o labor' | 'Prestación de servicios';
+    activo: boolean;
     created_at: string;
     updated_at: string;
     user?: User;

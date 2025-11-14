@@ -136,14 +136,14 @@ export default class Equipo extends GeneralService {
             case 'Mensual':
                 incremento = 31;
                 break;
+            case 'Bimestral':
+                incremento = 61;
+                break;
             case 'Trimestral':
                 incremento = 365 / 4 + 1;
                 break;
-            case 'Semestral':
-                incremento = 365 / 2 + 1;
-                break;
-            case 'Anual':
-                incremento = 365;
+            case 'Cuatrimestral':
+                incremento = 365 / 3 + 1;
                 break;
             default:
                 return fechas;

@@ -42,7 +42,7 @@ const tipo = ref(props.filters?.tipo || '');
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: "Solicitudes",
+        title: "Solicitudes " + (props.filters?.tipo ? `(${props.filters.tipo})` : ''),
         href: "/solicituds",
     },
 ];

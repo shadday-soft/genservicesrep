@@ -116,9 +116,9 @@ const previewFechas = computed(() => {
     switch (renewPeriodicidad.value) {
         case 'Semanal': incremento = 7; break;
         case 'Mensual': incremento = 31; break;
+        case 'Bimestral': incremento = 61; break;
         case 'Trimestral': incremento = Math.round(365 / 4) + 1; break;
-        case 'Semestral': incremento = Math.round(365 / 2) + 1; break;
-        case 'Anual': incremento = 365; break;
+        case 'Cuatrimestral': incremento = Math.round(365 / 3) + 1; break;
         default: incremento = 0; break;
     }
 
@@ -264,9 +264,9 @@ watchDebounced(
                     <select v-model="renewPeriodicidad" class="w-full rounded border px-2 py-1 text-sm">
                         <option>Semanal</option>
                         <option>Mensual</option>
+                        <option>Bimestral</option>
                         <option>Trimestral</option>
-                        <option>Semestral</option>
-                        <option>Anual</option>
+                        <option>Cuatrimestral</option>
                     </select>
                 </div>
 

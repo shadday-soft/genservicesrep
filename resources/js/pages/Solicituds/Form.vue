@@ -115,9 +115,6 @@ onMounted(async () => {
     <div>
         <form @submit.prevent="solicitudService.submit(() => emit('close'))"
             class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <!-- Número de Orden (Autogenerado) -->
-            <!-- <Input v-model="form.numero_orden" label="Número de Orden" :error="form.errors.numero_orden"
-                placeholder="Generado automáticamente" disabled></Input> -->
 
             <!-- Empresa -->
             <Input v-model="form.client_id" type="select" label="Empresa" :error="form.errors.client_id"
@@ -139,7 +136,7 @@ onMounted(async () => {
                 option-label="nombre" option-value="nombre" :options="actividadesList"></Input>
 
             <!-- Estado -->
-            <Input v-model="form.estado" type="select" label="Estado de solicitud" :error="form.errors.estado"
+            <Input v-model="form.estado" type="select" v-if="props.solicitud" label="Estado de solicitud" :error="form.errors.estado"
                 option-label="label" option-value="value" :options="estadoOptions"></Input>
 
             <!-- Técnico Asignado -->

@@ -17,14 +17,22 @@ class Tecnico extends Model
 
     protected $guarded = [];
 
+    protected function casts(): array
+    {
+        return [
+            'activo' => 'boolean',
+        ];
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function foto(){
+    public function foto()
+    {
         return Attribute::make(
-            get: fn ($value) => $value ? asset('uploads/' . $value) : null,
+            get: fn ($value) => $value ? asset('uploads/'.$value) : null,
         );
     }
 }

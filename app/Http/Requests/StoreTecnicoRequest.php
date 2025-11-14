@@ -35,6 +35,7 @@ class StoreTecnicoRequest extends FormRequest
             'fecha_inicio_contrato' => ['required', 'date'],
             'fecha_fin_contrato' => ['nullable', 'date', 'after:fecha_inicio_contrato'],
             'tipo_contrato' => ['required', 'in:Indefinido,Fijo,Obra o labor,Prestación de servicios'],
+            'activo' => ['nullable', 'boolean'],
         ];
     }
 

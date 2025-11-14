@@ -24,12 +24,21 @@ class TecnicoFactory extends Factory
         $fechaInicio = fake()->dateTimeBetween('-2 years', 'now');
         $fechaFin = fake()->boolean(70) ? fake()->dateTimeBetween($fechaInicio, '+2 years') : null;
 
+        $identificacion = fake()->unique()->numerify('##########');
+        $correo = fake()->unique()->safeEmail();
+        $nombreCompleto = fake()->name();
+
         return [
-            'user_id' => User::factory()->state(['role' => 'Tecnico']),
+            'user_id' => User::factory()->state([
+                'role' => 'Tecnico',
+                'email' => $correo,
+                'name' => $nombreCompleto,
+                'password' => bcrypt($identificacion), // Password es la identificación
+            ]),
             'foto' => fake()->boolean(50) ? 'tecnicos/'.fake()->uuid().'.jpg' : null,
-            'identificacion' => fake()->unique()->numerify('##########'),
-            'correo' => fake()->unique()->safeEmail(),
-            'nombre_completo' => fake()->name(),
+            'identificacion' => $identificacion,
+            'correo' => $correo,
+            'nombre_completo' => $nombreCompleto,
             'persona_contacto' => fake()->name(),
             'tipo_sangre' => fake()->randomElement($tiposSangre),
             'eps' => fake()->randomElement($eps),
@@ -37,6 +46,17 @@ class TecnicoFactory extends Factory
             'fecha_inicio_contrato' => $fechaInicio,
             'fecha_fin_contrato' => $fechaFin,
             'tipo_contrato' => fake()->randomElement($tiposContrato),
+            'activo' => fake()->boolean(90), // 90% activos, 10% inactivos
         ];
+    }
+
+    /**
+     * Indicate that the technician is inactive.
+     */
+    public function inactive(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'activo' => false,
+        ]);
     }
 }

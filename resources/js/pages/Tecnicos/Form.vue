@@ -7,6 +7,7 @@ import { Button } from 'primevue';
 import FileUpload from 'primevue/fileupload';
 import Select from 'primevue/select';
 import DatePicker from 'primevue/datepicker';
+import InputSwitch from 'primevue/inputswitch';
 
 const emit = defineEmits(['close']);
 
@@ -162,6 +163,20 @@ const onFileRemove = () => {
                     showIcon
                 />
                 <p v-if="form.errors.fecha_fin_contrato" class="mt-1 text-sm text-red-600">{{ form.errors.fecha_fin_contrato }}</p>
+            </div>
+
+            <!-- Estado del técnico -->
+            <div class="col-span-full flex flex-col gap-2">
+                <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Estado del Técnico
+                </label>
+                <div class="flex items-center gap-3">
+                    <InputSwitch v-model="form.activo" :binary="true" />
+                    <span class="text-sm text-gray-600 dark:text-gray-400">
+                        {{ form.activo ? 'Técnico Activo (puede iniciar sesión)' : 'Técnico Bloqueado (no puede iniciar sesión)' }}
+                    </span>
+                </div>
+                <p v-if="form.errors.activo" class="mt-1 text-sm text-red-600">{{ form.errors.activo }}</p>
             </div>
 
             <div class="mt-6 flex justify-end col-span-full gap-2">

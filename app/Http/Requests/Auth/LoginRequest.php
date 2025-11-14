@@ -52,6 +52,19 @@ class LoginRequest extends FormRequest
             ]);
         }
 
+        // Verificar si el usuario es un técnico bloqueado
+        if ($user->role === 'Tecnico') {
+            $tecnico = $user->tecnico;
+
+            if ($tecnico && ! $tecnico->activo) {
+                RateLimiter::hit($this->throttleKey());
+
+                throw ValidationException::withMessages([
+                    'email' => 'Esta cuenta de técnico está deshabilitada. Contacte al administrador.',
+                ]);
+            }
+        }
+
         RateLimiter::clear($this->throttleKey());
 
         return $user;

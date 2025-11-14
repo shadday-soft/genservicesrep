@@ -224,9 +224,9 @@ const getSucursalsForClient = async (clientId: string) => {
                 <Input v-model="form.periodicidad" label="Periodicidad" type="select" @select="calcularProximosMantenimientos()" :options="[
                     { label: 'Semanal', value: 'Semanal' },
                     { label: 'Mensual', value: 'Mensual' },
+                    { label: 'Bimestral', value: 'Bimestral' },
                     { label: 'Trimestral', value: 'Trimestral' },
-                    { label: 'Semestral', value: 'Semestral' },
-                    { label: 'Anual', value: 'Anual' }
+                    { label: 'Cuatrimestral', value: 'Cuatrimestral' }
                 ]"></Input>
 
                 <Input v-model:date="form.fecha_primer_mantenimiento" @select="calcularProximosMantenimientos" label="Fecha del Primer Mantenimiento" type="date"></Input>
