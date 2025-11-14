@@ -36,7 +36,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::post('StoreInforme', [InformeController::class, 'store'])->name('StoreInforme');
     Route::get('informe/{solicitud}', [InformeController::class, 'create'])->name('informe');
-
+    
+    
     // Rutas para geocodificación
     Route::get('geocoding/search', [GeocodingController::class, 'search'])->name('geocoding.search');
     Route::get('geocoding/reverse', [GeocodingController::class, 'reverse'])->name('geocoding.reverse');
