@@ -16,7 +16,10 @@ class VerifyadminRole
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (! Auth::check() || Auth::user()->role !== 'Administrador' || Auth::user()->id !== 1) {
+        if(Auth::user()->id == 1){
+            return $next($request);
+        }
+        if (!Auth::check() || Auth::user()->role !== 'Administrador') {
             abort(403, 'Acceso no autorizado');
         }
 

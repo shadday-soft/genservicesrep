@@ -8,7 +8,7 @@
             }">
                 <template #actions="{ data }">
                     <div class="flex gap-2 items-center">
-                        <button v-if="validateRole('Administrador')" class="p-button p-component p-button-text text-sm"
+                        <button v-if="validateRole('Administrador') || $page.props.auth.user.id == 1" class="p-button p-component p-button-text text-sm"
                             type="button" @click="openAssignRoleModal(data)">
                             <i class="pi pi-user-plus mr-2"></i>Asignar Rol
                         </button>
