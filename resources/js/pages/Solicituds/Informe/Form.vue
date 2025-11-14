@@ -25,6 +25,16 @@ interface Props {
     solicitud: Solicitud;
 }
 
+function assignMatchingKeys(source: { [key: string]: any }, target: { [key: string]: any }) {
+    Object.keys(source).forEach((key: string) => {
+        if (key in target) {
+            target[key] = source[key];
+        }
+    });
+}
+
+
+
 const props = defineProps<Props>();
 
 // Form data
@@ -166,6 +176,9 @@ const form = useForm({
     processing: false,
     errors: {} as Record<string, string>
 });
+
+
+assignMatchingKeys(props.informe || {}, form);
 
 const tiposServicio = [
     { label: 'Mantenimiento', value: 'Mantenimiento' },

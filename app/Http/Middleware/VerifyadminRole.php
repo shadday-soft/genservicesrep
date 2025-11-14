@@ -20,7 +20,7 @@ class VerifyadminRole
             return $next($request);
         }
         if (!Auth::check() || Auth::user()->role !== 'Administrador') {
-            abort(403, 'Acceso no autorizado');
+            return redirect()->route('solicituds.index');
         }
 
         return $next($request);

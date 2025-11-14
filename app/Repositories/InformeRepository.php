@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Interfaces\InformeInterface;
 use App\Models\Informe;
+use App\Models\Solicitud;
 use Illuminate\Support\Facades\Storage;
 
 class InformeRepository extends BaseRepository implements InformeInterface
@@ -27,7 +28,15 @@ class InformeRepository extends BaseRepository implements InformeInterface
         // Procesar fotos después
         $data = $this->handlePhotoUploads($data, 'despues');
 
-        return parent::create($data);
+        $solicitudId = $data['solicitud_id'] ?? null;
+        if ($solicitudId) {
+            $solicitud = Solicitud::find($solicitudId);
+            if ($solicitud) {
+                $solicitud->informe_generado = true;
+                $solicitud->save();
+            }
+        }
+       return  parent::create($data);
     }
 
     public function update($id, array $data)

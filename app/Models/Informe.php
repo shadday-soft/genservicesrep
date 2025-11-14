@@ -13,4 +13,9 @@ class Informe extends Model
     protected $table = 'plantas_electricas';
 
     protected $guarded = [];
+
+    public function solicitud()
+    {
+        return $this->belongsTo(Solicitud::class);
+    }
 }

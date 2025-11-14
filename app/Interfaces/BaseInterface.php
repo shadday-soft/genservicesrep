@@ -15,4 +15,6 @@ interface BaseInterface
     public function delete(int $id);
 
     public function getAllData();
+
+    public function findBy(string $field, $value);
 }

@@ -105,12 +105,19 @@ watchDebounced(
     { debounce: 500 }
 );
 
-const generateReport = (solicitudData: Solicitud) => {
+const crearReporte = (solicitudData: Solicitud) => {
     router.get(`/informe/${solicitudData.id}`, {}, {
         preserveState: true,
         preserveScroll: true,
     });
 };
+
+const generateReport = (solicitudData: Solicitud) => {
+    window.location.href = `/informe/${solicitudData.id}/pdf`;
+};
+
+
+
 
 </script>
 
@@ -127,11 +134,7 @@ const generateReport = (solicitudData: Solicitud) => {
                         <InputIcon>
                             <i class="pi pi-search" />
                         </InputIcon>
-                        <Input 
-                            v-model="searchQuery" 
-                            placeholder="Buscar solicitudes..." 
-                            class="w-full"
-                        />
+                        <Input v-model="searchQuery" placeholder="Buscar solicitudes..." class="w-full" />
                     </IconField>
                 </div>
                 <Button label="Agregar Solicitud" v-if="isAutorized()" icon="pi pi-plus" size="small" @click="add" />
@@ -144,38 +147,38 @@ const generateReport = (solicitudData: Solicitud) => {
                         <!-- Removido porque ahora está arriba -->
                     </template>
                     <template #actions="{ data }">
-                        <Button text v-tooltip.top="`Ver Informe`" @click="generateReport(data)" icon="pi pi-file-pdf"></Button>
-                        <Button icon="pi pi-file" size="small" severity="info" text v-tooltip.left="`Generar Informe`" @click="generateReport(data)" />
-                        <Button icon="pi pi-pencil" size="small" v-if="isAutorized()" severity="warn" text v-tooltip.left="`Editar`" @click="edit(data)" />
-                        <Button icon="pi pi-ban" size="small" severity="danger" text v-if="isAutorized()" v-tooltip.left="`Cancelar`"
-                            @click="openCancelModal(data)" />
+                        <div class="flex justify-end">
+                            <Button text v-tooltip.top="`Ver Informe`" @click="generateReport(data)"
+                                icon="pi pi-file-pdf" v-if="data.informe_generado"></Button>
+                            <Button icon="pi pi-file" size="small" severity="info" text
+                                v-tooltip.left="`Generar Informe`" @click="crearReporte(data)" />
+                            <Button icon="pi pi-pencil" size="small" v-if="isAutorized()" severity="warn" text
+                                v-tooltip.left="`Editar`" @click="edit(data)" />
+                            <Button icon="pi pi-ban" size="small" severity="danger" text v-if="isAutorized()"
+                                v-tooltip.left="`Cancelar`" @click="openCancelModal(data)" />
+                        </div>
                     </template>
                 </Datatable>
             </div>
 
             <!-- Vista de Tarjetas para móviles -->
             <div class="md:hidden space-y-3">
-                <div 
-                    v-for="solicitudItem in solicituds.data" 
-                    :key="solicitudItem.id"
-                    class="bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700 overflow-hidden"
-                >
+                <div v-for="solicitudItem in solicituds.data" :key="solicitudItem.id"
+                    class="bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700 overflow-hidden">
                     <!-- Header compacto de la tarjeta -->
-                    <div class="px-3 py-2 bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+                    <div
+                        class="px-3 py-2 bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
                         <div class="flex items-center gap-1.5">
                             <i class="pi pi-file text-gray-500 dark:text-gray-400 text-xs"></i>
                             <span class="text-sm font-semibold text-gray-900 dark:text-white">
                                 #{{ solicitudItem.numero_orden }}
                             </span>
                         </div>
-                        <span 
-                            :class="{
-                                'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-200': solicitudItem.prioridad === 'Normal',
-                                'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-200': solicitudItem.prioridad === 'Intermedio',
-                                'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-200': solicitudItem.prioridad === 'Urgente'
-                            }"
-                            class="px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wide"
-                        >
+                        <span :class="{
+                            'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-200': solicitudItem.prioridad === 'Normal',
+                            'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-200': solicitudItem.prioridad === 'Intermedio',
+                            'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-200': solicitudItem.prioridad === 'Urgente'
+                        }" class="px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wide">
                             {{ solicitudItem.prioridad }}
                         </span>
                     </div>
@@ -190,7 +193,7 @@ const generateReport = (solicitudData: Solicitud) => {
                                     <span>Cliente</span>
                                 </p>
                                 <p class="text-xs font-medium text-gray-900 dark:text-white truncate">
-                                    {{ solicitudItem.client?.contact_name|| 'N/A' }}
+                                    {{ solicitudItem.client?.contact_name || 'N/A' }}
                                 </p>
                             </div>
                             <div class="min-w-0">
@@ -233,7 +236,8 @@ const generateReport = (solicitudData: Solicitud) => {
                                     <i class="pi pi-phone text-[9px]"></i>
                                     <span>Telefono</span>
                                 </p>
-                                <a :href="`tel:${solicitudItem.telefono}`" class="text-[11px] font-medium text-gray-900 dark:text-white">
+                                <a :href="`tel:${solicitudItem.telefono}`"
+                                    class="text-[11px] font-medium text-gray-900 dark:text-white">
                                     {{ solicitudItem.telefono || 'N/A' }}
                                 </a>
                             </div>
@@ -243,12 +247,12 @@ const generateReport = (solicitudData: Solicitud) => {
                                     <span>Programada</span>
                                 </p>
                                 <p class="text-[11px] font-medium text-gray-900 dark:text-white">
-                                    {{ solicitudItem.fecha_programada 
-                                        ? new Date(solicitudItem.fecha_programada).toLocaleDateString('es-ES', { 
-                                            day: '2-digit', 
+                                    {{ solicitudItem.fecha_programada
+                                        ? new Date(solicitudItem.fecha_programada).toLocaleDateString('es-ES', {
+                                            day: '2-digit',
                                             month: 'short'
                                         })
-                                        : 'Sin prog.' 
+                                        : 'Sin prog.'
                                     }}
                                 </p>
                             </div>
@@ -256,94 +260,48 @@ const generateReport = (solicitudData: Solicitud) => {
                     </div>
 
                     <!-- Footer compacto con acciones -->
-                    <div class="px-3 py-2 bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 flex justify-end gap-1.5">
+                    <div
+                        class="px-3 py-2 bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 flex justify-end gap-1.5">
                         <div class="flex items-center gap-1.5">
                             <!-- Mostrar opciones si hay coordenadas -->
                             <template v-if="solicitudItem.sucursal?.latitude && solicitudItem.sucursal?.longitude">
-                                <a
-                                    :href="`https://www.google.com/maps/dir/?api=1&destination=${solicitudItem.sucursal.latitude},${solicitudItem.sucursal.longitude}`"
-                                    target="_blank"
-                                    rel="noopener"
-                                >
-                                    <Button
-                                        text
-                                        icon="pi pi-map"
-                                        size="small"
-                                        v-tooltip.top="'Abrir en Google Maps'"
-                                        class="!p-1.5"
-                                    />
+                                <a :href="`https://www.google.com/maps/dir/?api=1&destination=${solicitudItem.sucursal.latitude},${solicitudItem.sucursal.longitude}`"
+                                    target="_blank" rel="noopener">
+                                    <Button text icon="pi pi-map" size="small" v-tooltip.top="'Abrir en Google Maps'"
+                                        class="!p-1.5" />
                                 </a>
 
-                                <a
-                                    :href="`https://waze.com/ul?ll=${solicitudItem.sucursal.latitude},${solicitudItem.sucursal.longitude}&navigate=yes`"
-                                    target="_blank"
-                                    rel="noopener"
-                                >
-                                <img src="/svg/waze.svg" class="size-4" alt="">
+                                <a :href="`https://waze.com/ul?ll=${solicitudItem.sucursal.latitude},${solicitudItem.sucursal.longitude}&navigate=yes`"
+                                    target="_blank" rel="noopener">
+                                    <img src="/svg/waze.svg" class="size-4" alt="">
                                 </a>
                             </template>
 
                             <!-- Si no hay coordenadas -->
-                            <Button
-                                v-else
-                                icon="pi pi-map"
-                                size="small"
-                                text
-                                disabled
-                                v-tooltip.top="'Coordenadas no disponibles'"
-                                class="!p-1.5"
-                            />
+                            <Button v-else icon="pi pi-map" size="small" text disabled
+                                v-tooltip.top="'Coordenadas no disponibles'" class="!p-1.5" />
                         </div>
-                        <Button
-                            text
-                            v-tooltip.top="`Ver Informe`"
-                            @click="generateReport(solicitudItem)"
-                            icon="pi pi-file-pdf"
-                            class="!p-1.5"
-                        />
-                        <Button 
-                            icon="pi pi-file" 
-                            size="small" 
-                            severity="info"
-                            text
-                            v-tooltip.top="'Generar Informe'"
-                            @click="generateReport(solicitudItem)"
-                            class="!p-1.5"
-                        />
-                        <Button 
-                            icon="pi pi-pencil" 
-                            size="small"
-                            severity="warn"
-                            text
-                            v-tooltip.top="'Editar'"
-                            @click="edit(solicitudItem)"
-                            class="!p-1.5"
-                            v-if="isAutorized()"
-                        />
-                        <Button 
-                            icon="pi pi-ban" 
-                            size="small" 
-                            severity="danger"
-                            v-if="isAutorized()"
-                            text
-                            v-tooltip.top="'Cancelar'"
-                            @click="openCancelModal(solicitudItem)"
-                            class="!p-1.5"
-                        />
+                        <Button text v-if="solicitudItem.informe_generado" v-tooltip.top="`Ver Informe`"
+                            @click="generateReport(solicitudItem)" icon="pi pi-file-pdf" class="!p-1.5" />
+                        <Button icon="pi pi-file" size="small" severity="info" text v-tooltip.top="'Generar Informe'"
+                            @click="generateReport(solicitudItem)" class="!p-1.5" />
+                        <Button icon="pi pi-pencil" size="small" severity="warn" text v-tooltip.top="'Editar'"
+                            @click="edit(solicitudItem)" class="!p-1.5" v-if="isAutorized()" />
+                        <Button icon="pi pi-ban" size="small" severity="danger" v-if="isAutorized()" text
+                            v-tooltip.top="'Cancelar'" @click="openCancelModal(solicitudItem)" class="!p-1.5" />
                     </div>
                 </div>
 
                 <!-- Mensaje cuando no hay datos -->
-                <div 
-                    v-if="solicituds.data.length === 0"
-                    class="text-center py-8 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
-                >
+                <div v-if="solicituds.data.length === 0"
+                    class="text-center py-8 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
                     <i class="pi pi-inbox text-3xl text-gray-400 dark:text-gray-600 mb-2"></i>
                     <p class="text-sm text-gray-600 dark:text-gray-400">No se encontraron solicitudes</p>
                 </div>
             </div>
 
-            <div class="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-gray-200 dark:border-gray-700 pt-4">
+            <div
+                class="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-gray-200 dark:border-gray-700 pt-4">
                 <div class="flex items-center gap-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
                     <span>Mostrando</span>
                     <span class="font-semibold text-gray-900 dark:text-white">
@@ -358,27 +316,22 @@ const generateReport = (solicitudData: Solicitud) => {
                     <span class="hidden sm:inline">solicitudes</span>
                 </div>
 
-                <Paginator 
-                    :rows="solicituds.per_page"
-                    :totalRecords="solicituds.total"
+                <Paginator :rows="solicituds.per_page" :totalRecords="solicituds.total"
                     :first="(solicituds.current_page - 1) * solicituds.per_page"
-                    :rowsPerPageOptions="[10, 15, 20, 30, 50]"
-                    @page="onPageChange"
+                    :rowsPerPageOptions="[10, 15, 20, 30, 50]" @page="onPageChange"
                     template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
-                    class="paginator-custom"
-                />
+                    class="paginator-custom" />
             </div>
         </div>
 
-        <Modal v-model="showModal" :title="(solicitud?.id ? 'Editar Solicitud ' : 'Agregar Solicitud ') + (filters?.tipo ?? '')" :maximizable="true" width="80vw">
+        <Modal v-model="showModal"
+            :title="(solicitud?.id ? 'Editar Solicitud ' : 'Agregar Solicitud ') + (filters?.tipo ?? '')"
+            :maximizable="true" width="80vw">
             <Form :solicitud="solicitud" @close="showModal = false" :tipo="filters?.tipo" />
         </Modal>
 
-        <CancelSolicitudModal 
-            v-model="showCancelModal" 
-            :solicitud-numero="solicitudToCancel?.numero_orden || undefined"
-            @confirm="handleCancelConfirm"
-        />
+        <CancelSolicitudModal v-model="showCancelModal" :solicitud-numero="solicitudToCancel?.numero_orden || undefined"
+            @confirm="handleCancelConfirm" />
     </AppLayout>
 
 </template>
@@ -413,6 +366,7 @@ const generateReport = (solicitudData: Solicitud) => {
 
 /* Móvil: botones más pequeños */
 @media (max-width: 640px) {
+
     :deep(.paginator-custom .p-paginator-page),
     :deep(.paginator-custom .p-paginator-first),
     :deep(.paginator-custom .p-paginator-prev),
