@@ -7,7 +7,6 @@ use App\Http\Requests\UpdateInformeRequest;
 use App\Interfaces\InformeInterface;
 use App\Models\Informe;
 use App\Models\Solicitud;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
@@ -138,7 +137,7 @@ class InformeController extends Controller
         }
 
         // Generar el PDF
-        $pdf = Pdf::loadView('pdf.planta_electrica', compact('registro', 'solicitud'));
+        $pdf = \Pdf::loadView('pdf.planta_electrica', compact('registro', 'solicitud'));
         $pdf->setPaper('letter', 'portrait');
 
         // Descargar el PDF

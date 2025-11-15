@@ -15,7 +15,6 @@ class EquipoRepository extends BaseRepository implements EquipoInterface
 
     public function create(array $data)
     {
-        $fecha_primer_mantenimiento = $data['fecha_primer_mantenimiento'];
         unset($data['fecha_primer_mantenimiento']);
         $equipo = parent::create($data);
         // array_push($data['proximas_fechas_mantenimiento'], $fecha_primer_mantenimiento);
