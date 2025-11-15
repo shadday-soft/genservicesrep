@@ -33,7 +33,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('solicituds-cronograma', [SolicitudController::class, 'cronograma'])->name('solicituds.cronograma');
     Route::resource('actividads', ActividadController::class)->middleware(VerifyadminRole::class);
     Route::resource('tecnicos', TecnicoController::class)->middleware(VerifyadminRole::class);
-
+    Route::get('clientes/retored', [ClientController::class, 'retored'])->name('clients.retored')->middleware(VerifyadminRole::class);
+    Route::get('retored/sucursales', [SucursalController::class, 'retored'])->name('sucursals.retored')->middleware(VerifyadminRole::class);
     Route::post('StoreInforme', [InformeController::class, 'store'])->name('StoreInforme');
     Route::get('informe/{solicitud}', [InformeController::class, 'create'])->name('informe');
     Route::get('informe/{solicitud}/pdf', [InformeController::class, 'generatePDF'])->name('informe.pdf');

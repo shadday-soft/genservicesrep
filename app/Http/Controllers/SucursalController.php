@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreSucursalRequest;
 use App\Http\Requests\UpdateSucursalRequest;
 use App\Interfaces\SucursalInterface;
+use App\Models\Client;
 use App\Models\Sucursal;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
 class SucursalController extends Controller
@@ -34,6 +36,23 @@ class SucursalController extends Controller
                 'per_page' => $perPage,
             ],
         ]);
+    }
+
+    public function retored(){
+        $sucursalsAnteriores = DB::connection('dbantes')->table('sucursales')->get();
+        foreach($sucursalsAnteriores as $sucursal){
+            $user = DB::connection('dbantes')->table('users')->where('id', $sucursal->user_id)->first();
+            $client = Client::where('nit', $user->nit)->first();
+            $this->repository->create([
+                'client_id' => $client->id,
+                'name' => $sucursal->nombre_sucursal,
+                'address' => null,
+                'phone_number' => $sucursal->contacto,
+                'contact_name' => $sucursal->nombre_contacto,
+                'email' => $sucursal->mail
+            ]);
+        }
+        return Sucursal::all();
     }
 
     /**

@@ -50,7 +50,6 @@ return new class extends Migration
             $table->text('conexiones_potencia')->nullable();
             $table->text('estado_generador')->nullable();
             $table->text('limpieza_general')->nullable();
-
             $table->text('cantidad_filtro_aire')->nullable();
             $table->text('referencia_filtro_aire')->nullable();
             $table->text('cantidad_filtro_aceite')->nullable();
@@ -63,32 +62,18 @@ return new class extends Migration
             $table->text('referencia_filtro_agua')->nullable();
             $table->text('cantidad_cantidad_aceite')->nullable();
             $table->text('referencia_cantidad_aceite')->nullable();
-
-            // FOTOS ANTES
-
             $table->text('foto_uno_antes')->nullable();
             $table->text('pie_foto_uno_antes')->nullable();
             $table->text('foto_dos_antes')->nullable();
             $table->text('pie_foto_dos_antes')->nullable();
             $table->text('foto_tres_antes')->nullable();
             $table->text('pie_foto_tres_antes')->nullable();
-
-            // POSICION DE INSTRUMENTOS AL CONCLUIR EL SERVICIOS
-
             $table->text('control')->nullable();
             $table->text('transferencia')->nullable();
             $table->text('posicion_cargador')->nullable();
             $table->text('totalizador')->nullable();
             $table->text('precalentador_posicion')->nullable();
-
-            // ACTIVIDAD REALIZADA
-
             $table->text('actividad_realizada')->nullable();
-
-            // PRUEBAS CON EQUIPO OPERANDO
-
-            // MOTOR:
-
             $table->text('valor_presion_aceite')->nullable();
             $table->text('cantidad_presion_aceite')->nullable();
 
@@ -109,9 +94,6 @@ return new class extends Migration
 
             $table->text('valor_caida_voltaje_bat')->nullable();
             $table->text('cantidad_caida_voltaje_bat')->nullable();
-
-            // GENERADOR:
-
             $table->text('vac_fases_l1_l2')->nullable();
             $table->text('vac_fases_l2_l3')->nullable();
             $table->text('vac_fases_l1_l3')->nullable();
@@ -127,15 +109,10 @@ return new class extends Migration
             $table->text('potenica')->nullable();
             $table->text('hz')->nullable();
             $table->text('fp')->nullable();
-
-            // PROTECCIONES
-
             $table->text('baja_presion')->nullable();
             $table->text('alta_temperatura')->nullable();
             $table->text('bajo_nivel_refrigerante')->nullable();
             $table->text('bajo_voltaje_ac')->nullable();
-
-            // FOTOS DURANTE
 
             $table->text('foto_uno_durante')->nullable();
             $table->text('pie_foto_uno_durante')->nullable();

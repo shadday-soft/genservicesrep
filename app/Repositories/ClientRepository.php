@@ -56,6 +56,26 @@ class ClientRepository extends BaseRepository implements ClientInterface
         return parent::create($clientData);
     }
 
+
+
+    public function update($id, array $data){
+        $client = $this->find($id);
+        if (!$client) {
+            return null;
+        }
+
+        $userData = [
+            'name' => $data['enterprise_name'],
+            'email' => $data['email'],
+            'password' => bcrypt($data['nit']),
+        ];
+
+        $this->userRepository->update($client->user_id, $userData);
+
+        $clientData = $data;
+
+        return parent::update($id, $clientData);
+    }
     public function findByUserId($userId)
     {
         return Client::where('user_id', $userId)->first();

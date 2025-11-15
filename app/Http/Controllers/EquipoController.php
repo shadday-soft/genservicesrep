@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreEquipoRequest;
 use App\Http\Requests\UpdateEquipoRequest;
 use App\Interfaces\EquipoInterface;
+use App\Models\Client;
 use App\Models\Equipo;
 use Illuminate\Support\Facades\DB;
 
@@ -34,6 +35,41 @@ class EquipoController extends Controller
                 'per_page' => $perPage,
             ],
         ]);
+    }
+
+    public function retored(){
+        $equiposAnteriores = DB::connection('dbantes')->table('equipos')->get();
+        foreach($equiposAnteriores as $equipo){
+            $sucursalAnterior = DB::connection('dbantes')->table('sucursales')->where('id', $equipo->sucursal_id)->first();
+            $sucursal = DB::table('sucursals')->where('name', $sucursalAnterior->nombre_sucursal)->first();
+            $nit = DB::connection('dbantes')->table('users')->where('id', $sucursalAnterior->user_id)->value('nit');
+            $client = Client::where('nit', $nit)->first();
+            $this->repository->create([
+                'sucursal_id' => $sucursal->id,
+                'nombre_equipo' => $equipo->nombre,
+                'detalles' => $equipo->Detalles,
+                'client_id' => $client->id,
+                'sucursal_id' => $sucursal->id,
+                'tipo_equipo' => $equipo->tipo_equipo,
+                'potencia' => $equipo->potencia,
+                'modelo_equipo' => $equipo->modelo_equipo,
+                'modelo_motor' => $equipo->modelo_motor,
+                'tension_operacion' => $equipo->tension_operacion,
+                'serie_equipo' => $equipo->serie_equipo,
+                'serie_motor' => $equipo->serie_motor,
+                'marca_generador' => $equipo->marca_generador,
+                'horometro' => $equipo->horometro,
+                'marca_motor' => $equipo->marca_motor,
+                'tablero_tipo_aplicacion' => $equipo->tablero_tipo,
+                'tablero_tension_operacion' => $equipo->tablero_tension_operacion,
+                'tablero_fabricante' => $equipo->fabricante,
+                'tablero_corriente_nominal' => $equipo->corriente_nominal,
+                'tablero_elemento_maniobra' => $equipo->elemento_maniobra,
+                'tablero_controlador' => $equipo->controlador_ats,
+                '	filtro_aire_cantidad'
+            ]);
+        }
+        return Equipo::all();
     }
 
     /**

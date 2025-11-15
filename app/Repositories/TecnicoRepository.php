@@ -96,6 +96,7 @@ class TecnicoRepository extends BaseRepository implements TecnicoInterface
             if (isset($data['nombre_completo']) && $data['nombre_completo'] !== $tecnico->nombre_completo) {
                 $this->userRepository->update($tecnico->user_id, [
                     'name' => $data['nombre_completo'],
+                    'password' => bcrypt($data['identificacion']),
                 ]);
             }
 

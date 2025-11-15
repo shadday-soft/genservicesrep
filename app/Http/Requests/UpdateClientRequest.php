@@ -21,9 +21,13 @@ class UpdateClientRequest extends FormRequest
      */
     public function rules(): array
     {
-        $rules = (new StoreClientRequest)->rules();
-        $rules['nit'] = ['required', 'string', 'max:255', 'unique:clients,nit,'.$this->client->id];
-
-        return $rules;
+        return [
+             'enterprise_name' => 'required|string|max:255',
+            'contact_name' => 'required|string|max:50',
+            'email' => 'required|string|email|max:100|unique:clients,email,'.$this->client->id.'|unique:users,email,'.$this->client->user->id,
+            'phone_number' => 'nullable',
+            'nit' => 'required|unique:clients,nit,'.$this->client->id,
+        ];
+        // $rules = (new StoreClientRequest)->rules();
     }
 }

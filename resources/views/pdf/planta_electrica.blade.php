@@ -92,13 +92,12 @@
             <b>NIT: 900748881-8</b><br>
             Fecha del Informe: {{ $registro->created_at->format('d/m/Y') }}<br>
             <b>Dirección de la Empresa:</b><br>
-            DIR. CRA 83 #72B-06<br>
-            Bogotá<br>
-            Colombia<br>
+            Colombia, Bogotá, DIR. CRA 83 #72B-06<br>
+            
+            
             <b>Datos de contacto:</b><br>
             genservices@outlook.com<br>
-            TEL. 6949133<br>
-            CEL. 3005231475
+            TEL. 6949133 -  CEL. 3005231475
         </div>
         <div style="float: right; width: 25%;">
             <img src="{{ public_path('logo_empresa.png') }}" alt="Logo Empresa" style="width: 200px; height: auto;">
@@ -153,7 +152,7 @@
                 </tr>
                 <tr>
                     <th>Teléfono</th>
-                    <td>{{ $registro->sucursal->telefono }}</td>
+                    <td>{{ $solicitud->sucursal->phone_number }}</td>
                     <th></th>
                     <td></td>
                 </tr>
@@ -225,13 +224,13 @@
             @endif
             @if ($registro->foto_dos_antes)
             <div style="display: inline-block; text-align: center; margin-right: 5px;">
-                <img style="width: 232px; height: 150px" src="{{ public_path('uploads/' . $registro->foto_dos_antes) }}">
+                <img style="width: 232px; height: 175px" src="{{ public_path('uploads/' . $registro->foto_dos_antes) }}">
                 <p style="font-size: 9px; margin-top: 2px;">{{ $registro->pie_foto_dos_antes }}</p>
             </div>
             @endif
             @if ($registro->foto_tres_antes)
             <div style="display: inline-block; text-align: center;">
-                <img style="width: 232px; height: 150px" src="{{ public_path('uploads/' . $registro->foto_tres_antes) }}">
+                <img style="width: 232px; height: 175px" src="{{ public_path('uploads/' . $registro->foto_tres_antes) }}">
                 <p style="font-size: 9px; margin-top: 2px;">{{ $registro->pie_foto_tres_antes }}</p>
             </div>
             @endif
@@ -524,7 +523,7 @@
             </table>
         </div>
 
-        <div class="section">
+        <div class="section" style="margin-top: 80px;">
             <table style="width: 100%; border-collapse: collapse;">
                 <tr>
                     <th colspan="4" style="text-align: left;">Posición de Instrumentos al Concluir el Servicio</th>

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('enterprise_name');
             $table->string('contact_name');
             $table->string('email');
-            $table->string('phone_number', 20)->nullable();
+            $table->string('phone_number', 255)->nullable();
             $table->string('nit')->unique()->nullable();
             $table->timestamps();
         });

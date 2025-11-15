@@ -36,6 +36,21 @@ class ClientController extends Controller
         ]);
     }
 
+    public function retored(){
+        $clientsAnteriores = DB::connection('dbantes')->table('users')->whereNotNull('nit')->get();
+        foreach($clientsAnteriores as $cliente){
+            $this->repository->create([
+                'enterprise_name' => $cliente->name,
+                'email' => $cliente->email,
+                'nit' => $cliente->nit,
+                // 'direccion' => '',
+                'contact_name' => $cliente->nombre_contacto,
+                'phone_number' => $cliente->contacto,
+            ]);
+        }
+        return Client::all();
+    }
+
     /**
      * Show the form for creating a new resource.
      */
