@@ -82,6 +82,11 @@ class StoreEquipoRequest extends FormRequest
             'fecha_primer_mantenimiento' => ['nullable', 'date'],
             'proximas_fechas_mantenimiento' => ['nullable', 'array'],
             'proximas_fechas_mantenimiento.*' => ['date'],
+
+            // --- DATOS PARA SOLICITUDES DE MANTENIMIENTO ---
+            'tecnico_id' => ['nullable', 'exists:users,id'],
+            'quien_solicita' => ['nullable', 'string', 'max:255'],
+            'orden_compra' => ['nullable', 'file', 'mimes:pdf', 'max:10240'], // 10MB max
         ];
     }
 }

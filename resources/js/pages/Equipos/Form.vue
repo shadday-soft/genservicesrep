@@ -6,13 +6,31 @@ import Client from '@/Services/ClientService';
 import axios from 'axios';
 import { index as sucursalsIndex } from '@/routes/sucursals';
 import { Button } from 'primevue';
-import { onMounted, ref, computed, watch } from 'vue';
+import FilePondPluginPdfPreview from "filepond-plugin-pdf-preview";
+import { onMounted, ref, computed, watch, useTemplateRef } from 'vue';
+import VueFilePond from 'vue-filepond';
 
 const emit = defineEmits(['close']);
 
 const first_mtto = ref(new Date());
 const periodicidad = ref('');
 const proximasMantenimientos = ref<Date[]>([]);
+
+const pond = useTemplateRef<any>("pond");
+
+const FilePond = VueFilePond(FilePondPluginPdfPreview);
+
+
+const myFiles = ref<any[]>([]);
+
+
+function updatefiles() {
+    if (pond.value) {
+        myFiles.value = pond.value.getFiles();
+        form.orden_compra = pond.value.getFiles()[0]?.file || null;
+    }
+}
+
 
 interface Props {
     equipo: import('@/types').Equipo | null;
@@ -26,11 +44,14 @@ const clientService = new Client(null);
 
 const sucursalesList = ref([] as any[]);
 const clientsList = ref([] as any[]);
+const tecnicosList = ref([] as any[]);
 
 const loadingSucursales = ref(false);
 const loadingClients = ref(false);
+const loadingTecnicos = ref(false);
 const errorSucursales = ref('');
 const errorClients = ref('');
+const errorTecnicos = ref('');
 
 const form = equipoService.form;
 
@@ -53,18 +74,20 @@ watch([form.fecha_primer_mantenimiento, form.periodicidad], () => {
 });
 
 onMounted(async () => {
-    // Cargar sucursales y clientes en paralelo
+    // Cargar sucursales, clientes y técnicos en paralelo
     loadingSucursales.value = true;
     loadingClients.value = true;
+    loadingTecnicos.value = true;
     try {
-        const [sResp, cResp] = await Promise.all([
+        const [sResp, cResp, tResp] = await Promise.all([
             axios.get(sucursalsIndex().url),
             clientService.getClients(),
+            axios.get('/users?role=Tecnico'),
         ]);
 
         sucursalesList.value = sResp?.data?.sucursals || [];
-
         clientsList.value = Array.isArray(cResp) ? cResp : (cResp?.clients || []);
+        tecnicosList.value = tResp?.data?.users || [];
     } catch (error: any) {
         // Distinguish errors
         if (!sucursalesList.value.length) {
@@ -73,9 +96,13 @@ onMounted(async () => {
         if (!clientsList.value.length) {
             errorClients.value = 'No se pudieron cargar los clientes';
         }
+        if (!tecnicosList.value.length) {
+            errorTecnicos.value = 'No se pudieron cargar los técnicos';
+        }
     } finally {
         loadingSucursales.value = false;
         loadingClients.value = false;
+        loadingTecnicos.value = false;
     }
 });
 
@@ -219,17 +246,19 @@ const getSucursalsForClient = async (clientId: string) => {
                     </div>
                 </div>
             </div>
-           
-            <div class="col-span-1 md:col-span-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Input v-model="form.periodicidad" label="Periodicidad" type="select" @select="calcularProximosMantenimientos()" :options="[
-                    { label: 'Semanal', value: 'Semanal' },
-                    { label: 'Mensual', value: 'Mensual' },
-                    { label: 'Bimestral', value: 'Bimestral' },
-                    { label: 'Trimestral', value: 'Trimestral' },
-                    { label: 'Cuatrimestral', value: 'Cuatrimestral' }
-                ]"></Input>
 
-                <Input v-model:date="form.fecha_primer_mantenimiento" @select="calcularProximosMantenimientos" label="Fecha del Primer Mantenimiento" type="date"></Input>
+            <div class="col-span-1 md:col-span-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Input v-model="form.periodicidad" label="Periodicidad" type="select"
+                    @select="calcularProximosMantenimientos()" :options="[
+                        { label: 'Semanal', value: 'Semanal' },
+                        { label: 'Mensual', value: 'Mensual' },
+                        { label: 'Bimestral', value: 'Bimestral' },
+                        { label: 'Trimestral', value: 'Trimestral' },
+                        { label: 'Cuatrimestral', value: 'Cuatrimestral' }
+                    ]"></Input>
+
+                <Input v-model:date="form.fecha_primer_mantenimiento" @select="calcularProximosMantenimientos"
+                    label="Fecha del Primer Mantenimiento" type="date"></Input>
 
                 <!-- Mostrar próximas fechas de mantenimiento -->
                 <div v-if="proximasMantenimientos.length > 0" class="col-span-1 md:col-span-2">
@@ -242,24 +271,21 @@ const getSucursalsForClient = async (clientId: string) => {
                             </span>
                         </h3>
                         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
-                            <div 
-                                v-for="(fecha, index) in proximasMantenimientos.slice(1)"
-                                :key="index"
-                                class="bg-white rounded-md p-3 border border-blue-200 hover:border-blue-400 transition-colors"
-                            >
+                            <div v-for="(fecha, index) in proximasMantenimientos.slice(1)" :key="index"
+                                class="bg-white rounded-md p-3 border border-blue-200 hover:border-blue-400 transition-colors">
                                 <div class="flex flex-col gap-1">
                                     <span class="text-xs text-gray-500 font-medium">
                                         Mantenimiento #{{ index + 1 }}
                                     </span>
                                     <span class="font-bold text-blue-700 text-sm">
-                                        {{ new Date(fecha).toLocaleDateString('es-CO', { 
-                                            day: '2-digit', 
-                                            month: 'short', 
-                                            year: 'numeric' 
+                                        {{ new Date(fecha).toLocaleDateString('es-CO', {
+                                            day: '2-digit',
+                                            month: 'short',
+                                            year: 'numeric'
                                         }) }}
                                     </span>
                                     <span class="text-xs text-gray-600">
-                                        {{ new Date(fecha).toLocaleDateString('es-CO', { 
+                                        {{ new Date(fecha).toLocaleDateString('es-CO', {
                                             weekday: 'long'
                                         }) }}
                                     </span>
@@ -274,6 +300,39 @@ const getSucursalsForClient = async (clientId: string) => {
                                 <li>Sábados y domingos</li>
                                 <li>Festivos colombianos</li>
                             </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sección de datos para solicitudes de mantenimiento -->
+                <div v-if="proximasMantenimientos.length > 0" class="col-span-1 md:col-span-2">
+                    <div class="rounded-lg shadow-md border p-4 bg-green-50">
+                        <h3 class="font-extrabold text-green-900 mb-3 flex items-center gap-2">
+                            <span>👤</span>
+                            <span>Datos para Solicitudes de Mantenimiento</span>
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <Input v-model="form.tecnico_id" type="select" label="Técnico Asignado (Opcional)"
+                                :error="form.errors.tecnico_id" option-label="name" option-value="id"
+                                :options="tecnicosList" placeholder="Seleccione un técnico"></Input>
+
+                            <Input v-model="form.quien_solicita" label="Quien Solicita (Opcional)"
+                                :error="form.errors.quien_solicita" placeholder="Nombre del solicitante"></Input>
+
+                            <div class="md:col-span-2">
+                                <div class="w-full mt-4">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2">Orden de compra</label>
+                                    <FilePond name="orden_compra" ref="pond" v-model="form.orden_compra"
+                                        :allow-multiple="false" accepted-file-types="application/pdf" :files="myFiles"
+                                        @updatefiles="updatefiles"
+                                        :label-idle="'Arrastra y suelta tu archivo o <span class=\'filepond--label-action\'>Examinar</span>'" />
+                                    <div v-if="form.errors.orden_compra" class="text-red-600 text-sm mt-1">{{
+                                        form.errors.orden_compra
+                                        }}
+                                    </div>
+                                </div>
+                                
+                            </div>
                         </div>
                     </div>
                 </div>

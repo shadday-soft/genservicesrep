@@ -22,7 +22,7 @@ class SolicitudRepository extends BaseRepository implements SolicitudInterface
         return Solicitud::class;
     }
 
-    public function getAllSolicitudes($perPage = 15, $search = null, $tipo = null)
+    public function getAllSolicitudes($perPage = 15, $search = null, $tipo = null, $estado = null)
     {
         $user = Auth::user();
         $query = Solicitud::with(['client', 'sucursal', 'equipo', 'user']);
@@ -52,6 +52,12 @@ class SolicitudRepository extends BaseRepository implements SolicitudInterface
                     });
             });
         }
+
+        // Filtro por estado
+        if ($estado) {
+            $query->where('estado', $estado);
+        }
+
         if ($user->role === 'Tecnico') {
             $query->where('user_id', $user->id);
         }
@@ -67,10 +73,9 @@ class SolicitudRepository extends BaseRepository implements SolicitudInterface
             $query->where('actividad', '!=', 'Mantenimiento Preventivo');
         }
 
-        if (isset($tipo)) {
+        if (isset($tipo) && ! $estado) {
             $query->where('estado', 'Nueva');
         }
-        // dd($tipo);
 
         return $query->latest()->paginate($perPage);
     }
@@ -80,6 +85,7 @@ class SolicitudRepository extends BaseRepository implements SolicitudInterface
         $user = Auth::user();
         $query = Solicitud::with(['client', 'sucursal', 'equipo', 'user'])
             ->whereNotNull('fecha_programada')
+            ->where('estado', 'Nueva')
             ->orderBy('fecha_programada', 'asc');
 
         // Filtrar por rol de usuario
@@ -98,7 +104,7 @@ class SolicitudRepository extends BaseRepository implements SolicitudInterface
     {
 
         if ($data['orden_trabajo']) {
-            $data['orden_trabajo'] = $data['orden_trabajo']->store('solicitus', 'public');
+            $data['orden_trabajo'] = 'uploads/'.$data['orden_trabajo']->store('solicitus', 'public');
         }
         $solicitus = parent::create($data);
 

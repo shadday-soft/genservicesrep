@@ -55,6 +55,11 @@ export default class Equipo extends GeneralService {
         periodicidad: '',
         fecha_primer_mantenimiento: new Date(),
         proximas_fechas_mantenimiento: [] as Date[],
+
+        // Datos para las solicitudes de mantenimiento
+        tecnico_id: '',
+        quien_solicita: '',
+        orden_compra: null as File | null,
     });
 
     constructor(equipo?: import('@/types').Equipo | null) {

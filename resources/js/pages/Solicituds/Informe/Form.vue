@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import Input from '@/components/Input.vue';
 import RichTextEditor from '@/components/RichTextEditor.vue';
 import SignaturePad from '@/components/SignaturePad.vue';
@@ -9,10 +9,11 @@ import RadioButton from 'primevue/radiobutton';
 import AppLayout from '@/layouts/AppLayout.vue';
 import vueFilePond from 'vue-filepond';
 import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
-import { BreadcrumbItem, Solicitud } from '@/types';
-import { Head, router, useForm } from '@inertiajs/vue3';
-import { informe, StoreInforme } from '@/routes';
+import { BreadcrumbItem, Equipo, Solicitud } from '@/types';
+import { Head, Link, router, useForm } from '@inertiajs/vue3';
+import { informe, StoreInforme, updateInforme } from '@/routes';
 import { getErrorMessage, getSuccessMessage } from '@/composables/Toast';
+import solicituds from '@/routes/solicituds';
 
 
 const FilePond = vueFilePond(FilePondPluginImagePreview);
@@ -23,6 +24,8 @@ const emit = defineEmits(['close']);
 interface Props {
     informe?: any | null;
     solicitud: Solicitud;
+    equipo: Equipo;
+    tecnico?: any | null;
 }
 
 function assignMatchingKeys(source: { [key: string]: any }, target: { [key: string]: any }) {
@@ -68,16 +71,16 @@ const form = useForm({
     conexiones_potencia: 'N/A',
     limpieza_general: 'N/A',
     // Filtros y cantidades (añadidos)
-    cantidad_filtro_aire: '',
-    referencia_filtro_aire: '',
-    cantidad_filtro_aceite: '',
-    referencia_filtro_aceite: '',
-    cantidad_filtro_combustible: '',
-    referencia_filtro_combustible: '',
-    cantidad_filtro_separador: '',
-    referencia_filtro_separador: '',
-    cantidad_filtro_agua: '',
-    referencia_filtro_agua: '',
+    cantidad_filtro_aire: props.equipo.filtro_aire_cantidad || '',
+    referencia_filtro_aire: props.equipo.filtro_aire_referencia || '',
+    cantidad_filtro_aceite: props.equipo.filtro_aceite_cantidad || '',
+    referencia_filtro_aceite: props.equipo.filtro_aceite_referencia || '',
+    cantidad_filtro_combustible: props.equipo.filtro_combustible_cantidad || '',
+    referencia_filtro_combustible: props.equipo.filtro_combustible_referencia || '',
+    cantidad_filtro_separador: props.equipo.filtro_separador_cantidad || '',
+    referencia_filtro_separador: props.equipo.filtro_separador_referencia || '',
+    cantidad_filtro_agua: props.equipo.filtro_agua_cantidad || '',
+    referencia_filtro_agua: props.equipo.filtro_agua_referencia || '',
     cantidad_cantidad_aceite: '',
     referencia_cantidad_aceite: '',
     // Fotos antes
@@ -118,7 +121,7 @@ const form = useForm({
     vac_fase_n_l2n: '',
     vac_fase_n_l3n: '',
     // Generador - Potencia - HZ - FP
-    potencia: '',
+    potencia: props.equipo.potencia || '',
     hz: '',
     fp: '',
     // Protecciones
@@ -177,8 +180,20 @@ const form = useForm({
     errors: {} as Record<string, string>
 });
 
+onMounted(() => {
+    if (props.informe) {
+        assignMatchingKeys(props.informe, form);
+    }
+    
+    // Precargar datos del técnico si está disponible
+    console.log(props.tecnico);
+    if (props.tecnico) {
 
-assignMatchingKeys(props.informe || {}, form);
+        form.firma_tecnico = props.tecnico.firma || '';
+        form.nombre_tecnico = props.tecnico.nombre_completo || '';
+        form.cedula_tecnico = props.tecnico.identificacion || '';
+    }
+});
 
 const tiposServicio = [
     { label: 'Mantenimiento', value: 'Mantenimiento' },
@@ -297,8 +312,20 @@ const updateFilesFotoTresDespues = (files: any) => {
 };
 
 const handleSubmit = () => {
-    console.log('Submitting form...', StoreInforme.url());
+    if (props.informe) {
+        form.post(updateInforme.url(props.informe.id), {
+            preserveState: true,
+            onSuccess: () => {
+                getSuccessMessage('Informe actualizado con éxito.');
+            },
+            onError: (error) => {
+                getErrorMessage('Ocurrió un error al enviar el formulario.');
+            }
+        });
+        return;
+    }
     form.post(StoreInforme.url(), {
+
         preserveState: true,
         onSuccess: () => {
             getSuccessMessage('Informe generado con éxito.');
@@ -1664,13 +1691,18 @@ const breadcrumbs: BreadcrumbItem[] = [
 
             <!-- Form Actions -->
             <div class="flex justify-end gap-3 border-t pt-4">
-                <Button 
+                <Link 
+                    :href="solicituds.index()" 
+                    class="no-underline">
+                 <Button 
                     type="button" 
                     label="Cancelar" 
                     severity="secondary" 
                     @click="emit('close')"
                     :disabled="form.processing"
                 />
+                </Link>
+               
                 <Button 
                     type="submit" 
                     label="Guardar" 

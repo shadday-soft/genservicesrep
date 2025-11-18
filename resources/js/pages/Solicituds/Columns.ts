@@ -2,6 +2,14 @@ import type { Column } from '@/types';
 
 export const columns: Column[] = [
     {
+        header: 'Numero de solicitud',
+        field: 'numero_orden',
+        sortable: true,
+        type: 'text',
+        filter: true,
+        filterPlaceholder: 'Buscar por ID',
+    },
+    {
         header: 'Solicitado por',
         field: 'client.enterprise_name',
         sortable: true,
@@ -24,7 +32,7 @@ export const columns: Column[] = [
         type: 'text',
         filter: true,
         filterPlaceholder: 'Buscar por equipo',
-    },
+    },  
     {
         header: 'Prioridad',
         field: 'prioridad',
@@ -74,6 +82,7 @@ export const columns: Column[] = [
         filter: true,
         filterPlaceholder: 'Buscar por técnico',
     },
+
     {
         header: 'Orden de Compra',
         field: 'orden_trabajo',

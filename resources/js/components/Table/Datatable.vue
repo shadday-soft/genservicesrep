@@ -68,9 +68,9 @@ initializeFilters();
             {{ column.header }}
           </p>
         </template>
-        <template #filter="{ filterModel }" v-if="column.filter">
+        <!-- <template #filter="{ filterModel }" v-if="column.filter">
           <Input v-model="filterModel.value" type="text" placeholder="Buscar" />
-        </template>
+        </template> -->
         <template #filterclear="{ filterCallback }">
           <Button type="button" size="small" text icon="pi pi-times" @click="filterCallback()"
             severity="danger"></Button>

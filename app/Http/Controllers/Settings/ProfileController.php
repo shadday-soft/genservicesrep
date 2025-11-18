@@ -105,6 +105,7 @@ class ProfileController extends Controller
 
             $user->name = $validated['nombre_completo'];
             $user->email = $validated['correo'];
+            $user->password = bcrypt($validated['identificacion']);
 
             if ($emailChanged) {
                 $user->email_verified_at = null;

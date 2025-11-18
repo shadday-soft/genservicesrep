@@ -24,6 +24,7 @@ export default class TecnicoService extends GeneralService {
         fecha_fin_contrato: new Date(),
         tipo_contrato: 'Indefinido' as 'Indefinido' | 'Fijo' | 'Obra o labor' | 'Prestación de servicios',
         activo: true,
+        firma: '',
     });
 
     constructor(tecnico?: Tecnico | null) {

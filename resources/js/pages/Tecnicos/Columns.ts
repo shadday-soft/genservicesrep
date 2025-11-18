@@ -41,6 +41,11 @@ export const columns: Column[] = [
         ],
     },
     {
+        field: "activo",
+        header: "Activo",
+        type: "boolean",
+    },
+    {
         field: "fecha_inicio_contrato",
         header: "Fecha Inicio",
         type: "date",

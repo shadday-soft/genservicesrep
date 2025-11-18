@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import AppLayout from "@/layouts/AppLayout.vue";
 import Button from 'primevue/button';
 import Paginator from 'primevue/paginator';
+import Select from 'primevue/select';
 import Input from '@/components/Input.vue';
 import InputIcon from 'primevue/inputicon';
 import IconField from 'primevue/iconfield';
@@ -13,6 +14,7 @@ import Datatable from '@/components/Table/Datatable.vue';
 
 import Modal from '@/components/Modal.vue';
 import CancelSolicitudModal from '@/components/CancelSolicitudModal.vue';
+import SolicitudDetailsDrawer from '@/components/SolicitudDetailsDrawer.vue';
 import SolicitudService from '@/Services/SolicitudsService';
 import Form from '@/pages/Solicituds/Form.vue';
 import { watchDebounced } from '@vueuse/core';
@@ -28,17 +30,34 @@ interface Props {
         search?: string;
         per_page?: number;
         tipo?: string;
+        estado?: string;
     };
 }
 
 const solicitud = ref<Solicitud | null>(null);
 const solicitudToCancel = ref<Solicitud | null>(null);
+const solicitudToView = ref<Solicitud | null>(null);
 
 const props = defineProps<Props>();
 
-const searchQuery = ref(props.filters?.search || '');
-const perPage = ref(props.filters?.per_page || 15);
-const tipo = ref(props.filters?.tipo || '');
+const searchQuery = ref(props.filters?.search || "");
+const perPage = ref(props.filters?.per_page || 10);
+const tipoFilter = ref(props.filters?.tipo || "");
+const estadoFilter = ref(props.filters?.estado || "");
+
+// Opciones de filtros
+const tipoOptions = [
+    { label: 'Todos', value: '' },
+    { label: 'Correctivo', value: 'Correctivo' },
+    { label: 'Preventivo', value: 'Preventivo' }
+];
+
+const estadoOptions = [
+    { label: 'Todos', value: '' },
+    { label: 'Nueva', value: 'Nueva' },
+    { label: 'Proceso', value: 'Proceso' },
+    { label: 'Finalizada', value: 'Finalizada' },
+];
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -49,6 +68,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 const showModal = ref(false);
 const showCancelModal = ref(false);
+const showDetailsDrawer = ref(false);
 
 const add = () => {
     solicitud.value = null;
@@ -67,6 +87,11 @@ const edit = (solicitudData: Solicitud) => {
 const openCancelModal = (solicitudData: Solicitud) => {
     solicitudToCancel.value = solicitudData;
     showCancelModal.value = true;
+};
+
+const viewDetails = (solicitudData: Solicitud) => {
+    solicitudToView.value = solicitudData;
+    showDetailsDrawer.value = true;
 };
 
 const handleCancelConfirm = (razon: string) => {
@@ -88,7 +113,8 @@ const performSearch = (page = 1) => {
         page: page,
         per_page: perPage.value,
         search: searchQuery.value || undefined,
-        tipo: tipo.value || undefined
+        tipo: tipoFilter.value || undefined,
+        estado: estadoFilter.value || undefined
     }, {
         preserveState: true,
         preserveScroll: page !== 1,
@@ -105,10 +131,17 @@ watchDebounced(
     { debounce: 500 }
 );
 
+// Filtros inmediatos (sin debounce)
+watch(tipoFilter, () => {
+    performSearch(1);
+});
+
+watch(estadoFilter, () => {
+    performSearch(1);
+});
+
 const crearReporte = (solicitudData: Solicitud) => {
     router.get(`/informe/${solicitudData.id}`, {}, {
-        preserveState: true,
-        preserveScroll: true,
     });
 };
 
@@ -127,8 +160,8 @@ const generateReport = (solicitudData: Solicitud) => {
         <Head title="Solicitudes" />
 
         <div>
-            <!-- Barra de búsqueda global -->
-            <div class="mb-4 flex items-center gap-3">
+            <!-- Barra de búsqueda y filtros -->
+            <div class="mb-4 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                 <div class="flex-1">
                     <IconField>
                         <InputIcon>
@@ -137,6 +170,14 @@ const generateReport = (solicitudData: Solicitud) => {
                         <Input v-model="searchQuery" placeholder="Buscar solicitudes..." class="w-full" />
                     </IconField>
                 </div>
+                <Select 
+                    v-model="estadoFilter" 
+                    :options="estadoOptions" 
+                    optionLabel="label" 
+                    optionValue="value"
+                    placeholder="Estado" 
+                    class="w-full sm:w-40"
+                />
                 <Button label="Agregar Solicitud" v-if="isAutorized()" icon="pi pi-plus" size="small" @click="add" />
             </div>
 
@@ -148,13 +189,15 @@ const generateReport = (solicitudData: Solicitud) => {
                     </template>
                     <template #actions="{ data }">
                         <div class="flex justify-end">
+                            <Button icon="pi pi-eye" size="small" severity="secondary" text
+                                v-tooltip.left="`Ver Detalles`" @click="viewDetails(data)" />
                             <Button text v-tooltip.top="`Ver Informe`" @click="generateReport(data)"
                                 icon="pi pi-file-pdf" v-if="data.informe_generado"></Button>
                             <Button icon="pi pi-file" size="small" severity="info" text
-                                v-tooltip.left="`Generar Informe`" @click="crearReporte(data)" />
-                            <Button icon="pi pi-pencil" size="small" v-if="isAutorized()" severity="warn" text
+                                v-tooltip.left="`Generar Informe`" @click="crearReporte(data)" v-if="data.estado != 'Finalizada' && $page.props.auth.user.role !== 'Cliente'" />
+                            <Button icon="pi pi-pencil" size="small" v-if="isAutorized() && data.estado != 'Finalizada'" severity="warn" text
                                 v-tooltip.left="`Editar`" @click="edit(data)" />
-                            <Button icon="pi pi-ban" size="small" severity="danger" text v-if="isAutorized()"
+                            <Button icon="pi pi-ban" size="small" severity="danger" text v-if="isAutorized() && data.estado != 'Finalizada'"
                                 v-tooltip.left="`Cancelar`" @click="openCancelModal(data)" />
                         </div>
                     </template>
@@ -277,17 +320,17 @@ const generateReport = (solicitudData: Solicitud) => {
                                 </a>
                             </template>
 
-                            <!-- Si no hay coordenadas -->
-                            <Button v-else icon="pi pi-map" size="small" text disabled
-                                v-tooltip.top="'Coordenadas no disponibles'" class="!p-1.5" />
                         </div>
+                        <!-- ver detalles  -->
+                        <Button icon="pi pi-eye" size="small" severity="secondary" text v-tooltip.top="'Ver Detalles'"
+                            @click="viewDetails(solicitudItem)" class="!p-1.5" />
                         <Button text v-if="solicitudItem.informe_generado" v-tooltip.top="`Ver Informe`"
                             @click="generateReport(solicitudItem)" icon="pi pi-file-pdf" class="!p-1.5" />
-                        <Button icon="pi pi-file" size="small" severity="info" text v-tooltip.top="'Generar Informe'"
-                            @click="generateReport(solicitudItem)" class="!p-1.5" />
-                        <Button icon="pi pi-pencil" size="small" severity="warn" text v-tooltip.top="'Editar'"
-                            @click="edit(solicitudItem)" class="!p-1.5" v-if="isAutorized()" />
-                        <Button icon="pi pi-ban" size="small" severity="danger" v-if="isAutorized()" text
+                        <Button v-if="solicitudItem.estado != 'Finalizada' && $page.props.auth.user.role !== 'Cliente'" icon="pi pi-file" size="small" severity="info" text v-tooltip.top="'Generar Informe'"
+                            @click="crearReporte(solicitudItem)" class="!p-1.5" />
+                        <Button icon="pi pi-pencil" size="small"  severity="warn" text v-tooltip.top="'Editar'"
+                            @click="edit(solicitudItem)" class="!p-1.5" v-if="isAutorized() && solicitudItem.estado != 'Finalizada'" />
+                        <Button icon="pi pi-ban" size="small" severity="danger" v-if="isAutorized() && solicitudItem.estado != 'Finalizada'" text
                             v-tooltip.top="'Cancelar'" @click="openCancelModal(solicitudItem)" class="!p-1.5" />
                     </div>
                 </div>
@@ -332,6 +375,8 @@ const generateReport = (solicitudData: Solicitud) => {
 
         <CancelSolicitudModal v-model="showCancelModal" :solicitud-numero="solicitudToCancel?.numero_orden || undefined"
             @confirm="handleCancelConfirm" />
+
+        <SolicitudDetailsDrawer v-model="showDetailsDrawer" :solicitud="solicitudToView" />
     </AppLayout>
 
 </template>

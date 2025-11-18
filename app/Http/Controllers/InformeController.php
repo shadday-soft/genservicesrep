@@ -25,9 +25,21 @@ class InformeController extends Controller
     public function create(Solicitud $solicitud)
     {
         $informe = $this->repository->findBy('solicitud_id', $solicitud->id);
+
+        // Cargar las relaciones necesarias
+        $solicitud->load(['equipo', 'user']);
+
+        // Obtener el técnico asignado a la solicitud
+        $tecnico = null;
+        if ($solicitud->user && $solicitud->user->role === 'Tecnico') {
+            $tecnico = $solicitud->user->tecnico;
+        }
+
         return Inertia::render('Solicituds/Informe/Form', [
             'solicitud' => $solicitud,
             'informe' => $informe,
+            'equipo' => $solicitud->equipo,
+            'tecnico' => $tecnico,
         ]);
     }
 

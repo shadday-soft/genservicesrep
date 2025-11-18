@@ -15,11 +15,28 @@ class EquipoRepository extends BaseRepository implements EquipoInterface
 
     public function create(array $data)
     {
+        // Extraer datos que NO van en el equipo
+        $tecnicoId = $data['tecnico_id'] ?? null;
+        $quienSolicita = $data['quien_solicita'] ?? null;
+        $ordenCompra = $data['orden_compra'] ?? null;
+
+        // Remover campos que no pertenecen a la tabla equipos
         unset($data['fecha_primer_mantenimiento']);
+        unset($data['tecnico_id']);
+        unset($data['quien_solicita']);
+        unset($data['orden_compra']);
+
         $equipo = parent::create($data);
-        // array_push($data['proximas_fechas_mantenimiento'], $fecha_primer_mantenimiento);
+
+        // Crear solicitudes de mantenimiento si hay fechas programadas
         if (isset($data['proximas_fechas_mantenimiento']) && is_array($data['proximas_fechas_mantenimiento'])) {
-            $this->crearSolicitudesMantenimiento($equipo, $data['proximas_fechas_mantenimiento']);
+            $this->crearSolicitudesMantenimiento(
+                $equipo,
+                $data['proximas_fechas_mantenimiento'],
+                $tecnicoId,
+                $quienSolicita,
+                $ordenCompra
+            );
         }
 
         return $equipo;
@@ -51,19 +68,31 @@ class EquipoRepository extends BaseRepository implements EquipoInterface
     /**
      * Crea solicitudes de mantenimiento preventivo basadas en las fechas programadas
      */
-    public function crearSolicitudesMantenimiento(Equipo $equipo, array $fechasMantenimiento): void
-    {
+    public function crearSolicitudesMantenimiento(
+        Equipo $equipo,
+        array $fechasMantenimiento,
+        ?int $tecnicoId = null,
+        ?string $quienSolicita = null,
+        $ordenCompra = null
+    ): void {
         if (empty($fechasMantenimiento)) {
             return;
         }
 
-        // Crear nuevas solicitudes para cada fecha
+        // Guardar el archivo de orden de compra si existe
+        $ordenTrabajoPath = null;
+        if ($ordenCompra) {
+            $ordenTrabajoPath = 'uploads/'.$ordenCompra->store('solicituds', 'public');
+        }
+
         foreach ($fechasMantenimiento as $fecha) {
             Solicitud::create([
                 'client_id' => $equipo->client_id,
                 'sucursal_id' => $equipo->sucursal_id,
                 'equipo_id' => $equipo->id,
-                'user_id' => null,
+                'user_id' => $tecnicoId,
+                'quien_solicita' => $quienSolicita,
+                'orden_trabajo' => $ordenTrabajoPath,
                 'fecha_programada' => $fecha,
                 'fecha_mantenimiento' => $fecha,
                 'actividad' => 'Mantenimiento preventivo',

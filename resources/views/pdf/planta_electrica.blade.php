@@ -4,686 +4,505 @@
     <meta charset="UTF-8">
     <title>Hoja de Servicio Técnico</title>
     <style>
+        @page { margin: 5mm; }
         body {
             font-family: Arial, sans-serif;
-            font-size: 12px;
-            margin: 0;
-            padding: 0;
-        }
-        .container {
-            width: 100%;
-            margin: 0 auto;
-            padding: 0px;
-        }
-        .header, .footer {
-            text-align: center;
-        }
-        .header img {
-            max-width: 100px;
-        }
-        .title {
-            text-align: center;
             font-size: 16px;
-            font-weight: bold;
-            margin-top: 10px;
+            margin: 0;
+            padding: 5px;
+            line-height: 1.2;
         }
-        .section {
-            margin-top: 5px;
-        }
-        .section table {
+        table {
             width: 100%;
             border-collapse: collapse;
+            margin-bottom: 2px;
         }
-        .section table, .section th, .section td {
-            border: 1px solid black;
+        table, th, td {
+            border: 1px solid #000;
         }
-        .section th, .section td {
-            padding: 2px;
+        th, td {
+            padding: 1px 3px;
             text-align: left;
+            font-size: 9.5px;
         }
-        .section th {
-            background-color: #db001228;
-            padding: 5px;
-        }
-        .small-text {
-            font-size: 10px;
-        }
-        .bold {
+        th {
+            background-color: #d8d8d8;
             font-weight: bold;
         }
-        .checkbox {
-            display: inline-block;
-            width: 12px;
-            height: 12px;
-            border: 1px solid #000;
+        .header-table td {
+            vertical-align: top;
+        }
+        .logo-cell {
+            width: 18%;
+            text-align: center;
+        }
+        .title-cell {
+            width: 60%;
             text-align: center;
             vertical-align: middle;
-            line-height: 12px;
         }
-        .option-group {
-            display: inline-block;
-            margin-right: 10px;
-        }
-        .option-group span {
-            color: #ccc;
-        }
-        .option-group .selected {
-            color: #000;
-            font-weight: bold;
-        }
-        .firma-section {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 20px;
-        }
-        .firma {
-            width: 45%;
+        .code-cell {
+            width: 22%;
             text-align: center;
-            border-top: 1px solid #000;
-            padding-top: 5px;
         }
-        
+        .checkbox-small {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border: 1px solid #000;
+            text-align: center;
+            line-height: 8px;
+            font-size: 9px;
+            margin: 0 0px;
+        }
+        .two-col-layout {
+            width: 100%;
+        }
+        .two-col-layout td {
+            vertical-align: top;
+            padding: 0;
+        }
+        .firma-box {
+            min-height: 40px;
+            text-align: center;
+        }
+        .footer-text {
+            font-size: 6px;
+            text-align: center;
+            margin-top: 3px;
+        }
     </style>
 </head>
 <body>
-    <header>
-        <div style="float: left; width: 75%; text-align: left;">
-            <strong>GEN SERVICES SAS</strong><br>
-            <b>NIT: 900748881-8</b><br>
-            Fecha del Informe: {{ $registro->created_at->format('d/m/Y') }}<br>
-            <b>Dirección de la Empresa:</b><br>
-            Colombia, Bogotá, DIR. CRA 83 #72B-06<br>
-            
-            
-            <b>Datos de contacto:</b><br>
-            genservices@outlook.com<br>
-            TEL. 6949133 -  CEL. 3005231475
-        </div>
-        <div style="float: right; width: 25%;">
-            <img src="{{ public_path('logo_empresa.png') }}" alt="Logo Empresa" style="width: 200px; height: auto;">
-            <p style="font-size: 8px; text-align: right !important;"><b>CONFIABILIDAD, CALIDAD Y CUMPLIMIENTO</b></p>
-        </div>
-        
-        <div style="clear: both;"></div>
-    </header>
-    <div class="container">
-        <div class="header">
-            <h1 class="title">HOJA DE SERVICIO TÉCNICO PARA PLANTAS ELÉCTRICAS</h1>
-            <p class="small-text">Versión: 05 | Fecha: 1 de julio de 2024 {{ $registro->fecha_solicitud }} | Consecutivo: {{ $registro->numero_orden }}</p>
-        </div>
-        
-        <div class="section">
-            <table>
-                <tr>
-                    <th>Día</th>
-                    <th>Mes</th>
-                    <th>Año</th>
-                    <th>Ubicacion</th>
-                </tr>
-                <tr>
-                    <td>{{ date('d', strtotime($registro->created_at)) }}</td>
-                    <td>{{ date('m', strtotime($registro->created_at)) }}</td>
-                    <td>{{ date('Y', strtotime($registro->created_at)) }}</td>
-                    <td>{{ $solicitud->sucursal->address }}</td>
-                </tr>
-            </table>
-        </div>
+    <!-- HEADER -->
+    <table class="header-table">
+        <tr>
+            <td class="logo-cell">
+                <img src="{{ public_path('logo_empresa.png') }}" alt="Logo" style="max-width: 70px;">
+                <div style="font-size: 6px; font-weight: bold; margin-top: 2px;">SOLUCIONES DE<br>ENERGÍA</div>
+                <div style="font-size: 5px;">V.I.P. SAS EN BIS</div>
+            </td>
+            <td class="title-cell">
+                <div style="font-size: 11px; font-weight: bold;">HOJA DE SERVICIO TÉCNICO PARA PLANTAS ELÉCTRICAS</div>
+                <div style="font-size: 9px; margin-top: 2px;">
+                    <strong>CÓDIGO FR - HST V3</strong><br>
+                    FECHA: {{ $registro->created_at->format('d/m/Y') }}
+                </div>
+            </td>
+            <td class="code-cell">
+                <div style="font-size: 11px; font-weight: bold;">
+                    N°<br>{{ str_pad($registro->numero_orden, 4, '0', STR_PAD_LEFT) }}
+                </div>
+            </td>
+        </tr>
+    </table>
 
-        <div class="section">
-            <table>
-                <tr>
-                    <th colspan="4">DATOS DEL CLIENTE</th>
-                </tr>
-                <tr>
-                    <th>Razón Social</th>
-                    <td colspan="3">{{ $solicitud->client->enterprise_name }}</td>
-                </tr>
-                <tr>
-                    <th>Sucursal</th>
-                    <td>{{ $solicitud->sucursal->name }}</td>
-                    <th>Contacto</th>
-                    <td>{{ $solicitud->sucursal->contact_name }}</td>
-                </tr>
-                <tr>
-                    <th>Dirección</th>
-                    <td>{{ $registro->sucursal->address }}</td>
-                    <th>E-Mail</th>
-                    <td>{{ $registro->sucursal->email }}</td>
-                </tr>
-                <tr>
-                    <th>Teléfono</th>
-                    <td>{{ $solicitud->sucursal->phone_number }}</td>
-                    <th></th>
-                    <td></td>
-                </tr>
-            </table>
-        </div>
+    <!-- FECHA -->
+    <table>
+        <tr>
+            <th style="width: 8%;">DIA</th>
+            <th style="width: 8%;">MES</th>
+            <th style="width: 8%;">AÑO</th>
+            <th>CIUDAD</th>
+        </tr>
+        <tr>
+            <td>{{ $registro->created_at->format('d') }}</td>
+            <td>{{ $registro->created_at->format('m') }}</td>
+            <td>{{ $registro->created_at->format('Y') }}</td>
+            <td>{{ $solicitud->sucursal->address }}</td>
+        </tr>
+    </table>
 
-       <div class="section">
+    <!-- DATOS DEL CLIENTE -->
+    <table>
+        <tr>
+            <th colspan="4">DATOS DEL CLIENTE</th>
+        </tr>
+        <tr>
+            <th style="width: 18%;">RAZÓN SOCIAL</th>
+            <td colspan="3">{{ $solicitud->client->enterprise_name }}</td>
+        </tr>
+        <tr>
+            <th>SUCURSAL</th>
+            <td style="width: 32%;">{{ $solicitud->sucursal->name }}</td>
+            <th style="width: 18%;">CONTACTO</th>
+            <td>{{ $solicitud->sucursal->contact_name }}</td>
+        </tr>
+        <tr>
+            <th>DIRECCIÓN</th>
+            <td>{{ $solicitud->sucursal->address }}</td>
+            <th>TELÉFONO</th>
+            <td>{{ $solicitud->sucursal->phone_number }}</td>
+        </tr>
+        <tr>
+            <th>E-MAIL</th>
+            <td colspan="3">{{ $solicitud->sucursal->email }}</td>
+        </tr>
+    </table>
+
+    <!-- DATOS DEL EQUIPO -->
     <table>
         <tr>
             <th colspan="6">DATOS DEL EQUIPO</th>
         </tr>
         <tr>
-            <th>Potencia</th>
-            <td>{{ $solicitud->equipo->potencia }}</td>
-            <th>Modelo del Equipo</th>
-            <td>{{ $solicitud->equipo->modelo_equipo }}</td>
-            <th>Modelo del Motor</th>
-            <td>{{ $solicitud->equipo->modelo_motor }}</td>
+            <th style="width: 16%;">POTENCIA</th>
+            <td style="width: 17%;">{{ $solicitud->equipo->potencia }}</td>
+            <th style="width: 16%;">MODELO DEL EQUIPO</th>
+            <td style="width: 17%;">{{ $solicitud->equipo->modelo_equipo }}</td>
+            <th style="width: 16%;">MODELO DEL MOTOR</th>
+            <td style="width: 18%;">{{ $solicitud->equipo->modelo_motor }}</td>
         </tr>
         <tr>
-            <th>Tensión de Operación</th>
+            <th>TENSIÓN DE OPERACIÓN</th>
             <td>{{ $registro->tension_operacion }}</td>
-            <th>Serie del Equipo</th>
+            <th>SERIE DEL EQUIPO</th>
             <td>{{ $registro->serie_equipo }}</td>
-            <th>Serie del Motor</th>
+            <th>SERIE DEL MOTOR</th>
             <td>{{ $registro->serie_motor }}</td>
         </tr>
         <tr>
-            <th>Marca del Generador</th>
+            <th>MARCA DEL GENERADOR</th>
             <td>{{ $registro->marca_generador }}</td>
-            <th>Horómetro</th>
+            <th>HORÓMETRO</th>
             <td>{{ $registro->horometro }}</td>
-            <th>Marca del Motor</th>
+            <th>MARCA DEL MOTOR</th>
             <td>{{ $registro->marca_motor }}</td>
         </tr>
         <tr>
-            <th>Tipo de Servicio</th>
+            <th>TIPO DE SERVICIO</th>
             <td colspan="5">
-                <label class="checkbox">{{ $registro->tipo_servicio == 'Mantenimiento' ? 'X' : '' }}</label> Mantenimiento
-                <label class="checkbox">{{ $registro->tipo_servicio == 'Servicio' ? 'X' : '' }}</label> Servicio
-                <label class="checkbox">{{ $registro->tipo_servicio == 'Inspeccion' ? 'X' : '' }}</label> Inspección
-                <label class="checkbox">{{ $registro->tipo_servicio == 'Soporte' ? 'X' : '' }}</label> Soporte
-                <label class="checkbox">{{ $registro->tipo_servicio == 'Emergencia' ? 'X' : '' }}</label> Emergencia
-                <label class="checkbox">{{ $registro->tipo_servicio == 'Otro' ? 'X' : '' }}</label> Otro
+                <span class="checkbox-small">{{ $registro->tipo_servicio == 'Mantenimiento' ? 'X' : '' }}</span> MANTENIMIENTO
+                <span class="checkbox-small">{{ $registro->tipo_servicio == 'Servicio' ? 'X' : '' }}</span> SERVICIO
+                <span class="checkbox-small">{{ $registro->tipo_servicio == 'Inspeccion' ? 'X' : '' }}</span> INSPECCIÓN
+                <span class="checkbox-small">{{ $registro->tipo_servicio == 'Soporte' ? 'X' : '' }}</span> SOPORTE
+                <span class="checkbox-small">{{ $registro->tipo_servicio == 'Emergencia' ? 'X' : '' }}</span> EMERGENCIA
+                <span class="checkbox-small">{{ $registro->tipo_servicio == 'Otro' ? 'X' : '' }}</span> OTRO
             </td>
         </tr>
     </table>
-</div>
 
-        <div class="section">
-            <table>
-                <tr>
-                    <th colspan="3">OBSERVACIONES INICIALES</th>
-                </tr>
-                <tr>
-                    <td style="text-align: center" colspan="3">{!! $registro->observaciones_iniciales !!}</td>
-                </tr>
-            </table>
-        </div>
+    <!-- OBSERVACIONES INICIALES -->
+    <table>
+        <tr>
+            <th>OBSERVACIONES INICIALES</th>
+        </tr>
+        <tr>
+            <td style="min-height: 30px; vertical-align: top;">{!! $registro->observaciones_iniciales !!}</td>
+        </tr>
+    </table>
 
-        <div style="margin-top: 10px;"  class="section-title">FOTOS ESTADO INICIAL</div>
-        @if ($registro->foto_uno_antes || $registro->foto_dos_antes || $registro->foto_tres_antes)
-         <div class="images" style="margin-top: 10px;">
-            @if ($registro->foto_uno_antes)
-            <div style="display: inline-block; text-align: center; margin-right: 5px;">
-                <img style="width: 232px; height: 175px" src="{{ public_path('uploads/' . $registro->foto_uno_antes) }}" alt="Foto 1">
-                <p style="font-size: 9px; margin-top: 2px;">{{ $registro->pie_foto_uno_antes }}</p>
-            </div>
-            @endif
-            @if ($registro->foto_dos_antes)
-            <div style="display: inline-block; text-align: center; margin-right: 5px;">
-                <img style="width: 232px; height: 175px" src="{{ public_path('uploads/' . $registro->foto_dos_antes) }}">
-                <p style="font-size: 9px; margin-top: 2px;">{{ $registro->pie_foto_dos_antes }}</p>
-            </div>
-            @endif
-            @if ($registro->foto_tres_antes)
-            <div style="display: inline-block; text-align: center;">
-                <img style="width: 232px; height: 175px" src="{{ public_path('uploads/' . $registro->foto_tres_antes) }}">
-                <p style="font-size: 9px; margin-top: 2px;">{{ $registro->pie_foto_tres_antes }}</p>
-            </div>
-            @endif
-        </div>
-        @else
-        <p>No hay fotos disponibles.</p>
-        @endif
-       
+    <!-- ESTADO INICIAL Y ACTIVIDAD REALIZADA (DOS COLUMNAS) -->
+    <table class="two-col-layout">
+        <tr>
+            <td style="width: 38%; padding: 0;">
+                <!-- ESTADO INICIAL -->
+                <table style="margin: 0; height: 10%;">
+                    <tr>
+                        <th colspan="4" style="background-color: #FF7C61;">ESTADO INICIAL</th>
+                    </tr>
+                    <tr style="background-color: #d8d8d8;">
+                        <th style="width: 52%;"></th>
+                        <th style="width: 16%; text-align: center;">B</th>
+                        <th style="width: 16%; text-align: center;">R</th>
+                        <th style="width: 16%; text-align: center;">M</th>
+                    </tr>
+                    @foreach ([
+                        'nivel_aceite' => 'NIVEL DE ACEITE',
+                        'nivel_refrigerante' => 'NIVEL DE REFRIGERANTE',
+                        'nivel_combustible' => 'NIVEL DE COMBUSTIBLE',
+                        'capacidad_tanque' => 'CAPACIDAD DEL TANQUE',
+                        'fugas' => 'FUGAS',
+                        'mangueras' => 'MANGUERAS',
+                        'sellos' => 'SELLOS',
+                        'tuberias' => 'TUBERÍAS',
+                        'radiador' => 'RADIADOR',
+                        'guardas' => 'GUARDAS',
+                        'correas_ventilador' => 'CORREAS VENTILADOR',
+                        'correas_alternador' => 'CORREAS ALTERNADOR',
+                        'amortiguadores' => 'AMORTIGUADORES',
+                        'precalentador_estado_inicial' => 'PRECALENTADOR',
+                        'bateria' => 'BATERÍA',
+                        'nivel_electrolito' => 'NIVEL ELECTROLITO',
+                        'voltaje_bateria' => 'VOLTAJE DE BATERÍA',
+                        'estado_cargador' => 'CARGADOR',
+                        'voltaje_cargador' => 'VOLTAJE CARGADOR',
+                        'voltaje_alternador' => 'VOLTAJE ALTERNADOR',
+                        'tipo_control' => 'TIPO CONTROL',
+                        'conexiones_control' => 'CONEXIONES DE CONTROL',
+                        'conexiones_potencia' => 'CONEXIONES DE POTENCIA',
+                        'estado_generador' => 'ESTADO DE GENERADOR',
+                        'limpieza_generador' => 'LIMPIEZA GENERAL',
+                    ] as $campo => $label)
+                    <tr>
+                        <td style="font-size: 6px; padding: 0.5px 2px;">{{ $label }}</td>
+                        <td style="text-align: center; padding: 0.5px;">
+                            <span class="checkbox-small">{{ $registro->$campo == 'B' ? 'X' : '' }}</span>
+                        </td>
+                        <td style="text-align: center; padding: 0.5px;">
+                            <span class="checkbox-small">{{ $registro->$campo == 'R' ? 'X' : '' }}</span>
+                        </td>
+                        <td style="text-align: center; padding: 0.5px;">
+                            <span class="checkbox-small">{{ $registro->$campo == 'M' ? 'X' : '' }}</span>
+                        </td>
+                    </tr>
+                    @endforeach
+                </table>
+            </td>
+            <td style="width: 62%; padding: 0;">
+                <!-- ACTIVIDAD REALIZADA -->
+                <table style="margin: 0;">
+                    <tr>
+                        <th style="background-color: #FF7C61;">ACTIVIDAD REALIZADA</th>
+                    </tr>
+                    <tr>
+                        <td style="min-height: 80px; vertical-align: top; font-size: 10px; padding: 5px;">{!! $registro->actividad_realizada !!}</td>
+                    </tr>
+                </table>
+                
+                <!-- PRUEBAS CON EQUIPO OPERANDO -->
+                <table style="margin: 0; margin-top: 2px;">
+                    <tr>
+                        <th colspan="6" style="background-color: #b8b8b8;">PRUEBAS CON EQUIPO OPERANDO</th>
+                    </tr>
+                    <tr style="background-color: #d8d8d8;">
+                        <th colspan="3" style="text-align: center; font-size: 9px;">MOTOR</th>
+                        <th colspan="3" style="text-align: center; font-size: 9px;">GENERADOR</th>
+                    </tr>
+                    <tr style="background-color: #d8d8d8;">
+                        <th style="width: 20%; font-size: 8px;"></th>
+                        <th style="width: 10%; font-size: 8px; text-align: center;">Valor</th>
+                        <th style="width: 10%; font-size: 8px; text-align: center;">Unidad</th>
+                        <th style="width: 20%; font-size: 8px;"></th>
+                        <th style="width: 20%; font-size: 8px; text-align: center;">Valor</th>
+                        <th style="width: 20%; font-size: 8px; text-align: center;">Unidad</th>
+                    </tr>
+                    <tr>
+                        <td style="font-size: 8px;">RPM</td>
+                        <td style="font-size: 8px; text-align: center;">{{ $registro->valor_rpm }}</td>
+                        <td style="font-size: 8px; text-align: center;">{{ $registro->cantidad_rpm }}</td>
+                        <td style="font-size: 8px;">VAC FASES</td>
+                        <td style="font-size: 8px; text-align: center;">L1-L2</td>
+                        <td style="font-size: 8px; text-align: center;">AMPERIOS</td>
+                    </tr>
+                    <tr>
+                        <td style="font-size: 8px;">PRESIÓN ACEITE</td>
+                        <td style="font-size: 8px; text-align: center;">{{ $registro->valor_presion_aceite }}</td>
+                        <td style="font-size: 8px; text-align: center;">{{ $registro->cantidad_presion_aceite }}</td>
+                        <td style="font-size: 8px;">{{ $registro->vac_fases_l1_l2 }}</td>
+                        <td style="font-size: 8px; text-align: center;">{{ $registro->amperios_l1 }}</td>
+                        <td style="font-size: 8px; text-align: center;">L1</td>
+                    </tr>
+                    <tr>
+                        <td style="font-size: 8px;">TEMP. REFRIG.</td>
+                        <td style="font-size: 8px; text-align: center;">{{ $registro->valor_temp_refrigerante }}</td>
+                        <td style="font-size: 8px; text-align: center;">{{ $registro->cantidad_temp_refrigerante }}</td>
+                        <td style="font-size: 8px;">{{ $registro->vac_fases_l2_l3 }}</td>
+                        <td style="font-size: 8px; text-align: center;">{{ $registro->amperios_l2 }}</td>
+                        <td style="font-size: 8px; text-align: center;">L2</td>
+                    </tr>
+                    <tr>
+                        <td style="font-size: 8px;">TEMP. ACEITE</td>
+                        <td style="font-size: 8px; text-align: center;">{{ $registro->valor_temp_aceite }}</td>
+                        <td style="font-size: 8px; text-align: center;">{{ $registro->cantidad_temp_aceite }}</td>
+                        <td style="font-size: 8px;">{{ $registro->vac_fases_l1_l3 }}</td>
+                        <td style="font-size: 8px; text-align: center;">{{ $registro->amperios_l3 }}</td>
+                        <td style="font-size: 8px; text-align: center;">L3</td>
+                    </tr>
+                    <tr>
+                        <td style="font-size: 8px;">RPM</td>
+                        <td style="font-size: 8px; text-align: center;"></td>
+                        <td style="font-size: 8px; text-align: center;"></td>
+                        <td style="font-size: 8px;">POTENCIA</td>
+                        <td style="font-size: 8px; text-align: center;">{{ $registro->potencia }}</td>
+                        <td style="font-size: 8px; text-align: center;">KW</td>
+                    </tr>
+                    <tr>
+                        <td style="font-size: 8px;"></td>
+                        <td style="font-size: 8px; text-align: center;"></td>
+                        <td style="font-size: 8px; text-align: center;"></td>
+                        <td style="font-size: 8px;">HZ</td>
+                        <td style="font-size: 8px; text-align: center;">{{ $registro->hz }}</td>
+                        <td style="font-size: 8px; text-align: center;">HZ</td>
+                    </tr>
+                    <tr>
+                        <td style="font-size: 8px;"></td>
+                        <td style="font-size: 8px; text-align: center;"></td>
+                        <td style="font-size: 8px; text-align: center;"></td>
+                        <td style="font-size: 8px;">FP</td>
+                        <td style="font-size: 8px; text-align: center;">{{ $registro->fp }}</td>
+                        <td style="font-size: 8px; text-align: center;">FP</td>
+                    </tr>
+                </table>
 
-        <div style="margin-top: 80px !important" class="section">
-            <table>
-                <tr>
-                    <th>Estado Inicial</th>
-                    <th>Detalles</th>
-                </tr>
-                <tr>
-                    <td style="width: 40% !important;">
-                        <table>
-                            @foreach ([
-                                'nivel_aceite' => 'Nivel de Aceite',
-                                'nivel_refrigerante' => 'Nivel de Refrigerante',
-                                'nivel_combustible' => 'Nivel de Combustible',
-                                'capacidad_tanque' => 'Capacidad del Tanque',
-                                'fugas' => 'Fugas',
-                                'mangueras' => 'Mangueras',
-                                'sellos' => 'Sellos',
-                                'tuberias' => 'Tuberas',
-                                'radiador' => 'Radiador',
-                                'guardas' => 'Guardas',
-                                'correas_ventilador' => 'Correas Ventilador',
-                                'correas_alternador' => 'Correas Alternador',
-                                'amortiguadores' => 'Amortiguadores',
-                                'precalentador_estado_inicial' => 'Precalentador',
-                                'bateria' => 'Batería',
-                                'nivel_electrolito' => 'Nivel Electrolito',
-                                'voltaje_bateria' => 'Voltaje de Batería',
-                                'estado_cargador' => 'Cargador',
-                                'voltaje_cargador' => 'Voltaje Cargador',
-                                'voltaje_alternador' => 'Voltaje Alternador',
-                                'tipo_control' => 'Tipo Control',
-                                'conexiones_control' => 'Conexiones de Control',
-                                'conexiones_potencia' => 'Conexiones de Potencia',
-                                'estado_generador' => 'Estado de Generador',
-                                'limpieza_generador' => 'Limpieza General',
-                            ] as $campo => $label)
-                            <tr>
-                                <th style="font-size: 10px !important; padding: 1.5px 0.5px !important;">{{ $label }}</th>
-                                <td style="font-size: 10px !important; padding: 1.5px 0.5px !important;">{{ $registro->$campo }}</td>
-                                <td style="font-size: 10px !important; padding: 1.5px 0.5px !important;" class="option-group">
-                                    <span style="font-size: 10px !important; padding: 1.5px 0.5px !important;" class="{{ $registro->$campo == 'B' ? 'selected' : '' }}">B</span>
-                                    <span style="font-size: 10px !important; padding: 1.5px 0.5px !important;" class="{{ $registro->$campo == 'R' ? 'selected' : '' }}">R</span>
-                                    <span style="font-size: 10px !important; padding: 1.5px 0.5px !important;" class="{{ $registro->$campo == 'M' ? 'selected' : '' }}">M</span>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </table>
-                    </td>
-                    <td style="width: 60% !important;">
-                        <table>
-                            <tr>
-                                <th colspan="6">ACTIVIDAD REALIZADA</th>
-                            </tr>
-                            <tr>
-                                <td colspan="6">{!! $registro->actividad_realizada !!}</td>
-                            </tr>
-                        </table>
-                        <table>
-                            <tr>
-                                <th>Motor</th>
-                                <th>Valor</th>
-                                <th>Unidad</th>
-                                <th>Generador</th>
-                                <th>Valor</th>
-                                <th>Unidad</th>
-                            </tr>
-                            <tr>
-                                <td>RPM</td>
-                                <td>{{ $registro->valor_rpm }}</td>
-                                <td>{{ $registro->cantidad_rpm }}</td>
-                                <td>{{ $registro->vac_fases_l1_l2 }}</td>
-                                <td>{{ $registro->amperios_l1 }}</td>
-                                <td>{{ $registro->potencia }}</td>
-                            </tr>
-                            <tr>
-                                <td>Presión de Aceite</td>
-                                <td>{{ $registro->valor_presion_aceite }}</td>
-                                <td>{{ $registro->cantidad_presion_aceite }}</td>
-                                <td>{{ $registro->vac_fases_l2_l3 }}</td>
-                                <td>{{ $registro->amperios_l2 }}</td>
-                                <td>{{ $registro->hz }}</td>
-                            </tr>
-                            <tr>
-                                <td>Temp. de Refrigerante</td>
-                                <td>{{ $registro->valor_temp_refrigerante }}</td>
-                                <td>{{ $registro->cantidad_temp_refrigerante }}</td>
-                                <td>{{ $registro->vac_fases_l1_l3 }}</td>
-                                <td>{{ $registro->amperios_l3 }}</td>
-                                <td>{{ $registro->fp }}</td>
-                            </tr>
-                            <tr>
-                                <td>Temp. de Turbo</td>
-                                <td>{{ $registro->valor_temp_turbo }}</td>
-                                <td>{{ $registro->cantidad_temp_turbo }}</td>
-                                <td>{{ $registro->vac_fase_n_l1n }}</td>
-                                <td>{{ $registro->amperios_l1 }}</td>
-                                <td>{{ $registro->potencia }}</td>
-                            </tr>
-                            <tr>
-                                <td>Voltaje de Batería</td>
-                                <td>{{ $registro->valor_voltaje_bateria }}</td>
-                                <td>{{ $registro->cantidad_voltaje_bateria }}</td>
-                                <td>{{ $registro->vac_fase_n_l2n }}</td>
-                                <td>{{ $registro->amperios_l2 }}</td>
-                                <td>{{ $registro->hz }}</td>
-                            </tr>
-                            <tr>
-                                <td>Cada Voltaje de Bat.</td>
-                                <td>{{ $registro->valor_caida_voltaje_bat }}</td>
-                                <td>{{ $registro->cantidad_caida_voltaje_bat }}</td>
-                                <td>{{ $registro->vac_fase_n_l3n }}</td>
-                                <td>{{ $registro->amperios_l3 }}</td>
-                                <td>{{ $registro->fp }}</td>
-                            </tr>
-                        </table>
-                        <table>
-                            <tr>
-                                <th colspan="6">Protecciones</th>
-                            </tr>
-                            <tr>
-                                <td>Baja Presin</td>
-                                <td>{{ $registro->baja_presion }}</td>
-                                <td>Alta Temperatura</td>
-                                <td>{{ $registro->alta_temperatura }}</td>
-                                <td>Bajo Nivel Refrigerante</td>
-                                <td>{{ $registro->bajo_nivel_refrigerante }}</td>
-                            </tr>
-                            <tr>
-                                <td>Bajo Voltaje de AC</td>
-                                <td>{{ $registro->bajo_voltaje_ac }}</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                        </table>
-                        <table>
-                            <tr>
-                                <th colspan="6">RECOMENDACIONES</th>
-                            </tr>
-                            <tr>
-                                <td colspan="6">{!! $registro->recomendaciones !!}</td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-            </table>
-        </div>
-        
-         <div style="margin-top: 30px;" class="section-title">FOTOS DURANTE</div>
-        @if ($registro->foto_uno_durante || $registro->foto_dos_durante || $registro->foto_tres_durante || 
-             $registro->foto_cuatro_durante || $registro->foto_cinco_durante || $registro->foto_seis_durante ||
-             $registro->foto_siete_durante || $registro->foto_ocho_durante || $registro->foto_nueve_durante)
-        <div style="margin-top: 10px;" class="images">
-            @if ($registro->foto_uno_durante)
-            <div style="display: inline-block; text-align: center; margin-right: 5px; margin-bottom: 5px;">
-                <img style="width: 232px; height: 174px;" src="{{ public_path('uploads/' . $registro->foto_uno_durante) }}" alt="Foto 1">
-                <p style="font-size: 9px; margin-top: 2px;">{{ $registro->pie_foto_uno_durante }}</p>
-            </div>
-            @endif
-            @if ($registro->foto_dos_durante)
-            <div style="display: inline-block; text-align: center; margin-right: 5px; margin-bottom: 5px;">
-                <img style="width: 232px; height: 174px;" src="{{ public_path('uploads/' . $registro->foto_dos_durante) }}" alt="Foto 2">
-                <p style="font-size: 9px; margin-top: 2px;">{{ $registro->pie_foto_dos_durante }}</p>
-            </div>
-            @endif
-            @if ($registro->foto_tres_durante)
-            <div style="display: inline-block; text-align: center; margin-right: 5px; margin-bottom: 5px;">
-                <img style="width: 232px; height: 174px;" src="{{ public_path('uploads/' . $registro->foto_tres_durante) }}" alt="Foto 3">
-                <p style="font-size: 9px; margin-top: 2px;">{{ $registro->pie_foto_tres_durante }}</p>
-            </div>
-            @endif
-            @if ($registro->foto_cuatro_durante)
-            <div style="display: inline-block; text-align: center; margin-right: 5px; margin-bottom: 5px;">
-                <img style="width: 232px; height: 174px;" src="{{ public_path('uploads/' . $registro->foto_cuatro_durante) }}" alt="Foto 4">
-                <p style="font-size: 9px; margin-top: 2px;">{{ $registro->pie_foto_cuatro_durante }}</p>
-            </div>
-            @endif
-            @if ($registro->foto_cinco_durante)
-            <div style="display: inline-block; text-align: center; margin-right: 5px; margin-bottom: 5px;">
-                <img style="width: 232px; height: 174px;" src="{{ public_path('uploads/' . $registro->foto_cinco_durante) }}" alt="Foto 5">
-                <p style="font-size: 9px; margin-top: 2px;">{{ $registro->pie_foto_cinco_durante }}</p>
-            </div>
-            @endif
-            @if ($registro->foto_seis_durante)
-            <div style="display: inline-block; text-align: center; margin-right: 5px; margin-bottom: 5px;">
-                <img style="width: 232px; height: 174px;" src="{{ public_path('uploads/' . $registro->foto_seis_durante) }}" alt="Foto 6">
-                <p style="font-size: 9px; margin-top: 2px;">{{ $registro->pie_foto_seis_durante }}</p>
-            </div>
-            @endif
-            @if ($registro->foto_siete_durante)
-            <div style="display: inline-block; text-align: center; margin-right: 5px; margin-bottom: 5px;">
-                <img style="width: 232px; height: 174px;" src="{{ public_path('uploads/' . $registro->foto_siete_durante) }}" alt="Foto 7">
-                <p style="font-size: 9px; margin-top: 2px;">{{ $registro->pie_foto_siete_durante }}</p>
-            </div>
-            @endif
-            @if ($registro->foto_ocho_durante)
-            <div style="display: inline-block; text-align: center; margin-right: 5px; margin-bottom: 5px;">
-                <img style="width: 232px; height: 174px;" src="{{ public_path('uploads/' . $registro->foto_ocho_durante) }}" alt="Foto 8">
-                <p style="font-size: 9px; margin-top: 2px;">{{ $registro->pie_foto_ocho_durante }}</p>
-            </div>
-            @endif
-            @if ($registro->foto_nueve_durante)
-            <div style="display: inline-block; text-align: center; margin-bottom: 5px;">
-                <img style="width: 232px; height: 174px;" src="{{ public_path('uploads/' . $registro->foto_nueve_durante) }}" alt="Foto 9">
-                <p style="font-size: 9px; margin-top: 2px;">{{ $registro->pie_foto_nueve_durante }}</p>
-            </div>
-            @endif
-        </div>
-        @else
-        <p>No hay fotos disponibles.</p>
-        @endif
+                <!-- PROTECCIONES -->
+                <table style="margin: 0; margin-top: 2px;">
+                    <tr>
+                        <th colspan="6" style="background-color: #b8b8b8;">PROTECCIONES</th>
+                    </tr>
+                    <tr>
+                        <td style="font-size: 8px; width: 25%;">BAJA PRESIÓN</td>
+                        <td style="font-size: 8px; width: 8%;">{{ $registro->baja_presion }}</td>
+                        <td style="font-size: 8px; width: 25%;">ALTA TEMPERATURA</td>
+                        <td style="font-size: 8px; width: 9%;">{{ $registro->alta_temperatura }}</td>
+                        <td style="font-size: 8px; width: 25%;">BAJO NIVEL REFRIG.</td>
+                        <td style="font-size: 8px; width: 8%;">{{ $registro->bajo_nivel_refrigerante }}</td>
+                    </tr>
+                    <tr>
+                        <td style="font-size: 8px;">BAJO VOLTAJE AC</td>
+                        <td style="font-size: 8px;">{{ $registro->bajo_voltaje_ac }}</td>
+                        <td colspan="4"></td>
+                    </tr>
+                </table>
 
-        {{-- <div class="section">
-            <table>
-                <tr>
-                    <th colspan="6">Protecciones</th>
-                </tr>
-                <tr>
-                    <td>Baja Presión</td>
-                    <td>{{ $registro->baja_presion }}</td>
-                    <td>Alta Temperatura</td>
-                    <td>{{ $registro->alta_temperatura }}</td>
-                    <td>Bajo Nivel Refrigerante</td>
-                    <td>{{ $registro->bajo_nivel_refrigerante }}</td>
-                </tr>
-                <tr>
-                    <td>Bajo Voltaje de AC</td>
-                    <td>{{ $registro->bajo_voltaje_ac }}</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-            </table>
-        </div>
+                <!-- RECOMENDACIONES -->
+                <table style="margin: 0; margin-top: 2px;">
+                    <tr>
+                        <th style="background-color: #b8b8b8;">RECOMENDACIONES</th>
+                    </tr>
+                    <tr>
+                        <td style="min-height: 25px; vertical-align: top; font-size: 10px; padding: 5px 5px;">{!! $registro->recomendaciones !!}</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
 
-        <div class="section">
-            <table>
-                <tr>
-                    <th colspan="6">Recomendaciones</th>
-                </tr>
-                <tr>
-                    <td colspan="6">{{ $registro->recomendaciones }}</td>
-                </tr>
-            </table>
-        </div> --}}
+    <!-- FILTROS -->
+    <table>
+        <tr>
+            <th style="width: 40%; background-color: #b8b8b8;">FILTRO DE AIRE</th>
+            <td style="width: 10%;">{{ $registro->cantidad_filtro_aire }}</td>
+            <td style="width: 40%;">{{ $registro->referencia_filtro_aire }}</td>
+            <th style="width: 40%; background-color: #b8b8b8;">LLEGADA TECNICO</th>
+            <td rowspan="6" style="width: 10%;">
+                Día: {{ date('d', strtotime($registro->llegada_tecnico)) }}<br>
+                Mes: {{ date('m', strtotime($registro->llegada_tecnico)) }}<br>
+                Año: {{ date('Y', strtotime($registro->llegada_tecnico)) }}<br>
+                Hora: {{ date('H:i', strtotime($registro->llegada_tecnico)) }}
+            </td>
+        </tr>
+        <tr>
+            <th style="background-color: #b8b8b8;">FILTRO DE ACEITE</th>
+            <td>{{ $registro->cantidad_filtro_aceite }}</td>
+            <td>{{ $registro->referencia_filtro_aceite }}</td>
+            <th style="background-color: #b8b8b8;">SALIDA TECNICO</th>
+        </tr>
+        <tr>
+            <th style="background-color: #b8b8b8;">FILTRO DE COMBUSTIBLE</th>
+            <td>{{ $registro->cantidad_filtro_combustible }}</td>
+            <td>{{ $registro->referencia_filtro_combustible }}</td>
+            <td rowspan="4">
+                Día: {{ date('d', strtotime($registro->salida_tecnico)) }}<br>
+                Mes: {{ date('m', strtotime($registro->salida_tecnico)) }}<br>
+                Año: {{ date('Y', strtotime($registro->salida_tecnico)) }}<br>
+                Hora: {{ date('H:i', strtotime($registro->salida_tecnico)) }}
+            </td>
+        </tr>
+        <tr>
+            <th style="background-color: #b8b8b8;">FILTRO SEPARADOR</th>
+            <td>{{ $registro->cantidad_filtro_separador }}</td>
+            <td>{{ $registro->referencia_filtro_separador }}</td>
+        </tr>
+        <tr>
+            <th style="background-color: #b8b8b8;">FILTRO DE AGUA</th>
+            <td>{{ $registro->cantidad_filtro_agua }}</td>
+            <td>{{ $registro->referencia_filtro_agua }}</td>
+        </tr>
+        <tr>
+            <th style="background-color: #b8b8b8;">CANTIDAD DE ACEITE</th>
+            <td>{{ $registro->cantidad_cantidad_aceite }}</td>
+            <td>{{ $registro->referencia_cantidad_aceite }}</td>
+        </tr>
+    </table>
 
-        <div class="section">
-            <table>
-                <tr>
-                    <th>Filtro de Aire</th>
-                    <td>{{ $registro->cantidad_filtro_aire }}</td>
-                    <td>{{ $registro->referencia_filtro_aire }}</td>
-                </tr>
-                <tr>
-                    <th>Filtro de Aceite</th>
-                    <td>{{ $registro->cantidad_filtro_aceite }}</td>
-                    <td>{{ $registro->referencia_filtro_aceite }}</td>
-                </tr>
-                <tr>
-                    <th>Filtro de Combustible</th>
-                    <td>{{ $registro->cantidad_filtro_combustible }}</td>
-                    <td>{{ $registro->referencia_filtro_combustible }}</td>
-                </tr>
-                <tr>
-                    <th>Filtro Separador</th>
-                    <td>{{ $registro->cantidad_filtro_separador }}</td>
-                    <td>{{ $registro->referencia_filtro_separador }}</td>
-                </tr>
-                <tr>
-                    <th>Filtro de Agua</th>
-                    <td>{{ $registro->cantidad_filtro_agua }}</td>
-                    <td>{{ $registro->referencia_filtro_agua }}</td>
-                </tr>
-                <tr>
-                    <th>Cantidad de Aceite</th>
-                    <td>{{ $registro->cantidad_cantidad_aceite }}</td>
-                    <td>{{ $registro->referencia_cantidad_aceite }}</td>
-                </tr>
-            </table>
-        </div>
+    <!-- POSICIÓN DE INSTRUMENTOS -->
+    <table>
+        <tr>
+            <th colspan="4" style="background-color: #b8b8b8;">POSICIÓN DE INSTRUMENTOS AL CONCLUIR EL SERVICIO</th>
+            <th colspan="3" style="background-color: #b8b8b8;">CALIFICACIÓN DEL SERVICIO (por parte del cliente)</th>
+        </tr>
+        <tr style="background-color: #d8d8d8;">
+            <th style="width: 30%;"></th>
+            <th style="width: 8%; text-align: center;">M</th>
+            <th style="width: 8%; text-align: center;">A</th>
+            <th style="width: 8%; text-align: center;">OFF</th>
+            <td rowspan="6" colspan="3" style="text-align: center;">
+                <span class="checkbox-small">{{ $registro->calificacion_servicio == 'Bueno' ? 'X' : '' }}</span> BUENO &nbsp;
+                <span class="checkbox-small">{{ $registro->calificacion_servicio == 'Regular' ? 'X' : '' }}</span> REGULAR &nbsp;
+                <span class="checkbox-small">{{ $registro->calificacion_servicio == 'Malo' ? 'X' : '' }}</span> MALO
+            </td>
+        </tr>
+        <tr>
+            <td>CONTROL</td>
+            <td style="text-align: center;"><span class="checkbox-small">{{ $registro->control == 'M' ? 'X' : '' }}</span></td>
+            <td style="text-align: center;"><span class="checkbox-small">{{ $registro->control == 'A' ? 'X' : '' }}</span></td>
+            <td style="text-align: center;"><span class="checkbox-small">{{ $registro->control == 'OFF' ? 'X' : '' }}</span></td>
+        </tr>
+        <tr>
+            <td>TRANSFERENCIA</td>
+            <td style="text-align: center;"><span class="checkbox-small">{{ $registro->transferencia == 'M' ? 'X' : '' }}</span></td>
+            <td style="text-align: center;"><span class="checkbox-small">{{ $registro->transferencia == 'A' ? 'X' : '' }}</span></td>
+            <td style="text-align: center;"><span class="checkbox-small">{{ $registro->transferencia == 'OFF' ? 'X' : '' }}</span></td>
+        </tr>
+        <tr>
+            <td>CARGADOR</td>
+            <td style="text-align: center;"><span class="checkbox-small">{{ $registro->posicion_cargador == 'ON' ? 'X' : '' }}</span></td>
+            <td style="text-align: center;"></td>
+            <td style="text-align: center;"><span class="checkbox-small">{{ $registro->posicion_cargador == 'OFF' ? 'X' : '' }}</span></td>
+        </tr>
+        <tr>
+            <td>TOTALIZADOR</td>
+            <td style="text-align: center;"><span class="checkbox-small">{{ $registro->totalizador == 'ON' ? 'X' : '' }}</span></td>
+            <td style="text-align: center;"></td>
+            <td style="text-align: center;"><span class="checkbox-small">{{ $registro->totalizador == 'OFF' ? 'X' : '' }}</span></td>
+        </tr>
+        <tr>
+            <td>PRECALENTADOR</td>
+            <td style="text-align: center;"><span class="checkbox-small">{{ $registro->precalentador_posicion == 'ON' ? 'X' : '' }}</span></td>
+            <td style="text-align: center;"></td>
+            <td style="text-align: center;"><span class="checkbox-small">{{ $registro->precalentador_posicion == 'OFF' ? 'X' : '' }}</span></td>
+        </tr>
+    </table>
 
-        <div class="section" style="margin-top: 80px;">
-            <table style="width: 100%; border-collapse: collapse;">
-                <tr>
-                    <th colspan="4" style="text-align: left;">Posición de Instrumentos al Concluir el Servicio</th>
-                </tr>
-                <tr>
-                    <th style="width: 60%;">&nbsp;</th>
-                    <th style="width: 10%; text-align: center;">M</th>
-                    <th style="width: 10%; text-align: center;">A</th>
-                    <th style="width: 10%; text-align: center;">OFF</th>
-                </tr>
-                <tr>
-                    <td>Control</td>
-                    <td style="text-align: center;">{{ $registro->control == 'M' ? 'X' : '' }}</td>
-                    <td style="text-align: center;">{{ $registro->control == 'A' ? 'X' : '' }}</td>
-                    <td style="text-align: center;">{{ $registro->control == 'OFF' ? 'X' : '' }}</td>
-                </tr>
-                <tr>
-                    <td>Transferencia</td>
-                    <td style="text-align: center;">{{ $registro->transferencia == 'M' ? 'X' : '' }}</td>
-                    <td style="text-align: center;">{{ $registro->transferencia == 'A' ? 'X' : '' }}</td>
-                    <td style="text-align: center;">{{ $registro->transferencia == 'OFF' ? 'X' : '' }}</td>
-                </tr>
-                <tr>
-                    <td>Cargador</td>
-                    <td style="text-align: center;">{{ $registro->posicion_cargador == 'ON' ? 'X' : '' }}</td>
-                    <td style="text-align: center;">&nbsp;</td>
-                    <td style="text-align: center;">{{ $registro->posicion_cargador == 'OFF' ? 'X' : '' }}</td>
-                </tr>
-                <tr>
-                    <td>Totalizador</td>
-                    <td style="text-align: center;">{{ $registro->totalizador == 'ON' ? 'X' : '' }}</td>
-                    <td style="text-align: center;">&nbsp;</td>
-                    <td style="text-align: center;">{{ $registro->totalizador == 'OFF' ? 'X' : '' }}</td>
-                </tr>
-                <tr>
-                    <td>Precalentador</td>
-                    <td style="text-align: center;">{{ $registro->precalentador_posicion == 'ON' ? 'X' : '' }}</td>
-                    <td style="text-align: center;">&nbsp;</td>
-                    <td style="text-align: center;">{{ $registro->precalentador_posicion == 'OFF' ? 'X' : '' }}</td>
-                </tr>
-            </table>
-        </div>
+    <!-- FIRMAS -->
+    <table>
+        <tr>
+            <th style="width: 50%; background-color: #FF7C61;">Tecnico:</th>
+            <th style="width: 50%; background-color: #FF7C61;">Cliente:</th>
+        </tr>
+        <tr>
+            <td class="firma-box">
+                @if($registro->firma_tecnico)
+                <img src="{{ $registro->firma_tecnico }}" alt="Firma Técnico" style="max-width: 100%; max-height: 35px;">
+                @endif
+            </td>
+            <td class="firma-box">
+                @if($registro->firma_cliente)
+                <img src="{{ $registro->firma_cliente }}" alt="Firma Cliente" style="max-width: 100%; max-height: 35px;">
+                @endif
+            </td>
+        </tr>
+        <tr>
+            <th>FIRMA:</th>
+            <th>FIRMA:</th>
+        </tr>
+        <tr>
+            <td style="font-size: 6px;">
+                Nombre: {{ $registro->nombre_tecnico }}<br>
+                Cédula: {{ $registro->cedula_tecnico }}
+            </td>
+            <td style="font-size: 6px;">
+                Nombre: {{ $registro->nombre_cliente }}<br>
+                Cédula: {{ $registro->cedula_cliente }}
+            </td>
+        </tr>
+    </table>
 
-        <div style="margin-top: 30px;" class="section-title">FOTOS DESPUÉS</div>
-        @if ($registro->foto_uno_despues || $registro->foto_dos_despues || $registro->foto_tres_despues)
-        <div style="margin-top: 10px;" class="images">
-            @if ($registro->foto_uno_despues)
-            <div style="display: inline-block; text-align: center; margin-right: 5px;">
-                <img style="width: 232px; height: 174px;" src="{{ public_path('uploads/' . $registro->foto_uno_despues) }}" alt="Foto 1">
-                <p style="font-size: 9px; margin-top: 2px;">{{ $registro->pie_foto_uno_despues }}</p>
-            </div>
-            @endif
-            @if ($registro->foto_dos_despues)
-            <div style="display: inline-block; text-align: center; margin-right: 5px;">
-                <img style="width: 232px; height: 174px;" src="{{ public_path('uploads/' . $registro->foto_dos_despues) }}" alt="Foto 2">
-                <p style="font-size: 9px; margin-top: 2px;">{{ $registro->pie_foto_dos_despues }}</p>
-            </div>
-            @endif
-            @if ($registro->foto_tres_despues)
-            <div style="display: inline-block; text-align: center;">
-                <img style="width: 232px; height: 174px;" src="{{ public_path('uploads/' . $registro->foto_tres_despues) }}" alt="Foto 3">
-                <p style="font-size: 9px; margin-top: 2px;">{{ $registro->pie_foto_tres_despues }}</p>
-            </div>
-            @endif
-        </div>
-        @else
-        <p>No hay fotos disponibles.</p>
-        @endif
-
-        <div class="section">
-            <table>
-                <tr>
-                    <th>Llegada Tcnico</th>
-                    <th>Salida Tcnico</th>
-                </tr>
-                <tr>
-                    <td>
-                        Día: {{ date('d', strtotime($registro->llegada_tecnico)) }}<br>
-                        Mes: {{ date('m', strtotime($registro->llegada_tecnico)) }}<br>
-                        Ao: {{ date('Y', strtotime($registro->llegada_tecnico)) }}<br>
-                        Hora: {{ date('H:i A', strtotime($registro->llegada_tecnico)) }}
-                    </td>
-                    <td>
-                        Día: {{ date('d', strtotime($registro->salida_tecnico)) }}<br>
-                        Mes: {{ date('m', strtotime($registro->salida_tecnico)) }}<br>
-                        Año: {{ date('Y', strtotime($registro->salida_tecnico)) }}<br>
-                        Hora: {{ date('H:i A', strtotime($registro->salida_tecnico)) }}
-                    </td>
-                </tr>
-            </table>
-        </div>
-
-        <div class="section">
-            <table>
-                <tr>
-                    <th>Calificación del Servicio (por parte del cliente)</th>
-                    
-                </tr>
-                <tr>
-                    <td>
-                        <label class="checkbox">{{ $registro->calificacion_servicio == 'Bueno' ? 'X' : '' }}</label> Bueno
-                        <label class="checkbox">{{ $registro->calificacion_servicio == 'Regular' ? 'X' : '' }}</label> Regular
-                        <label class="checkbox">{{ $registro->calificacion_servicio == 'Malo' ? 'X' : '' }}</label> Malo
-                    </td>
-                    
-                </tr>
-            </table>
-        </div>
-
-        <div style="margin-top: 30px !important" class="section">
-            <table>
-                <tr>
-                    <th>Firma Tecnico</th>
-                    <th>Firma Cliente</th>
-                </tr>
-                <tr>
-                    <td style="text-align: center; vertical-align: top;">
-                        <img src="{{ $registro->firma_tecnico }}" alt="Firma del Tecnico" style="width: 70%; height: auto; display: block; margin: 0 auto;">
-                        <div style="margin-top: 10px;">
-                            <p style="margin: 0;">Nombre Tcnico: {{ $registro->nombre_tecnico }}</p>
-                            <p style="margin: 0;">Cédula Tcnico: {{ $registro->cedula_tecnico }}</p>
-                            <p style="margin: 0;">Firma Técnico</p>
-                        </div>
-                    </td>
-                    <td style="text-align: center; vertical-align: top;">
-                        <img src="{{ $registro->firma_cliente }}" alt="Firma del Cliente" style="width: 70%; height: auto; display: block; margin: 0 auto;">
-                        <div style="margin-top: 10px;">
-                            <p style="margin: 0;">Nombre Cliente: {{ $registro->nombre_cliente }}</p>
-                            <p style="margin: 0;">Cédula Cliente: {{ $registro->cedula_cliente }}</p>
-                            <p style="margin: 0;">Firma Cliente</p>
-                        </div>
-                    </td>
-                </tr>
-            </table>
-        </div>
-
-        {{-- <div class="firma-section">
-            <div class="firma">
-                <p>Nombre Técnico: {{ $registro->nombre_tecnico }}</p>
-                <p>Cédula Técnico: {{ $registro->cedula_tecnico }}</p>
-                <p>Firma Técnico</p>
-            </div>
-            <div class="firma">
-                <p>Nombre Cliente: {{ $registro->nombre_cliente }}</p>
-                <p>Cdula Cliente: {{ $registro->cedula_cliente }}</p>
-                <p>Firma Cliente</p>
-            </div>
-        </div> --}}
-
-        <div class="footer">
-            <p>Carrera 83 No. 72B 06 Tel: (571) 694 9133 / 694 9128 / 694 9125 www.genservices.com.co Bogotá, D.C. - Colombia</p>
-            <p>Las partes interesadas que intervienen en este informe, suscriben el presente 
-            COMPROMISO DE CONFIDENCIALIDAD Y NO DIVULGACIN DE LA INFORMACIN, 
-            que está clasificada como reservada, en la entrega del informe, esta únicamente será 
-            compartida con las sucursales, empresas y personas autorizadas para el desarrollo del 
-            servicio. Las partes interesadas cumplirán los requisitos legales y reglamentarios 
-            relacionados con las poltica de confidencialidad de la Empresa GEN SERVICES S.A.S., 
-            por lo tanto, no se emitirn copias, divulgaciones o reproducciones a tercero, 
-            contenidas en el sistema.</p>
-        </div>
+    <!-- FOOTER -->
+    <div class="footer-text">
+        <strong>Carrera 83 No. 72B 06 Tel: (571) 694 9133 / 694 9128 / 694 9125 www.genservices.com.co Bogotá, D.C. - Colombia</strong><br>
+        Las partes interesadas que intervienen en este informe, suscriben el presente COMPROMISO DE CONFIDENCIALIDAD Y NO DIVULGACIÓN DE LA INFORMACIÓN.
     </div>
 </body>
 </html>

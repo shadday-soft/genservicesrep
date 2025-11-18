@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import Input from '@/components/Input.vue';
+import SignaturePad from '@/components/SignaturePad.vue';
 import TecnicoService from '@/Services/TecnicosService';
 import type { Tecnico } from '@/types';
 import { Button } from 'primevue';
@@ -177,6 +178,20 @@ const onFileRemove = () => {
                     </span>
                 </div>
                 <p v-if="form.errors.activo" class="mt-1 text-sm text-red-600">{{ form.errors.activo }}</p>
+            </div>
+
+            <!-- Firma predeterminada -->
+            <div class="col-span-full">
+                <label class="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
+                    Firma Predeterminada del Técnico
+                </label>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">
+                    Esta firma se precargará automáticamente al generar informes
+                </p>
+                <SignaturePad 
+                    v-model="form.firma"
+                    :error="form.errors.firma"
+                />
             </div>
 
             <div class="mt-6 flex justify-end col-span-full gap-2">
