@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, useTemplateRef } from 'vue';
 import Input from '@/components/Input.vue';
 import SignaturePad from '@/components/SignaturePad.vue';
 import TecnicoService from '@/Services/TecnicosService';
 import type { Tecnico } from '@/types';
 import { Button } from 'primevue';
-import FileUpload from 'primevue/fileupload';
 import Select from 'primevue/select';
 import DatePicker from 'primevue/datepicker';
 import InputSwitch from 'primevue/inputswitch';
+import FileUpload from 'primevue/fileupload';
 
 const emit = defineEmits(['close']);
 
@@ -39,55 +39,38 @@ const tiposContrato = [
     { label: 'Prestación de servicios', value: 'Prestación de servicios' },
 ];
 
-const fotoPreview = ref<string | null>(
-    props.tecnico?.foto ? `/uploads/${props.tecnico.foto}` : null
-);
+function onSelectFoto(event: any) {
+    form.foto = event.files[0];
+}
 
-const onFileSelect = (event: any) => {
-    const file = event.files[0];
-    if (file) {
-        form.foto = file;
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            fotoPreview.value = e.target?.result as string;
-        };
-        reader.readAsDataURL(file);
-    }
-};
-
-const onFileRemove = () => {
+function onRemoveFoto() {
     form.foto = null;
-    fotoPreview.value = null;
-};
+}
 </script>
 
 <template>
     <div>
         <form @submit.prevent="tecnicoService.submit(() => emit('close'))" class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <!-- Foto -->
-            <div class="col-span-full">
-                <label class="block text-sm font-medium mb-2">Foto</label>
-                <div class="flex items-center gap-4">
-                    <div v-if="fotoPreview" class="relative">
-                        <img :src="fotoPreview" alt="Preview" class="w-24 h-24 rounded-lg object-cover" />
-                        <button
-                            type="button"
-                            @click="onFileRemove"
-                            class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600"
-                        >
-                            <i class="pi pi-times text-xs"></i>
-                        </button>
-                    </div>
-                    <FileUpload
-                        mode="basic"
-                        accept="image/*"
-                        :maxFileSize="2000000"
-                        @select="onFileSelect"
-                        chooseLabel="Seleccionar Foto"
-                        class="flex-1"
-                    />
-                </div>
-                <p v-if="form.errors.foto" class="mt-1 text-sm text-red-600">{{ form.errors.foto }}</p>
+            <div class="col-span-full md:col-span-1">
+                <label class="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">Foto</label>
+                <FileUpload
+                    mode="basic"
+                    name="foto"
+                    accept="image/*"
+                    :maxFileSize="2000000"
+                    @select="onSelectFoto"
+                    @remove="onRemoveFoto"
+                    chooseLabel="Seleccionar foto"
+                    class="w-full"
+                />
+                <p v-if="props.tecnico?.foto && !form.foto" class="mt-2 text-xs text-gray-600">
+                    Foto actual: {{ props.tecnico.foto }}
+                </p>
+                <p v-if="form.foto" class="mt-2 text-xs text-green-600">
+                    Nueva foto seleccionada: {{ form.foto.name }}
+                </p>
+                <p v-if="form.errors.foto" class="mt-1 text-xs text-red-600">{{ form.errors.foto }}</p>
             </div>
 
             <!-- Datos personales -->
@@ -201,3 +184,5 @@ const onFileRemove = () => {
         </form>
     </div>
 </template>
+
+

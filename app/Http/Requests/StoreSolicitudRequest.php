@@ -35,6 +35,7 @@ class StoreSolicitudRequest extends FormRequest
             'detalles' => ['nullable', 'string'],
             'estado' => ['required', 'in:Nueva,Proceso,Revisión,Finalizada,Anulada,Programada'],
             'actividad' => ['required', 'string', 'max:255'],
+            'tipo_mantenimiento' => ['nullable', 'in:Mantenimiento Preventivo,Mantenimiento Correctivo'],
             'mantenimiento_id' => ['nullable', 'exists:mantenimientos,id'],
             'fecha_mantenimiento' => ['nullable', 'date'],
             'orden_trabajo' => ['nullable', 'file'],

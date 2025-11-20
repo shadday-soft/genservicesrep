@@ -3,9 +3,11 @@
 namespace App\Repositories;
 
 use App\Interfaces\TecnicoInterface;
+use App\Mail\WelcomeUserMail;
 use App\Models\Tecnico;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
 class TecnicoRepository extends BaseRepository implements TecnicoInterface
@@ -46,11 +48,14 @@ class TecnicoRepository extends BaseRepository implements TecnicoInterface
     public function create(array $data)
     {
         return DB::transaction(function () use ($data) {
+            // Guardar la contraseña antes de hashearla para enviarla por correo
+            $plainPassword = $data['identificacion'];
+
             // Crear el usuario primero
             $userData = [
                 'name' => $data['nombre_completo'],
                 'email' => $data['correo'],
-                'password' => Hash::make($data['identificacion']), // Password por defecto es la identificación
+                'password' => Hash::make($plainPassword), // Password por defecto es la identificación
                 'role' => 'Tecnico',
             ];
 
@@ -66,7 +71,18 @@ class TecnicoRepository extends BaseRepository implements TecnicoInterface
             $data['user_id'] = $user->id;
 
             // Crear el técnico
-            return parent::create($data);
+            $tecnico = parent::create($data);
+
+            // Enviar correo de bienvenida con credenciales
+            Mail::to($data['correo'])->send(new WelcomeUserMail(
+                userName: $data['nombre_completo'],
+                userEmail: $data['correo'],
+                userPassword: $plainPassword,
+                userRole: 'Tecnico',
+                loginUrl: url('/login')
+            ));
+
+            return $tecnico;
         });
     }
 
@@ -75,14 +91,17 @@ class TecnicoRepository extends BaseRepository implements TecnicoInterface
         return DB::transaction(function () use ($id, $data) {
             $tecnico = $this->find($id);
 
-            // Manejar la foto si existe
-            if (isset($data['foto']) && $data['foto']) {
+            // Manejar la foto si existe y es un archivo nuevo
+            if (isset($data['foto']) && $data['foto'] && is_object($data['foto'])) {
                 // Eliminar foto anterior si existe
                 if ($tecnico->foto) {
                     Storage::disk('public')->delete($tecnico->foto);
                 }
                 $fotoPath = $data['foto']->store('tecnicos', 'public');
                 $data['foto'] = $fotoPath;
+            } elseif (! isset($data['foto']) || $data['foto'] === null) {
+                // Si no se envió foto o es null, mantener la actual
+                unset($data['foto']);
             }
 
             // Actualizar el usuario si el correo cambió

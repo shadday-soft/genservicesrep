@@ -2,6 +2,13 @@ import type { Column } from '@/types';
 
 export const columns: Column[] = [
     {
+        header: '',
+        field: 'select',
+        sortable: false,
+        type: 'slot',
+        filter: false
+    },
+    {
         header: 'Numero de solicitud',
         field: 'numero_orden',
         sortable: true,
@@ -75,6 +82,26 @@ export const columns: Column[] = [
         filterPlaceholder: 'Buscar por fecha',
     },
     {
+        header: 'Tipo de Mantenimiento',
+        field: 'tipo_mantenimiento_display',
+        sortable: true,
+        type: 'tag',
+        filter: true,
+        filterPlaceholder: 'Buscar por tipo',
+        tags: [
+            {
+                label: 'Preventivo',
+                value: 'Mantenimiento Preventivo',
+                severity: 'info',
+            },
+            {
+                label: 'Correctivo',
+                value: 'Mantenimiento Correctivo',
+                severity: 'warn',
+            },
+        ]
+    },
+    {
         header: 'Técnico Asignado',
         field: 'user.name',
         sortable: true,
@@ -83,6 +110,14 @@ export const columns: Column[] = [
         filterPlaceholder: 'Buscar por técnico',
     },
 
+    {
+        header: 'Firma Cliente',
+        field: 'firma_cliente',
+        sortable: true,
+        type: 'text',
+        filter: true,
+        filterPlaceholder: 'Buscar por firma',
+    },
     {
         header: 'Orden de Compra',
         field: 'orden_trabajo',

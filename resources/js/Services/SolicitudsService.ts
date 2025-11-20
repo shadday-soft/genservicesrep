@@ -20,6 +20,7 @@ export default class Solicitud extends GeneralService {
         detalles: '',
         estado: 'Nueva' as 'Nueva' | 'Proceso' | 'Revisión' | 'Finalizada' | 'Anulada' | 'Programada',
         actividad: '',
+        tipo_mantenimiento: '' as string,
         mantenimiento_id: '',
         fecha_mantenimiento: '',
         telefono: '',

@@ -15,6 +15,8 @@ class Solicitud extends Model
 
     protected $guarded = [];
 
+    protected $appends = ['tipo_mantenimiento_display'];
+
     public function client()
     {
         return $this->belongsTo(Client::class);
@@ -33,6 +35,20 @@ class Solicitud extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Accessor para mostrar el tipo de mantenimiento
+     */
+    public function getTipoMantenimientoDisplayAttribute(): string
+    {
+        if ($this->tipo_mantenimiento) {
+            return $this->tipo_mantenimiento;
+        }
+
+        return $this->actividad === 'Mantenimiento Preventivo'
+            ? 'Mantenimiento Preventivo'
+            : 'Mantenimiento Correctivo';
     }
 
     protected static function boot()

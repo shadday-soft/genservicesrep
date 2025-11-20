@@ -27,7 +27,7 @@ class UpdateTecnicoRequest extends FormRequest
         $userId = User::where('email', $this->input('correo'))->value('id');
 
         return [
-            'foto' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
+            'foto' => ['nullable'],
             'identificacion' => ['required', 'string', 'max:255', Rule::unique('tecnicos')->ignore($tecnicoId)],
             'correo' => ['required', 'email', 'max:255', Rule::unique('tecnicos')->ignore($tecnicoId), Rule::unique('users', 'email')->ignore($userId)],
             'nombre_completo' => ['required', 'string', 'max:255'],

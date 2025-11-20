@@ -63,7 +63,7 @@ class SolicitudController extends Controller
             $equipo = $this->crearEquipo($solicitud->equipos_id, $sucursal->id, $cliente->id);
 
             // Lógica para restaurar cada solicitud
-            Solicitud::create([
+            $s = Solicitud::create([
                 // 'numero_orden' => $solicitud->numero_orden,
                 'fecha_programada' => $solicitud->start_date
                     ? \Carbon\Carbon::parse($solicitud->start_date)->setTimezone('UTC')->format('Y-m-d\TH:i:s.v\Z')
@@ -82,6 +82,10 @@ class SolicitudController extends Controller
                 'user_id' => $tecnico->user_id ?? null,
                 'last_num_order' => $solicitud->numero_orden,
             ]);
+
+            $s->created_at = $solicitud->created_at ?? now();
+            $s->save();
+            
         }
     }
 

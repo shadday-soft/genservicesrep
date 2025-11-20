@@ -37,6 +37,7 @@ interface Props {
 const solicitud = ref<Solicitud | null>(null);
 const solicitudToCancel = ref<Solicitud | null>(null);
 const solicitudToView = ref<Solicitud | null>(null);
+const selectedSolicitudes = ref<Solicitud[]>([]);
 
 const props = defineProps<Props>();
 
@@ -86,6 +87,12 @@ const edit = (solicitudData: Solicitud) => {
 
 const openCancelModal = (solicitudData: Solicitud) => {
     solicitudToCancel.value = solicitudData;
+    selectedSolicitudes.value = [];
+    showCancelModal.value = true;
+};
+
+const openBulkCancelModal = () => {
+    solicitudToCancel.value = null;
     showCancelModal.value = true;
 };
 
@@ -96,11 +103,49 @@ const viewDetails = (solicitudData: Solicitud) => {
 
 const handleCancelConfirm = (razon: string) => {
     if (solicitudToCancel.value) {
+        // Cancelar una sola solicitud
         solicitudService.cancelar(solicitudToCancel.value.id, razon, () => {
             showCancelModal.value = false;
             solicitudToCancel.value = null;
         });
+    } else if (selectedSolicitudes.value.length > 0) {
+        // Cancelar múltiples solicitudes
+        let completedCount = 0;
+        const totalCount = selectedSolicitudes.value.length;
+        
+        selectedSolicitudes.value.forEach(solicitud => {
+            solicitudService.cancelar(solicitud.id, razon, () => {
+                completedCount++;
+                if (completedCount === totalCount) {
+                    showCancelModal.value = false;
+                    selectedSolicitudes.value = [];
+                    router.reload({ only: ['solicituds'] });
+                }
+            });
+        });
     }
+};
+
+const toggleSelectAll = () => {
+    const cancelableSolicitudes = props.solicituds.data.filter((s: Solicitud) => s.estado !== 'Anulada');
+    if (selectedSolicitudes.value.length === cancelableSolicitudes.length) {
+        selectedSolicitudes.value = [];
+    } else {
+        selectedSolicitudes.value = cancelableSolicitudes;
+    }
+};
+
+const toggleSelect = (solicitudData: Solicitud) => {
+    const index = selectedSolicitudes.value.findIndex(s => s.id === solicitudData.id);
+    if (index > -1) {
+        selectedSolicitudes.value.splice(index, 1);
+    } else {
+        selectedSolicitudes.value.push(solicitudData);
+    }
+};
+
+const isSelected = (solicitudData: Solicitud) => {
+    return selectedSolicitudes.value.some(s => s.id === solicitudData.id);
 };
 
 const onPageChange = (event: any) => {
@@ -178,7 +223,21 @@ const generateReport = (solicitudData: Solicitud) => {
                     placeholder="Estado" 
                     class="w-full sm:w-40"
                 />
-                <Button label="Agregar Solicitud" v-if="isAutorized()" icon="pi pi-plus" size="small" @click="add" />
+                <Button 
+                    v-if="isAutorized() && selectedSolicitudes.length > 0"
+                    :label="`Cancelar (${selectedSolicitudes.length})`" 
+                    icon="pi pi-ban" 
+                    severity="danger"
+                    size="small" 
+                    @click="openBulkCancelModal" 
+                />
+                <Button 
+                    label="Agregar Solicitud" 
+                    v-if="(isAutorized() || ($page.props.auth.user.role === 'Cliente' && props.filters?.tipo === 'Mantenimiento Correctivo')) && props.filters?.tipo" 
+                    icon="pi pi-plus" 
+                    size="small" 
+                    @click="add" 
+                />
             </div>
 
             <!-- Vista de Tabla para pantallas grandes -->
@@ -187,6 +246,16 @@ const generateReport = (solicitudData: Solicitud) => {
                     <template #addButton>
                         <!-- Removido porque ahora está arriba -->
                     </template>
+                    <template #select="{ data }">
+                        <div class="flex items-center justify-center" v-if="isAutorized() && data.estado !== 'Anulada'">
+                            <input 
+                                type="checkbox" 
+                                :checked="isSelected(data)"
+                                @change="toggleSelect(data)"
+                                class="w-4 h-4 text-red-600 bg-gray-100 border-gray-300 rounded focus:ring-red-500 dark:focus:ring-red-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                            />
+                        </div>
+                    </template>
                     <template #actions="{ data }">
                         <div class="flex justify-end">
                             <Button icon="pi pi-eye" size="small" severity="secondary" text
@@ -194,10 +263,10 @@ const generateReport = (solicitudData: Solicitud) => {
                             <Button text v-tooltip.top="`Ver Informe`" @click="generateReport(data)"
                                 icon="pi pi-file-pdf" v-if="data.informe_generado"></Button>
                             <Button icon="pi pi-file" size="small" severity="info" text
-                                v-tooltip.left="`Generar Informe`" @click="crearReporte(data)" v-if="data.estado != 'Finalizada' && $page.props.auth.user.role !== 'Cliente'" />
-                            <Button icon="pi pi-pencil" size="small" v-if="isAutorized() && data.estado != 'Finalizada'" severity="warn" text
+                                v-tooltip.left="`Generar Informe`" @click="crearReporte(data)" v-if="data.estado != 'Anulada' && $page.props.auth.user.role !== 'Cliente'" />
+                            <Button icon="pi pi-pencil" size="small" v-if="isAutorized() && data.estado != 'Anulada'" severity="warn" text
                                 v-tooltip.left="`Editar`" @click="edit(data)" />
-                            <Button icon="pi pi-ban" size="small" severity="danger" text v-if="isAutorized() && data.estado != 'Finalizada'"
+                            <Button icon="pi pi-ban" size="small" severity="danger" text v-if="isAutorized() && data.estado != 'Anulada'"
                                 v-tooltip.left="`Cancelar`" @click="openCancelModal(data)" />
                         </div>
                     </template>
@@ -212,6 +281,13 @@ const generateReport = (solicitudData: Solicitud) => {
                     <div
                         class="px-3 py-2 bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
                         <div class="flex items-center gap-1.5">
+                            <input 
+                                v-if="isAutorized() && solicitudItem.estado !== 'Anulada'"
+                                type="checkbox" 
+                                :checked="isSelected(solicitudItem)"
+                                @change="toggleSelect(solicitudItem)"
+                                class="w-4 h-4 text-red-600 bg-gray-100 border-gray-300 rounded focus:ring-red-500 dark:focus:ring-red-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                            />
                             <i class="pi pi-file text-gray-500 dark:text-gray-400 text-xs"></i>
                             <span class="text-sm font-semibold text-gray-900 dark:text-white">
                                 #{{ solicitudItem.numero_orden }}
@@ -326,11 +402,11 @@ const generateReport = (solicitudData: Solicitud) => {
                             @click="viewDetails(solicitudItem)" class="!p-1.5" />
                         <Button text v-if="solicitudItem.informe_generado" v-tooltip.top="`Ver Informe`"
                             @click="generateReport(solicitudItem)" icon="pi pi-file-pdf" class="!p-1.5" />
-                        <Button v-if="solicitudItem.estado != 'Finalizada' && $page.props.auth.user.role !== 'Cliente'" icon="pi pi-file" size="small" severity="info" text v-tooltip.top="'Generar Informe'"
+                        <Button v-if="solicitudItem.estado != 'Anulada' && $page.props.auth.user.role !== 'Cliente'" icon="pi pi-file" size="small" severity="info" text v-tooltip.top="'Generar Informe'"
                             @click="crearReporte(solicitudItem)" class="!p-1.5" />
                         <Button icon="pi pi-pencil" size="small"  severity="warn" text v-tooltip.top="'Editar'"
-                            @click="edit(solicitudItem)" class="!p-1.5" v-if="isAutorized() && solicitudItem.estado != 'Finalizada'" />
-                        <Button icon="pi pi-ban" size="small" severity="danger" v-if="isAutorized() && solicitudItem.estado != 'Finalizada'" text
+                            @click="edit(solicitudItem)" class="!p-1.5" v-if="isAutorized() && solicitudItem.estado != 'Anulada'" />
+                        <Button icon="pi pi-ban" size="small" severity="danger" v-if="isAutorized() && solicitudItem.estado != 'Anulada'" text
                             v-tooltip.top="'Cancelar'" @click="openCancelModal(solicitudItem)" class="!p-1.5" />
                     </div>
                 </div>
@@ -373,8 +449,11 @@ const generateReport = (solicitudData: Solicitud) => {
             <Form :solicitud="solicitud" @close="showModal = false" :tipo="filters?.tipo" />
         </Modal>
 
-        <CancelSolicitudModal v-model="showCancelModal" :solicitud-numero="solicitudToCancel?.numero_orden || undefined"
-            @confirm="handleCancelConfirm" />
+        <CancelSolicitudModal 
+            v-model="showCancelModal" 
+            :solicitud-numero="solicitudToCancel?.numero_orden || (selectedSolicitudes.length > 0 ? `${selectedSolicitudes.length} solicitudes` : undefined)"
+            @confirm="handleCancelConfirm" 
+        />
 
         <SolicitudDetailsDrawer v-model="showDetailsDrawer" :solicitud="solicitudToView" />
     </AppLayout>

@@ -93,7 +93,7 @@ const mainNavItems: NavItem[] = [
                 title: 'Cronograma',
                 href: solicituds.cronograma(),
                 icon: Calendar,
-                show: validateRole('Administrador'),
+                show: validateRole('Administrador')  || validateRole('Cliente'),
             }
         ],
     },

@@ -17,6 +17,7 @@ const emit = defineEmits(['close']);
 
 interface Props {
     solicitud: SolicitudType | null;
+    tipo?: string;
 }
 
 const FilePond = vueFilePond(FilePondPluginPdfPreview);
@@ -90,6 +91,11 @@ onMounted(async () => {
     clientsList.value = await clientService.getClients();
     tecnicosList.value = (await userService.getUsers()).filter((user: User) => user.role === 'Tecnico');
     actividadesList.value = await actividadService.getActividades();
+
+    // Asignar tipo_mantenimiento basado en el prop tipo
+    if (props.tipo) {
+        form.tipo_mantenimiento = props.tipo;
+    }
 
     if (props.solicitud) {
         if (props.solicitud.client_id) {

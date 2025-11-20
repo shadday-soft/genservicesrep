@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Interfaces\SolicitudInterface;
 use App\Models\Solicitud;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -67,17 +68,27 @@ class SolicitudRepository extends BaseRepository implements SolicitudInterface
             $query->where('client_id', $client->id);
         }
 
-        if ($tipo == 'Mantenimiento Preventivo') {
-            $query->where('actividad', $tipo);
-        } elseif (isset($tipo)) {
-            $query->where('actividad', '!=', 'Mantenimiento Preventivo');
+        if (isset($tipo)) {
+            $query->where('tipo_mantenimiento', $tipo)->whereMonth('fecha_programada', Carbon::now()->month);
         }
-
         if (isset($tipo) && ! $estado) {
             $query->where('estado', 'Nueva');
         }
 
-        return $query->latest()->paginate($perPage);
+        $result = $query->latest()->paginate($perPage);
+
+        // Mapear tipo_mantenimiento basado en actividad si no está definido
+        $result->getCollection()->transform(function ($solicitud) {
+            if (! $solicitud->tipo_mantenimiento) {
+                $solicitud->tipo_mantenimiento = $solicitud->actividad === 'Mantenimiento Preventivo'
+                    ? 'Mantenimiento Preventivo'
+                    : 'Mantenimiento Correctivo';
+            }
+
+            return $solicitud;
+        });
+
+        return $result;
     }
 
     public function getSolicitudesParaCronograma()
@@ -102,7 +113,6 @@ class SolicitudRepository extends BaseRepository implements SolicitudInterface
 
     public function create(array $data): Solicitud
     {
-
         if ($data['orden_trabajo']) {
             $data['orden_trabajo'] = 'uploads/'.$data['orden_trabajo']->store('solicitus', 'public');
         }

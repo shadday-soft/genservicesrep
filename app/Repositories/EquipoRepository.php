@@ -87,6 +87,7 @@ class EquipoRepository extends BaseRepository implements EquipoInterface
 
         foreach ($fechasMantenimiento as $fecha) {
             Solicitud::create([
+                'tipo_mantenimiento' => 'Mantenimiento Preventivo',
                 'client_id' => $equipo->client_id,
                 'sucursal_id' => $equipo->sucursal_id,
                 'equipo_id' => $equipo->id,
@@ -99,6 +100,7 @@ class EquipoRepository extends BaseRepository implements EquipoInterface
                 'estado' => 'Nueva',
                 'prioridad' => 'Normal',
                 'detalles' => 'Mantenimiento preventivo programado automáticamente según periodicidad: '.$equipo->periodicidad,
+                'tipo_mantenimiento' => 'Mantenimiento Preventivo',
             ]);
         }
     }

@@ -80,7 +80,10 @@ initializeFilters();
             severity="success"></Button>
         </template>
         <template #body="{ data }">
-          <ColumnsTypes :type="column.type"  :column="column" :data="column.field.includes('.')
+          <!-- Si la columna es tipo 'slot', usar el slot personalizado -->
+          <slot v-if="column.type === 'slot'" :name="column.field" :data="data" />
+          <!-- Si no, usar el componente ColumnsTypes por defecto -->
+          <ColumnsTypes v-else :type="column.type"  :column="column" :data="column.field.includes('.')
               ? column.field.split('.').reduce((acc, key) => acc?.[key], data)
               : data[column.field]
             "></ColumnsTypes>

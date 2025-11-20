@@ -171,7 +171,7 @@ class StoreInformeRequest extends FormRequest
             'cedula_tecnico' => ['nullable', 'string', 'max:50'],
 
             'firma_cliente' => ['nullable', 'string'],
-            'nombre_cliente' => ['nullable', 'string', 'max:100'],
+            'nombre_cliente' => ['required', 'string', 'max:100'],
             'cedula_cliente' => ['nullable', 'string', 'max:50'],
         ];
     }
