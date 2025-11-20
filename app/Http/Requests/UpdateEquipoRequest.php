@@ -57,25 +57,25 @@ class UpdateEquipoRequest extends FormRequest
 
             // --- INSUMOS (Cantidades y Referencias) ---
             // Los insumos no son obligatorios cuando tipo_equipo != 'Planta Eléctrica'
-            'filtro_aire_cantidad' => ['required_if:tipo_equipo,Planta Eléctrica', 'integer', 'min:0'],
+            'filtro_aire_cantidad' => ['required_if:tipo_equipo,Planta Eléctrica', ],
             'filtro_aire_referencia' => ['required_if:tipo_equipo,Planta Eléctrica',  'max:100'],
 
-            'filtro_aceite_cantidad' => ['required_if:tipo_equipo,Planta Eléctrica', 'integer', 'min:0'],
+            'filtro_aceite_cantidad' => ['required_if:tipo_equipo,Planta Eléctrica', ],
             'filtro_aceite_referencia' => ['required_if:tipo_equipo,Planta Eléctrica',  'max:100'],
 
-            'filtro_combustible_cantidad' => ['required_if:tipo_equipo,Planta Eléctrica', 'integer', 'min:0'],
+            'filtro_combustible_cantidad' => ['required_if:tipo_equipo,Planta Eléctrica', ],
             'filtro_combustible_referencia' => ['required_if:tipo_equipo,Planta Eléctrica', 'max:100'],
 
-            'filtro_separador_cantidad' => ['required_if:tipo_equipo,Planta Eléctrica', 'integer', 'min:0'],
+            'filtro_separador_cantidad' => ['required_if:tipo_equipo,Planta Eléctrica', ],
             'filtro_separador_referencia' => ['required_if:tipo_equipo,Planta Eléctrica',  'max:100'],
 
-            'filtro_agua_cantidad' => ['required_if:tipo_equipo,Planta Eléctrica', 'integer', 'min:0'],
+            'filtro_agua_cantidad' => ['required_if:tipo_equipo,Planta Eléctrica', ],
             'filtro_agua_referencia' => ['required_if:tipo_equipo,Planta Eléctrica',  'max:100'],
 
-            'filtro_aceite_2_cantidad' => ['required_if:tipo_equipo,Planta Eléctrica', 'integer', 'min:0'],
+            'filtro_aceite_2_cantidad' => ['required_if:tipo_equipo,Planta Eléctrica', ],
             'filtro_aceite_2_referencia' => ['required_if:tipo_equipo,Planta Eléctrica',  'max:100'],
 
-            'refrigerante_cantidad' => ['required_if:tipo_equipo,Planta Eléctrica', 'integer', 'min:0'],
+            'refrigerante_cantidad' => ['required_if:tipo_equipo,Planta Eléctrica', ],
             'refrigerante_referencia' => ['required_if:tipo_equipo,Planta Eléctrica',  'max:100'],
 
             

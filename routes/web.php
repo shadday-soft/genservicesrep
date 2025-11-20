@@ -31,6 +31,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('solicituds', SolicitudController::class);
     Route::post('solicituds/{solicitud}/cancelar', [SolicitudController::class, 'cancelar'])->name('solicituds.cancelar')->middleware(VerifyadminRole::class);
     Route::get('solicituds-cronograma', [SolicitudController::class, 'cronograma'])->name('solicituds.cronograma');
+    Route::get('solicituds-export-excel', [SolicitudController::class, 'exportExcel'])->name('solicituds.export');
     Route::resource('actividads', ActividadController::class)->middleware(VerifyadminRole::class);
     Route::resource('tecnicos', TecnicoController::class)->middleware(VerifyadminRole::class);
     Route::get('clientes/retored', [ClientController::class, 'retored'])->name('clients.retored')->middleware(VerifyadminRole::class);

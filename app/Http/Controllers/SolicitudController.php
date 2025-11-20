@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\SolicitudesExport;
 use App\Http\Requests\StoreSolicitudRequest;
 use App\Http\Requests\UpdateSolicitudRequest;
 use App\Interfaces\ClientInterface;
@@ -16,6 +17,7 @@ use App\Models\Solicitud;
 use App\Models\Sucursal;
 use App\Models\Tecnico;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class SolicitudController extends Controller
 {
@@ -335,16 +337,11 @@ class SolicitudController extends Controller
 
             DB::commit();
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Solicitud cancelada exitosamente',
-            ]);
+            return back()->with('status', 'Solicitud cancelada exitosamente');
         } catch (\Exception $e) {
             DB::rollBack();
 
-            return response()->json([
-                'error' => 'Error al cancelar la solicitud',
-            ], 500);
+            return back()->withErrors(['errors' => 'Action no Disabled']);
         }
     }
 
@@ -358,5 +355,19 @@ class SolicitudController extends Controller
         return inertia('Solicituds/Cronogram', [
             'solicituds' => $solicituds,
         ]);
+    }
+
+    /**
+     * Exportar solicitudes a Excel
+     */
+    public function exportExcel()
+    {
+        $search = request('search');
+        $tipo = request('tipo');
+        $estado = request('estado');
+
+        $filename = 'solicitudes_'.now()->format('Y-m-d_His').'.xlsx';
+
+        return Excel::download(new SolicitudesExport($search, $tipo, $estado), $filename);
     }
 }

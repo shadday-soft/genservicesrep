@@ -33,12 +33,11 @@ class InformeRepository extends BaseRepository implements InformeInterface
             $solicitud = Solicitud::find($solicitudId);
             if ($solicitud) {
                 $solicitud->informe_generado = true;
-
-                // Guardar el nombre de quien firma por parte del cliente
                 if (isset($data['nombre_cliente'])) {
                     $solicitud->firma_cliente = $data['nombre_cliente'];
                 }
-
+                $solicitud->estado = 'Proceso';
+                $solicitud->fecha_informe = now()->toDateTimeString();
                 $solicitud->save();
             }
         }

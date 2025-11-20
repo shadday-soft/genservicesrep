@@ -194,6 +194,34 @@ const generateReport = (solicitudData: Solicitud) => {
     window.location.href = `/informe/${solicitudData.id}/pdf`;
 };
 
+const canGenerateInforme = (solicitudData: Solicitud) => {
+    if(solicitudData.estado === 'Finalizada') {
+        return false;
+    }
+    if (!solicitudData.fecha_informe) {
+        return true;
+    }
+    return  usePage().props.auth.user.role !== 'Cliente'
+        && solicitudData.fecha_informe
+        && (() => {
+            const ts = Date.parse(solicitudData.fecha_informe as unknown as string);
+            if (isNaN(ts)) {
+                return false;
+            }
+            const hoursSince = (Date.now() - ts) / (1000 * 60 * 60);
+            return hoursSince <= 36;
+        })();
+}
+
+const exportToExcel = () => {
+    const params = new URLSearchParams({
+        search: searchQuery.value || '',
+        tipo: tipoFilter.value || '',
+        estado: estadoFilter.value || ''
+    });
+    window.location.href = `/solicituds-export-excel?${params.toString()}`;
+};
+
 
 
 
@@ -238,6 +266,12 @@ const generateReport = (solicitudData: Solicitud) => {
                     size="small" 
                     @click="add" 
                 />
+                <Button 
+                    label="Exportar a Excel" 
+                    icon="pi pi-file-excel" 
+                    severity="success"
+                    @click="exportToExcel"
+                />
             </div>
 
             <!-- Vista de Tabla para pantallas grandes -->
@@ -263,7 +297,7 @@ const generateReport = (solicitudData: Solicitud) => {
                             <Button text v-tooltip.top="`Ver Informe`" @click="generateReport(data)"
                                 icon="pi pi-file-pdf" v-if="data.informe_generado"></Button>
                             <Button icon="pi pi-file" size="small" severity="info" text
-                                v-tooltip.left="`Generar Informe`" @click="crearReporte(data)" v-if="data.estado != 'Anulada' && $page.props.auth.user.role !== 'Cliente'" />
+                                v-tooltip.left="`Generar Informe`" @click="crearReporte(data)" v-if="canGenerateInforme(data)" />
                             <Button icon="pi pi-pencil" size="small" v-if="isAutorized() && data.estado != 'Anulada'" severity="warn" text
                                 v-tooltip.left="`Editar`" @click="edit(data)" />
                             <Button icon="pi pi-ban" size="small" severity="danger" text v-if="isAutorized() && data.estado != 'Anulada'"
@@ -378,7 +412,6 @@ const generateReport = (solicitudData: Solicitud) => {
                         </div>
                     </div>
 
-                    <!-- Footer compacto con acciones -->
                     <div
                         class="px-3 py-2 bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 flex justify-end gap-1.5">
                         <div class="flex items-center gap-1.5">

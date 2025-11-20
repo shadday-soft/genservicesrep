@@ -146,6 +146,7 @@ export interface Solicitud {
     quien_solicita?: string | null;
     fecha_programada?: string | null;
     informe_generado?: boolean | null;
+    fecha_informe?: string | null;
     orden_trabajo?: string | null;
     created_at: string;
     updated_at: string;

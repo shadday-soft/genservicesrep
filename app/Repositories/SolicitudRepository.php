@@ -101,11 +101,13 @@ class SolicitudRepository extends BaseRepository implements SolicitudInterface
 
         // Filtrar por rol de usuario
         if ($user->role === 'Tecnico') {
+
             $query->where('user_id', $user->id);
         }
 
         if ($user->role === 'Cliente') {
-            $query->where('client_id', $user->id);
+            $client = $this->clientRepository->findByUserId($user->id);
+            $query->where('client_id', $client->id);
         }
 
         return $query->get();
@@ -114,7 +116,7 @@ class SolicitudRepository extends BaseRepository implements SolicitudInterface
     public function create(array $data): Solicitud
     {
         if ($data['orden_trabajo']) {
-            $data['orden_trabajo'] = 'uploads/'.$data['orden_trabajo']->store('solicitus', 'public');
+            $data['orden_trabajo'] = 'uploads/' . $data['orden_trabajo']->store('solicitus', 'public');
         }
         $solicitus = parent::create($data);
 
@@ -131,7 +133,7 @@ class SolicitudRepository extends BaseRepository implements SolicitudInterface
                 if ($solicitus->orden_trabajo) {
                     Storage::disk('public')->delete($solicitus->orden_trabajo);
                 }
-                $data['orden_trabajo'] = 'uploads/'.$data['orden_trabajo']->store('solicitus', 'public');
+                $data['orden_trabajo'] = 'uploads/' . $data['orden_trabajo']->store('solicitus', 'public');
             }
         }
 
