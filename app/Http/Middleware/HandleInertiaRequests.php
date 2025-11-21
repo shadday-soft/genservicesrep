@@ -90,12 +90,14 @@ class HandleInertiaRequests extends Middleware
         // Buscar traducción; si no existe, usar la oración original como fallback
         $translated = $this->es[$message] ?? $message;
 
+        $user = $request->user();
+
         return [
             ...parent::share($request),
             'name' => config('app.name'),
             'quote' => ['message' => $translated, 'author' => $author],
             'auth' => [
-                'user' => $request->user()->load('client'),
+                'user' => $user ? $user->load('client') : null,
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
         ];
