@@ -380,6 +380,83 @@ const breadcrumbs: BreadcrumbItem[] = [
                 />
             </div>
 
+            <div class="border-t pt-4">
+                <h3 class="text-base font-bold text-gray-800 dark:text-gray-200 mb-4">
+                    FOTOS ANTES
+                </h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <!-- Foto uno antes -->
+                    <div class="flex flex-col gap-2">
+                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Foto uno antes
+                        </label>
+                        <FilePond
+                            name="foto_uno_antes"
+                            :files="myFilesFotoUno"
+                            :allow-multiple="false"
+                            accepted-file-types="image/*"
+                            @updatefiles="updateFilesFotoUno"
+                            :label-idle="'Arrastra y suelta tu archivo o <span class=\'filepond--label-action\'>Examinar</span>'"
+                        />
+                        <span v-if="form.errors.foto_uno_antes" class="text-xs italic text-red-500">
+                            {{ form.errors.foto_uno_antes }}
+                        </span>
+                        <Input 
+                            v-model="form.pie_foto_uno_antes" 
+                            placeholder="Pie de página para esta foto" 
+                            :error="form.errors.pie_foto_uno_antes"
+                        />
+                    </div>
+
+                    <!-- Foto dos antes -->
+                    <div class="flex flex-col gap-2">
+                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Foto dos antes
+                        </label>
+                        <FilePond
+                            name="foto_dos_antes"
+                            :files="myFilesFotoDos"
+                            :allow-multiple="false"
+                            accepted-file-types="image/*"
+                            @updatefiles="updateFilesFotoDos"
+                            :label-idle="'Arrastra y suelta tu archivo o <span class=\'filepond--label-action\'>Examinar</span>'"
+                        />
+                        <span v-if="form.errors.foto_dos_antes" class="text-xs italic text-red-500">
+                            {{ form.errors.foto_dos_antes }}
+                        </span>
+                        <Input 
+                            v-model="form.pie_foto_dos_antes" 
+                            placeholder="Pie de página para esta foto" 
+                            :error="form.errors.pie_foto_dos_antes"
+                        />
+                    </div>
+
+                    <!-- Foto tres antes -->
+                    <div class="flex flex-col gap-2">
+                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Foto tres antes
+                        </label>
+                        <FilePond
+                            name="foto_tres_antes"
+                            :files="myFilesFotoTres"
+                            :allow-multiple="false"
+                            accepted-file-types="image/*"
+                            @updatefiles="updateFilesFotoTres"
+                            :label-idle="'Arrastra y suelta tu archivo o <span class=\'filepond--label-action\'>Examinar</span>'"
+                        />
+                        <span v-if="form.errors.foto_tres_antes" class="text-xs italic text-red-500">
+                            {{ form.errors.foto_tres_antes }}
+                        </span>
+                        <Input 
+                            v-model="form.pie_foto_tres_antes" 
+                            placeholder="Pie de página para esta foto" 
+                            :error="form.errors.pie_foto_tres_antes"
+                        />
+                    </div>
+                </div>
+            </div>
+
             <!-- ESTADO INICIAL Section -->
             <div class="border-t pt-4">
                 <h3 class="text-base font-bold text-gray-800 dark:text-gray-200 mb-4">
@@ -722,82 +799,7 @@ const breadcrumbs: BreadcrumbItem[] = [
             </div>
 
             <!-- FOTOS ANTES Section -->
-            <div class="border-t pt-4">
-                <h3 class="text-base font-bold text-gray-800 dark:text-gray-200 mb-4">
-                    FOTOS ANTES
-                </h3>
-                
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <!-- Foto uno antes -->
-                    <div class="flex flex-col gap-2">
-                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Foto uno antes
-                        </label>
-                        <FilePond
-                            name="foto_uno_antes"
-                            :files="myFilesFotoUno"
-                            :allow-multiple="false"
-                            accepted-file-types="image/*"
-                            @updatefiles="updateFilesFotoUno"
-                            :label-idle="'Arrastra y suelta tu archivo o <span class=\'filepond--label-action\'>Examinar</span>'"
-                        />
-                        <span v-if="form.errors.foto_uno_antes" class="text-xs italic text-red-500">
-                            {{ form.errors.foto_uno_antes }}
-                        </span>
-                        <Input 
-                            v-model="form.pie_foto_uno_antes" 
-                            placeholder="Pie de página para esta foto" 
-                            :error="form.errors.pie_foto_uno_antes"
-                        />
-                    </div>
-
-                    <!-- Foto dos antes -->
-                    <div class="flex flex-col gap-2">
-                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Foto dos antes
-                        </label>
-                        <FilePond
-                            name="foto_dos_antes"
-                            :files="myFilesFotoDos"
-                            :allow-multiple="false"
-                            accepted-file-types="image/*"
-                            @updatefiles="updateFilesFotoDos"
-                            :label-idle="'Arrastra y suelta tu archivo o <span class=\'filepond--label-action\'>Examinar</span>'"
-                        />
-                        <span v-if="form.errors.foto_dos_antes" class="text-xs italic text-red-500">
-                            {{ form.errors.foto_dos_antes }}
-                        </span>
-                        <Input 
-                            v-model="form.pie_foto_dos_antes" 
-                            placeholder="Pie de página para esta foto" 
-                            :error="form.errors.pie_foto_dos_antes"
-                        />
-                    </div>
-
-                    <!-- Foto tres antes -->
-                    <div class="flex flex-col gap-2">
-                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Foto tres antes
-                        </label>
-                        <FilePond
-                            name="foto_tres_antes"
-                            :files="myFilesFotoTres"
-                            :allow-multiple="false"
-                            accepted-file-types="image/*"
-                            @updatefiles="updateFilesFotoTres"
-                            :label-idle="'Arrastra y suelta tu archivo o <span class=\'filepond--label-action\'>Examinar</span>'"
-                        />
-                        <span v-if="form.errors.foto_tres_antes" class="text-xs italic text-red-500">
-                            {{ form.errors.foto_tres_antes }}
-                        </span>
-                        <Input 
-                            v-model="form.pie_foto_tres_antes" 
-                            placeholder="Pie de página para esta foto" 
-                            :error="form.errors.pie_foto_tres_antes"
-                        />
-                    </div>
-                </div>
-            </div>
+            
 
             <!-- ACTIVIDAD REALIZADA Section -->
             <div class="border-t pt-4">
@@ -810,6 +812,222 @@ const breadcrumbs: BreadcrumbItem[] = [
                     :error="form.errors.actividad_realizada"
                     placeholder="Describe la actividad realizada..."
                 />
+            </div>
+
+            <!-- FOTOS DURANTE Section -->
+            <div class="border-t pt-4">
+                <h3 class="text-base font-bold text-gray-800 dark:text-gray-200 mb-4">
+                    FOTOS DURANTE
+                </h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- Foto uno durante -->
+                    <div class="flex flex-col gap-2">
+                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Foto uno durante
+                        </label>
+                        <FilePond
+                            name="foto_uno_durante"
+                            :files="myFilesFotoUnoDurante"
+                            :allow-multiple="false"
+                            accepted-file-types="image/*"
+                            @updatefiles="updateFilesFotoUnoDurante"
+                            :label-idle="'Arrastra y suelta tu archivo o <span class=\'filepond--label-action\'>Examinar</span>'"
+                        />
+                        <span v-if="form.errors.foto_uno_durante" class="text-xs italic text-red-500">
+                            {{ form.errors.foto_uno_durante }}
+                        </span>
+                        <Input 
+                            v-model="form.pie_foto_uno_durante" 
+                            placeholder="Pie de página para esta foto" 
+                            :error="form.errors.pie_foto_uno_durante"
+                        />
+                    </div>
+
+                    <!-- Foto dos durante -->
+                    <div class="flex flex-col gap-2">
+                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Foto dos durante
+                        </label>
+                        <FilePond
+                            name="foto_dos_durante"
+                            :files="myFilesFotoDosDurante"
+                            :allow-multiple="false"
+                            accepted-file-types="image/*"
+                            @updatefiles="updateFilesFotoDosDurante"
+                            :label-idle="'Arrastra y suelta tu archivo o <span class=\'filepond--label-action\'>Examinar</span>'"
+                        />
+                        <span v-if="form.errors.foto_dos_durante" class="text-xs italic text-red-500">
+                            {{ form.errors.foto_dos_durante }}
+                        </span>
+                        <Input 
+                            v-model="form.pie_foto_dos_durante" 
+                            placeholder="Pie de página para esta foto" 
+                            :error="form.errors.pie_foto_dos_durante"
+                        />
+                    </div>
+
+                    <!-- Foto tres durante -->
+                    <div class="flex flex-col gap-2">
+                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Foto tres durante
+                        </label>
+                        <FilePond
+                            name="foto_tres_durante"
+                            :files="myFilesFotoTresDurante"
+                            :allow-multiple="false"
+                            accepted-file-types="image/*"
+                            @updatefiles="updateFilesFotoTresDurante"
+                            :label-idle="'Arrastra y suelta tu archivo o <span class=\'filepond--label-action\'>Examinar</span>'"
+                        />
+                        <span v-if="form.errors.foto_tres_durante" class="text-xs italic text-red-500">
+                            {{ form.errors.foto_tres_durante }}
+                        </span>
+                        <Input 
+                            v-model="form.pie_foto_tres_durante" 
+                            placeholder="Pie de página para esta foto" 
+                            :error="form.errors.pie_foto_tres_durante"
+                        />
+                    </div>
+
+                    <!-- Foto cuatro durante -->
+                    <div class="flex flex-col gap-2">
+                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Foto cuatro durante
+                        </label>
+                        <FilePond
+                            name="foto_cuatro_durante"
+                            :files="myFilesFotoCuatroDurante"
+                            :allow-multiple="false"
+                            accepted-file-types="image/*"
+                            @updatefiles="updateFilesFotoCuatroDurante"
+                            :label-idle="'Arrastra y suelta tu archivo o <span class=\'filepond--label-action\'>Examinar</span>'"
+                        />
+                        <span v-if="form.errors.foto_cuatro_durante" class="text-xs italic text-red-500">
+                            {{ form.errors.foto_cuatro_durante }}
+                        </span>
+                        <Input 
+                            v-model="form.pie_foto_cuatro_durante" 
+                            placeholder="Pie de página para esta foto" 
+                            :error="form.errors.pie_foto_cuatro_durante"
+                        />
+                    </div>
+
+                    <!-- Foto cinco durante -->
+                    <div class="flex flex-col gap-2">
+                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Foto cinco durante
+                        </label>
+                        <FilePond
+                            name="foto_cinco_durante"
+                            :files="myFilesFotoCincoDurante"
+                            :allow-multiple="false"
+                            accepted-file-types="image/*"
+                            @updatefiles="updateFilesFotoCincoDurante"
+                            :label-idle="'Arrastra y suelta tu archivo o <span class=\'filepond--label-action\'>Examinar</span>'"
+                        />
+                        <span v-if="form.errors.foto_cinco_durante" class="text-xs italic text-red-500">
+                            {{ form.errors.foto_cinco_durante }}
+                        </span>
+                        <Input 
+                            v-model="form.pie_foto_cinco_durante" 
+                            placeholder="Pie de página para esta foto" 
+                            :error="form.errors.pie_foto_cinco_durante"
+                        />
+                    </div>
+
+                    <!-- Foto seis durante -->
+                    <div class="flex flex-col gap-2">
+                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Foto seis durante
+                        </label>
+                        <FilePond
+                            name="foto_seis_durante"
+                            :files="myFilesFotoSeisDurante"
+                            :allow-multiple="false"
+                            accepted-file-types="image/*"
+                            @updatefiles="updateFilesFotoSeisDurante"
+                            :label-idle="'Arrastra y suelta tu archivo o <span class=\'filepond--label-action\'>Examinar</span>'"
+                        />
+                        <span v-if="form.errors.foto_seis_durante" class="text-xs italic text-red-500">
+                            {{ form.errors.foto_seis_durante }}
+                        </span>
+                        <Input 
+                            v-model="form.pie_foto_seis_durante" 
+                            placeholder="Pie de página para esta foto" 
+                            :error="form.errors.pie_foto_seis_durante"
+                        />
+                    </div>
+
+                    <!-- Foto siete durante -->
+                    <div class="flex flex-col gap-2">
+                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Foto siete durante
+                        </label>
+                        <FilePond
+                            name="foto_siete_durante"
+                            :files="myFilesFotoSieteDurante"
+                            :allow-multiple="false"
+                            accepted-file-types="image/*"
+                            @updatefiles="updateFilesFotoSieteDurante"
+                            :label-idle="'Arrastra y suelta tu archivo o <span class=\'filepond--label-action\'>Examinar</span>'"
+                        />
+                        <span v-if="form.errors.foto_siete_durante" class="text-xs italic text-red-500">
+                            {{ form.errors.foto_siete_durante }}
+                        </span>
+                        <Input 
+                            v-model="form.pie_foto_siete_durante" 
+                            placeholder="Pie de página para esta foto" 
+                            :error="form.errors.pie_foto_siete_durante"
+                        />
+                    </div>
+
+                    <!-- Foto ocho durante -->
+                    <div class="flex flex-col gap-2">
+                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Foto ocho durante
+                        </label>
+                        <FilePond
+                            name="foto_ocho_durante"
+                            :files="myFilesFotoOchoDurante"
+                            :allow-multiple="false"
+                            accepted-file-types="image/*"
+                            @updatefiles="updateFilesFotoOchoDurante"
+                            :label-idle="'Arrastra y suelta tu archivo o <span class=\'filepond--label-action\'>Examinar</span>'"
+                        />
+                        <span v-if="form.errors.foto_ocho_durante" class="text-xs italic text-red-500">
+                            {{ form.errors.foto_ocho_durante }}
+                        </span>
+                        <Input 
+                            v-model="form.pie_foto_ocho_durante" 
+                            placeholder="Pie de página para esta foto" 
+                            :error="form.errors.pie_foto_ocho_durante"
+                        />
+                    </div>
+
+                    <!-- Foto nueve durante -->
+                    <div class="flex flex-col gap-2">
+                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Foto nueve durante
+                        </label>
+                        <FilePond
+                            name="foto_nueve_durante"
+                            :files="myFilesFotoNueveDurante"
+                            :allow-multiple="false"
+                            accepted-file-types="image/*"
+                            @updatefiles="updateFilesFotoNueveDurante"
+                            :label-idle="'Arrastra y suelta tu archivo o <span class=\'filepond--label-action\'>Examinar</span>'"
+                        />
+                        <span v-if="form.errors.foto_nueve_durante" class="text-xs italic text-red-500">
+                            {{ form.errors.foto_nueve_durante }}
+                        </span>
+                        <Input 
+                            v-model="form.pie_foto_nueve_durante" 
+                            placeholder="Pie de página para esta foto" 
+                            :error="form.errors.pie_foto_nueve_durante"
+                        />
+                    </div>
+                </div>
             </div>
 
             <!-- PRUEBAS CON EL EQUIPO OPERANDO Section -->
@@ -1196,221 +1414,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                 </div>
             </div>
 
-            <!-- FOTOS DURANTE Section -->
-            <div class="border-t pt-4">
-                <h3 class="text-base font-bold text-gray-800 dark:text-gray-200 mb-4">
-                    FOTOS DURANTE
-                </h3>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <!-- Foto uno durante -->
-                    <div class="flex flex-col gap-2">
-                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Foto uno durante
-                        </label>
-                        <FilePond
-                            name="foto_uno_durante"
-                            :files="myFilesFotoUnoDurante"
-                            :allow-multiple="false"
-                            accepted-file-types="image/*"
-                            @updatefiles="updateFilesFotoUnoDurante"
-                            :label-idle="'Arrastra y suelta tu archivo o <span class=\'filepond--label-action\'>Examinar</span>'"
-                        />
-                        <span v-if="form.errors.foto_uno_durante" class="text-xs italic text-red-500">
-                            {{ form.errors.foto_uno_durante }}
-                        </span>
-                        <Input 
-                            v-model="form.pie_foto_uno_durante" 
-                            placeholder="Pie de página para esta foto" 
-                            :error="form.errors.pie_foto_uno_durante"
-                        />
-                    </div>
-
-                    <!-- Foto dos durante -->
-                    <div class="flex flex-col gap-2">
-                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Foto dos durante
-                        </label>
-                        <FilePond
-                            name="foto_dos_durante"
-                            :files="myFilesFotoDosDurante"
-                            :allow-multiple="false"
-                            accepted-file-types="image/*"
-                            @updatefiles="updateFilesFotoDosDurante"
-                            :label-idle="'Arrastra y suelta tu archivo o <span class=\'filepond--label-action\'>Examinar</span>'"
-                        />
-                        <span v-if="form.errors.foto_dos_durante" class="text-xs italic text-red-500">
-                            {{ form.errors.foto_dos_durante }}
-                        </span>
-                        <Input 
-                            v-model="form.pie_foto_dos_durante" 
-                            placeholder="Pie de página para esta foto" 
-                            :error="form.errors.pie_foto_dos_durante"
-                        />
-                    </div>
-
-                    <!-- Foto tres durante -->
-                    <div class="flex flex-col gap-2">
-                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Foto tres durante
-                        </label>
-                        <FilePond
-                            name="foto_tres_durante"
-                            :files="myFilesFotoTresDurante"
-                            :allow-multiple="false"
-                            accepted-file-types="image/*"
-                            @updatefiles="updateFilesFotoTresDurante"
-                            :label-idle="'Arrastra y suelta tu archivo o <span class=\'filepond--label-action\'>Examinar</span>'"
-                        />
-                        <span v-if="form.errors.foto_tres_durante" class="text-xs italic text-red-500">
-                            {{ form.errors.foto_tres_durante }}
-                        </span>
-                        <Input 
-                            v-model="form.pie_foto_tres_durante" 
-                            placeholder="Pie de página para esta foto" 
-                            :error="form.errors.pie_foto_tres_durante"
-                        />
-                    </div>
-
-                    <!-- Foto cuatro durante -->
-                    <div class="flex flex-col gap-2">
-                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Foto cuatro durante
-                        </label>
-                        <FilePond
-                            name="foto_cuatro_durante"
-                            :files="myFilesFotoCuatroDurante"
-                            :allow-multiple="false"
-                            accepted-file-types="image/*"
-                            @updatefiles="updateFilesFotoCuatroDurante"
-                            :label-idle="'Arrastra y suelta tu archivo o <span class=\'filepond--label-action\'>Examinar</span>'"
-                        />
-                        <span v-if="form.errors.foto_cuatro_durante" class="text-xs italic text-red-500">
-                            {{ form.errors.foto_cuatro_durante }}
-                        </span>
-                        <Input 
-                            v-model="form.pie_foto_cuatro_durante" 
-                            placeholder="Pie de página para esta foto" 
-                            :error="form.errors.pie_foto_cuatro_durante"
-                        />
-                    </div>
-
-                    <!-- Foto cinco durante -->
-                    <div class="flex flex-col gap-2">
-                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Foto cinco durante
-                        </label>
-                        <FilePond
-                            name="foto_cinco_durante"
-                            :files="myFilesFotoCincoDurante"
-                            :allow-multiple="false"
-                            accepted-file-types="image/*"
-                            @updatefiles="updateFilesFotoCincoDurante"
-                            :label-idle="'Arrastra y suelta tu archivo o <span class=\'filepond--label-action\'>Examinar</span>'"
-                        />
-                        <span v-if="form.errors.foto_cinco_durante" class="text-xs italic text-red-500">
-                            {{ form.errors.foto_cinco_durante }}
-                        </span>
-                        <Input 
-                            v-model="form.pie_foto_cinco_durante" 
-                            placeholder="Pie de página para esta foto" 
-                            :error="form.errors.pie_foto_cinco_durante"
-                        />
-                    </div>
-
-                    <!-- Foto seis durante -->
-                    <div class="flex flex-col gap-2">
-                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Foto seis durante
-                        </label>
-                        <FilePond
-                            name="foto_seis_durante"
-                            :files="myFilesFotoSeisDurante"
-                            :allow-multiple="false"
-                            accepted-file-types="image/*"
-                            @updatefiles="updateFilesFotoSeisDurante"
-                            :label-idle="'Arrastra y suelta tu archivo o <span class=\'filepond--label-action\'>Examinar</span>'"
-                        />
-                        <span v-if="form.errors.foto_seis_durante" class="text-xs italic text-red-500">
-                            {{ form.errors.foto_seis_durante }}
-                        </span>
-                        <Input 
-                            v-model="form.pie_foto_seis_durante" 
-                            placeholder="Pie de página para esta foto" 
-                            :error="form.errors.pie_foto_seis_durante"
-                        />
-                    </div>
-
-                    <!-- Foto siete durante -->
-                    <div class="flex flex-col gap-2">
-                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Foto siete durante
-                        </label>
-                        <FilePond
-                            name="foto_siete_durante"
-                            :files="myFilesFotoSieteDurante"
-                            :allow-multiple="false"
-                            accepted-file-types="image/*"
-                            @updatefiles="updateFilesFotoSieteDurante"
-                            :label-idle="'Arrastra y suelta tu archivo o <span class=\'filepond--label-action\'>Examinar</span>'"
-                        />
-                        <span v-if="form.errors.foto_siete_durante" class="text-xs italic text-red-500">
-                            {{ form.errors.foto_siete_durante }}
-                        </span>
-                        <Input 
-                            v-model="form.pie_foto_siete_durante" 
-                            placeholder="Pie de página para esta foto" 
-                            :error="form.errors.pie_foto_siete_durante"
-                        />
-                    </div>
-
-                    <!-- Foto ocho durante -->
-                    <div class="flex flex-col gap-2">
-                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Foto ocho durante
-                        </label>
-                        <FilePond
-                            name="foto_ocho_durante"
-                            :files="myFilesFotoOchoDurante"
-                            :allow-multiple="false"
-                            accepted-file-types="image/*"
-                            @updatefiles="updateFilesFotoOchoDurante"
-                            :label-idle="'Arrastra y suelta tu archivo o <span class=\'filepond--label-action\'>Examinar</span>'"
-                        />
-                        <span v-if="form.errors.foto_ocho_durante" class="text-xs italic text-red-500">
-                            {{ form.errors.foto_ocho_durante }}
-                        </span>
-                        <Input 
-                            v-model="form.pie_foto_ocho_durante" 
-                            placeholder="Pie de página para esta foto" 
-                            :error="form.errors.pie_foto_ocho_durante"
-                        />
-                    </div>
-
-                    <!-- Foto nueve durante -->
-                    <div class="flex flex-col gap-2">
-                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Foto nueve durante
-                        </label>
-                        <FilePond
-                            name="foto_nueve_durante"
-                            :files="myFilesFotoNueveDurante"
-                            :allow-multiple="false"
-                            accepted-file-types="image/*"
-                            @updatefiles="updateFilesFotoNueveDurante"
-                            :label-idle="'Arrastra y suelta tu archivo o <span class=\'filepond--label-action\'>Examinar</span>'"
-                        />
-                        <span v-if="form.errors.foto_nueve_durante" class="text-xs italic text-red-500">
-                            {{ form.errors.foto_nueve_durante }}
-                        </span>
-                        <Input 
-                            v-model="form.pie_foto_nueve_durante" 
-                            placeholder="Pie de página para esta foto" 
-                            :error="form.errors.pie_foto_nueve_durante"
-                        />
-                    </div>
-                </div>
-            </div>
+            
 
             <!-- RECOMENDACIONES Section -->
             <div class="border-t pt-4">

@@ -6,7 +6,14 @@ import { Head } from '@inertiajs/vue3';
 import BarChart from '@/components/Charts/BarChart.vue';
 import DoughnutChart from '@/components/Charts/DoughnutChart.vue';
 import LineChart from '@/components/Charts/LineChart.vue';
+import MultiLineChart from '@/components/Charts/MultiLineChart.vue';
+import MultiClientLineChart from '@/components/Charts/MultiClientLineChart.vue';
+import HorizontalBarChart from '@/components/Charts/HorizontalBarChart.vue';
+import AreaChart from '@/components/Charts/AreaChart.vue';
 import SolicitudCalendar from '@/components/Calendar/SolicitudCalendar.vue';
+import { useChartDownload } from '@/composables/useChartDownload';
+
+const { downloadChartAsPng } = useChartDownload();
 
 interface Props {
     stats: {
@@ -21,6 +28,13 @@ interface Props {
         solicitudesPorPrioridad: { prioridad: string; total: number }[];
         solicitudesPorTipoEquipo: { tipo: string; total: number }[];
         solicitudesPorMes: { mes: string; total: number }[];
+        mantenimientosProgramadosVsEjecutados: { mes: string; programados: number; ejecutados: number }[];
+        mantenimientosMesActual: { programados: number; ejecutados: number };
+        mantenimientosPorTipoMesActual: { tipo: string; total: number }[];
+        emergenciasPorClienteMes: { usuario: string; total: number }[];
+        solicitudesPorTecnicoMensual: { usuario: string; total: number }[];
+        ordenesAbiertasVsFinalizadas: { mes: string; abiertas: number; finalizadas: number }[];
+        correctivosPorTipo: { actividad: string; total: number }[];
     };
     ultimasSolicitudes: any[];
     solicitudesProgramadas: {
@@ -122,12 +136,80 @@ const getEstadoColor = (estado: string) => {
                 </div>
             </div>
 
+            <!-- Tarjetas de Mantenimientos del Mes Actual -->
+            <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
+                <!-- Porcentaje de Mantenimientos Ejecutados -->
+                <div class="rounded-xl bg-gradient-to-br from-[#24C056] to-[#3037C0] p-8 text-white shadow-lg">
+                    <div class="text-center">
+                        <h3 class="mb-2 text-lg font-medium opacity-90">
+                            Mantenimientos Ejecutados - Mes Actual
+                        </h3>
+                        <div class="my-6">
+                            <div class="text-7xl font-bold">
+                                {{ charts.mantenimientosMesActual.programados > 0 
+                                    ? Math.round((charts.mantenimientosMesActual.ejecutados / charts.mantenimientosMesActual.programados) * 100) 
+                                    : 0 }}%
+                            </div>
+                            <div class="mt-4 text-2xl font-semibold">
+                                {{ charts.mantenimientosMesActual.ejecutados }} / {{ charts.mantenimientosMesActual.programados }}
+                            </div>
+                        </div>
+                        <div class="mt-6 flex justify-center gap-8">
+                            <div class="text-center">
+                                <div class="mb-1 text-3xl font-bold">
+                                    {{ charts.mantenimientosMesActual.ejecutados }}
+                                </div>
+                                <div class="text-sm opacity-90">Completados</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="mb-1 text-3xl font-bold">
+                                    {{ Math.max(0, charts.mantenimientosMesActual.programados - charts.mantenimientosMesActual.ejecutados) }}
+                                </div>
+                                <div class="text-sm opacity-90">Pendientes</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gráfico de Dona de Mantenimientos por Tipo -->
+                <div class="rounded-xl bg-gradient-to-br from-[#DCBB37] to-[#842A23] p-6 text-white shadow-lg">
+                    <div class="mb-4 flex items-center justify-between">
+                        <h2 class="text-center text-xl font-bold">
+                            Mantenimientos por Tipo - Mes Actual
+                        </h2>
+                        <button
+                            @click="downloadChartAsPng('chart-mantenimientos-tipo', 'mantenimientos-por-tipo-mes-actual')"
+                            class="rounded-lg bg-white/20 p-2 transition hover:bg-white/30"
+                            title="Descargar como PNG"
+                        >
+                            <i class="pi pi-download text-sm"></i>
+                        </button>
+                    </div>
+                    <div id="chart-mantenimientos-tipo" class="h-[280px]">
+                        <DoughnutChart 
+                            :data="charts.mantenimientosPorTipoMesActual" 
+                            labelKey="tipo"
+                            :darkBackground="true"
+                        />
+                    </div>
+                </div>
+            </div>
+
             <!-- Gráfica principal: Solicitudes por Usuario -->
             <div class="rounded-xl bg-white p-4 shadow-lg dark:bg-gray-800">
-                <h2 class="mb-4 text-xl font-bold text-gray-800 dark:text-white">
-                    Solicitudes Asignadas por Usuario
-                </h2>
-                <div class="h-[400px]">
+                <div class="mb-4 flex items-center justify-between">
+                    <h2 class="text-xl font-bold text-gray-800 dark:text-white">
+                        Solicitudes Asignadas por Usuario
+                    </h2>
+                    <button
+                        @click="downloadChartAsPng('chart-solicitudes-usuario', 'solicitudes-por-usuario')"
+                        class="rounded-lg bg-gray-100 p-2 text-gray-600 transition hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+                        title="Descargar como PNG"
+                    >
+                        <i class="pi pi-download"></i>
+                    </button>
+                </div>
+                <div id="chart-solicitudes-usuario" class="h-[400px]">
                     <BarChart 
                         :data="charts.solicitudesPorUsuario" 
                         title="Top 10 Usuarios con más Solicitudes"
@@ -139,10 +221,19 @@ const getEstadoColor = (estado: string) => {
             <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
                 <!-- Solicitudes por Estado -->
                 <div class="rounded-xl bg-white p-6 shadow-lg dark:bg-gray-800">
-                    <h2 class="mb-4 text-lg font-bold text-gray-800 dark:text-white">
-                        Distribución por Estado
-                    </h2>
-                    <div class="h-[300px]">
+                    <div class="mb-4 flex items-center justify-between">
+                        <h2 class="text-lg font-bold text-gray-800 dark:text-white">
+                            Distribución por Estado
+                        </h2>
+                        <button
+                            @click="downloadChartAsPng('chart-estado', 'solicitudes-por-estado')"
+                            class="rounded-lg bg-gray-100 p-2 text-gray-600 transition hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+                            title="Descargar como PNG"
+                        >
+                            <i class="pi pi-download text-sm"></i>
+                        </button>
+                    </div>
+                    <div id="chart-estado" class="h-[300px]">
                         <DoughnutChart 
                             :data="charts.solicitudesPorEstado" 
                             labelKey="estado"
@@ -152,10 +243,19 @@ const getEstadoColor = (estado: string) => {
 
                 <!-- Solicitudes por Prioridad -->
                 <div class="rounded-xl bg-white p-6 shadow-lg dark:bg-gray-800">
-                    <h2 class="mb-4 text-lg font-bold text-gray-800 dark:text-white">
-                        Distribución por Prioridad
-                    </h2>
-                    <div class="h-[300px]">
+                    <div class="mb-4 flex items-center justify-between">
+                        <h2 class="text-lg font-bold text-gray-800 dark:text-white">
+                            Distribución por Prioridad
+                        </h2>
+                        <button
+                            @click="downloadChartAsPng('chart-prioridad', 'solicitudes-por-prioridad')"
+                            class="rounded-lg bg-gray-100 p-2 text-gray-600 transition hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+                            title="Descargar como PNG"
+                        >
+                            <i class="pi pi-download text-sm"></i>
+                        </button>
+                    </div>
+                    <div id="chart-prioridad" class="h-[300px]">
                         <DoughnutChart 
                             :data="charts.solicitudesPorPrioridad" 
                             labelKey="prioridad"
@@ -163,14 +263,23 @@ const getEstadoColor = (estado: string) => {
                     </div>
                 </div>
                  <div class="rounded-xl bg-white p-6 shadow-lg dark:bg-gray-800">
-                <h2 class="mb-4 text-xl font-bold text-gray-800 dark:text-white">
-                    Solicitudes por Tipo de Equipo
-                </h2>
-                <div class="h-[300px]">
-                    <BarChart 
-                        :data="charts.solicitudesPorTipoEquipo.map(item => ({ usuario: item.tipo, total: item.total }))"
-                    />
-                </div>
+                    <div class="mb-4 flex items-center justify-between">
+                        <h2 class="text-xl font-bold text-gray-800 dark:text-white">
+                            Solicitudes por Tipo de Equipo
+                        </h2>
+                        <button
+                            @click="downloadChartAsPng('chart-tipo-equipo', 'solicitudes-por-tipo-equipo')"
+                            class="rounded-lg bg-gray-100 p-2 text-gray-600 transition hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+                            title="Descargar como PNG"
+                        >
+                            <i class="pi pi-download text-sm"></i>
+                        </button>
+                    </div>
+                    <div id="chart-tipo-equipo" class="h-[300px]">
+                        <BarChart 
+                            :data="charts.solicitudesPorTipoEquipo.map(item => ({ usuario: item.tipo, total: item.total }))"
+                        />
+                    </div>
             </div>
             </div>
 
@@ -180,6 +289,100 @@ const getEstadoColor = (estado: string) => {
                     Calendario de Solicitudes Programadas
                 </h2>
                 <SolicitudCalendar :events="solicitudesProgramadas" />
+            </div>
+
+           
+
+            <!-- Órdenes Creadas vs Finalizadas -->
+            <div class="rounded-xl bg-white p-6 shadow-lg dark:bg-gray-800">
+                <div class="mb-4 flex items-center justify-between">
+                    <h2 class="text-xl font-bold text-gray-800 dark:text-white">
+                        Órdenes Creadas vs Finalizadas por Mes
+                    </h2>
+                    <button
+                        @click="downloadChartAsPng('chart-ordenes-creadas', 'ordenes-creadas-vs-finalizadas')"
+                        class="rounded-lg bg-gray-100 p-2 text-gray-600 transition hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+                        title="Descargar como PNG"
+                    >
+                        <i class="pi pi-download"></i>
+                    </button>
+                </div>
+                <div id="chart-ordenes-creadas" class="h-[400px]">
+                    <AreaChart 
+                        :data="charts.ordenesAbiertasVsFinalizadas"
+                        :datasets="[
+                            { key: 'abiertas', label: 'Total Abiertas', color: '#3037C0', backgroundColor: 'rgba(48, 55, 192, 0.2)' },
+                            { key: 'finalizadas', label: 'Finalizadas', color: '#24C056', backgroundColor: 'rgba(36, 192, 86, 0.3)' }
+                        ]"
+                    />
+                </div>
+            </div>
+
+            <!-- Emergencias por Cliente -->
+            <div class="rounded-xl bg-white p-6 shadow-lg dark:bg-gray-800">
+                <div class="mb-4 flex items-center justify-between">
+                    <h2 class="text-xl font-bold text-gray-800 dark:text-white">
+                        Emergencias Atendidas por Cliente (Top 10)
+                    </h2>
+                    <button
+                        @click="downloadChartAsPng('chart-emergencias-cliente', 'emergencias-por-cliente')"
+                        class="rounded-lg bg-gray-100 p-2 text-gray-600 transition hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+                        title="Descargar como PNG"
+                    >
+                        <i class="pi pi-download"></i>
+                    </button>
+                </div>
+                <div id="chart-emergencias-cliente" class="h-[450px]">
+                    <HorizontalBarChart 
+                        :data="charts.emergenciasPorClienteMes"
+                        title="Clientes con Más Emergencias (Últimos 6 Meses)"
+                        :reverse="true"
+                    />
+                </div>
+            </div>
+
+            <!-- Solicitudes por Técnico Mensual -->
+            <div class="rounded-xl bg-white p-6 shadow-lg dark:bg-gray-800">
+                <div class="mb-4 flex items-center justify-between">
+                    <h2 class="text-xl font-bold text-gray-800 dark:text-white">
+                        Solicitudes Asignadas por Técnico (Mes Actual)
+                    </h2>
+                    <button
+                        @click="downloadChartAsPng('chart-solicitudes-tecnico', 'solicitudes-por-tecnico-mes-actual')"
+                        class="rounded-lg bg-gray-100 p-2 text-gray-600 transition hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+                        title="Descargar como PNG"
+                    >
+                        <i class="pi pi-download"></i>
+                    </button>
+                </div>
+                <div id="chart-solicitudes-tecnico" class="h-[500px]">
+                    <HorizontalBarChart 
+                        :data="charts.solicitudesPorTecnicoMensual"
+                        title="Top 15 Técnicos con Más Solicitudes del Mes"
+                    />
+                </div>
+            </div>
+
+            <!-- Correctivos por Tipo del Mes Actual -->
+            <div class="rounded-xl bg-white p-6 shadow-lg dark:bg-gray-800">
+                <div class="mb-4 flex items-center justify-between">
+                    <h2 class="text-xl font-bold text-gray-800 dark:text-white">
+                        Consolidado de Mantenimientos Correctivos del Mes Actual
+                    </h2>
+                    <button
+                        @click="downloadChartAsPng('chart-correctivos-tipo', 'correctivos-por-tipo-mes-actual')"
+                        class="rounded-lg bg-gray-100 p-2 text-gray-600 transition hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+                        title="Descargar como PNG"
+                    >
+                        <i class="pi pi-download"></i>
+                    </button>
+                </div>
+                <div id="chart-correctivos-tipo" class="h-[400px]">
+                    <BarChart 
+                        :data="charts.correctivosPorTipo.map(item => ({ usuario: item.actividad, total: item.total }))"
+                        title="Tipos de Correctivos Realizados"
+                    />
+                </div>
             </div>
 
             <!-- Últimas Solicitudes -->

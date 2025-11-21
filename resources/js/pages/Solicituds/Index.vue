@@ -279,6 +279,9 @@ const exportToExcel = () => {
                     <template #addButton>
                         <!-- Removido porque ahora está arriba -->
                     </template>
+                    <template #detalles="{ data }">
+                        <p v-html="data.detalles"></p>
+                    </template>
                     <template #select="{ data }">
                         <div class="flex items-center justify-center" v-if="isAutorized() && data.estado !== 'Anulada'">
                             <input 

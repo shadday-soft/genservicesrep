@@ -102,6 +102,30 @@ export const columns: Column[] = [
         ]
     },
     {
+        header: 'Estado',
+        field: 'estado',
+        sortable: true,
+        type: 'tag',
+        filter: true,
+        filterPlaceholder: 'Buscar por estado',
+        tags: [
+            {
+                label: 'Nueva',
+                value: 'Nueva',
+                severity: 'warn',
+            },
+            {
+                label: 'Proceso',
+                value: 'Proceso',
+                severity: 'info',
+            },
+            {
+                label: 'Finalizada',
+                value: 'Finalizada',
+                severity: 'success',
+            },
+        ]},
+    {
         header: 'Técnico Asignado',
         field: 'user.name',
         sortable: true,
@@ -119,11 +143,11 @@ export const columns: Column[] = [
         filterPlaceholder: 'Buscar por firma',
     },
     {
-        header: 'Orden de Compra',
-        field: 'orden_trabajo',
+        header: 'Detalles',
+        field: 'detalles',
         sortable: true,
-        type: 'document',
+        type: 'slot',
         filter: true,
-        filterPlaceholder: 'Buscar por orden de compra',
+        filterPlaceholder: 'Buscar por detalles',
     }
 ]

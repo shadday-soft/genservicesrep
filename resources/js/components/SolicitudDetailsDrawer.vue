@@ -199,8 +199,8 @@ const getPrioridadBadgeClass = (prioridad: string) => {
                     </div>
                     <div>
                         <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Detalles del Servicio</p>
-                        <p class="text-sm text-gray-900 dark:text-white whitespace-pre-wrap">
-                            {{ solicitud.detalles || 'Sin detalles' }}
+                        <p class="text-sm text-gray-900 dark:text-white whitespace-pre-wrap" v-html="solicitud.detalles || 'Sin detalles'   ">
+                          
                         </p>
                     </div>
                 </div>

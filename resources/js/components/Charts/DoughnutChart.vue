@@ -15,10 +15,12 @@ interface Props {
     data: { estado?: string; prioridad?: string; tipo?: string; total: number }[];
     title?: string;
     labelKey?: 'estado' | 'prioridad' | 'tipo';
+    darkBackground?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-    labelKey: 'estado'
+    labelKey: 'estado',
+    darkBackground: false
 });
 
 const colors = [
@@ -49,10 +51,17 @@ const chartOptions = computed(() => ({
         legend: {
             display: true,
             position: 'bottom' as const,
+            labels: {
+                color: props.darkBackground ? '#ffffff' : '#374151',
+                font: {
+                    size: 12
+                }
+            }
         },
         title: {
             display: !!props.title,
             text: props.title,
+            color: props.darkBackground ? '#ffffff' : '#1f2937',
             font: {
                 size: 16,
                 weight: 'bold' as const

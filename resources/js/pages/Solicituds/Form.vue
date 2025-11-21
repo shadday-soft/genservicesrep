@@ -89,6 +89,7 @@ watch(() => form.sucursal_id, async (newSucursalId) => {
 
 onMounted(async () => {
     // Cargar clientes, técnicos y actividades
+    console.log(props.solicitud);
     clientsList.value = await clientService.getClients();
     if(usePage().props.auth.user.client){
         form.client_id = usePage().props.auth.user.client.id;
@@ -111,9 +112,9 @@ onMounted(async () => {
             const equiposResponse = await equipoService.getEquipos(props.solicitud.sucursal_id);
             equiposList.value = equiposResponse.filter((e: Equipo) => e.sucursal_id === props.solicitud!.sucursal_id);
             const sucursal = sucursalesList.value.find(s => s.id === props.solicitud!.sucursal_id);
-            form.ubicacion = sucursal ? sucursal.address : '';
-            form.telefono = sucursal ? sucursal.phone_number : '';
-            form.mail = sucursal ? sucursal.email : '';
+            form.ubicacion = props.solicitud.ubicacion ? props.solicitud.ubicacion : (sucursal ? sucursal.address : '');
+            form.telefono = sucursal ? sucursal.phone_number : props.solicitud.telefono;
+            form.mail = sucursal ? sucursal.email : props.solicitud.mail;
         }
         if (props.solicitud.orden_trabajo) {
             myFiles.value = [props.solicitud.orden_trabajo];
@@ -152,7 +153,7 @@ onMounted(async () => {
                 option-label="label" option-value="value" :options="estadoOptions"></Input>
 
             <!-- Técnico Asignado -->
-            <Input v-model="form.user_id" type="select" label="Asignar a Técnico" :error="form.errors.user_id"
+            <Input v-model="form.user_id" v-if="!$page.props.auth.user.client" type="select" label="Asignar a Técnico" :error="form.errors.user_id"
                 option-label="name" option-value="id" :options="tecnicosList"></Input>
 
             <!-- Fecha de Mantenimiento -->
