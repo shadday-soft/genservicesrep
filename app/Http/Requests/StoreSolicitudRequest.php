@@ -25,7 +25,7 @@ class StoreSolicitudRequest extends FormRequest
             'client_id' => ['required', 'exists:clients,id'],
             'sucursal_id' => ['required', 'exists:sucursals,id'],
             'equipo_id' => ['required', 'exists:equipos,id'],
-            'user_id' => ['required', 'exists:users,id'],
+            'user_id' => ['nullable', 'exists:users,id'],
             'fecha_programada' => ['required', 'date'],
             'quien_solicita' => ['required', 'string', 'max:255'],
             'telefono' => ['nullable', 'string', 'max:20'],

@@ -1,4 +1,4 @@
-import { router, useForm } from "@inertiajs/vue3";
+import { router, useForm, usePage } from "@inertiajs/vue3";
 import GeneralService from "./GeneralService";
 import { ref } from "vue";
 import type { Solicitud as SolicitudType } from "@/types";
@@ -38,6 +38,10 @@ export default class Solicitud extends GeneralService {
             this.solicitud.value = solicitud;
             this.assignMatchingKeys(solicitud, this.form);
             this.form.fecha_programada = solicitud.fecha_programada ? new Date(solicitud.fecha_programada) : new Date();
+            console.log(usePage().props.auth.user.client.id);
+            if(usePage().props.auth.user.client){
+                this.form.client_id = usePage().props.auth.user.client.id;
+            }
         }
     }
 

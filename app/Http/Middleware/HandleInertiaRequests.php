@@ -95,7 +95,7 @@ class HandleInertiaRequests extends Middleware
             'name' => config('app.name'),
             'quote' => ['message' => $translated, 'author' => $author],
             'auth' => [
-                'user' => $request->user(),
+                'user' => $request->user()->load('client'),
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
         ];

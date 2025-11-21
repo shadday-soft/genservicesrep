@@ -22,17 +22,17 @@ Route::get('dashboard', [DashboardController::class, 'index'])
     ->name('dashboard')->middleware(VerifyadminRole::class);
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::resource('clients', ClientController::class)->middleware(VerifyadminRole::class);
+    Route::resource('clients', ClientController::class)->withoutMiddlewareFor(['index'],VerifyadminRole::class);
     Route::resource('users', UserController::class)->middleware(VerifyadminRole::class);
     Route::put('users/{user}/role', [\App\Http\Controllers\Auth\UserController::class, 'updateRole'])->name('users.updateRole')->middleware(VerifyadminRole::class);
-    Route::resource('sucursals', SucursalController::class)->middleware(VerifyadminRole::class);
-    Route::resource('equipos', EquipoController::class)->middleware(VerifyadminRole::class);
+    Route::resource('sucursals', SucursalController::class)->withoutMiddlewareFor(['index'],VerifyadminRole::class);
+    Route::resource('equipos', EquipoController::class)->withoutMiddlewareFor(['index'],VerifyadminRole::class);
     Route::post('equipos/{equipo}/renew', [EquipoController::class, 'renew'])->name('equipos.renew')->middleware(VerifyadminRole::class);
     Route::resource('solicituds', SolicitudController::class);
     Route::post('solicituds/{solicitud}/cancelar', [SolicitudController::class, 'cancelar'])->name('solicituds.cancelar')->middleware(VerifyadminRole::class);
     Route::get('solicituds-cronograma', [SolicitudController::class, 'cronograma'])->name('solicituds.cronograma');
     Route::get('solicituds-export-excel', [SolicitudController::class, 'exportExcel'])->name('solicituds.export');
-    Route::resource('actividads', ActividadController::class)->middleware(VerifyadminRole::class);
+    Route::resource('actividads', ActividadController::class)->withoutMiddlewareFor(['index'],VerifyadminRole::class);
     Route::resource('tecnicos', TecnicoController::class)->middleware(VerifyadminRole::class);
     Route::get('clientes/retored', [ClientController::class, 'retored'])->name('clients.retored')->middleware(VerifyadminRole::class);
     Route::get('retored/sucursales', [SucursalController::class, 'retored'])->name('sucursals.retored')->middleware(VerifyadminRole::class);
@@ -45,6 +45,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('informe/{solicitud}', [InformeController::class, 'create'])->name('informe');
     Route::get('informe/{solicitud}/pdf', [InformeController::class, 'generatePDF'])->name('informe.pdf');
 
+
+    
     // Rutas para geocodificación
     Route::get('geocoding/search', [GeocodingController::class, 'search'])->name('geocoding.search');
     Route::get('geocoding/reverse', [GeocodingController::class, 'reverse'])->name('geocoding.reverse');

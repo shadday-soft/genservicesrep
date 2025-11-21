@@ -13,6 +13,7 @@ import UserService from '@/Services/UserService';
 import FilePondPluginPdfPreview from "filepond-plugin-pdf-preview";
 import { Button } from 'primevue';
 import { onMounted, ref, useTemplateRef, watch } from 'vue';
+import { usePage } from '@inertiajs/vue3';
 const emit = defineEmits(['close']);
 
 interface Props {
@@ -89,7 +90,12 @@ watch(() => form.sucursal_id, async (newSucursalId) => {
 onMounted(async () => {
     // Cargar clientes, técnicos y actividades
     clientsList.value = await clientService.getClients();
-    tecnicosList.value = (await userService.getUsers()).filter((user: User) => user.role === 'Tecnico');
+    if(usePage().props.auth.user.client){
+        form.client_id = usePage().props.auth.user.client.id;
+    }else{
+        tecnicosList.value = (await userService.getUsers()).filter((user: User) => user.role === 'Tecnico');
+    }
+
     actividadesList.value = await actividadService.getActividades();
 
     // Asignar tipo_mantenimiento basado en el prop tipo
@@ -123,7 +129,7 @@ onMounted(async () => {
             class="grid grid-cols-1 md:grid-cols-3 gap-4">
 
             <!-- Empresa -->
-            <Input v-model="form.client_id" type="select" label="Empresa" :error="form.errors.client_id"
+            <Input v-model="form.client_id" :disabled="$page.props.auth.user.client" type="select" label="Empresa" :error="form.errors.client_id"
                 option-label="enterprise_name" option-value="id" :options="clientsList"></Input>
 
             <!-- Sucursal -->

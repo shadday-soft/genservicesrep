@@ -195,14 +195,13 @@ const generateReport = (solicitudData: Solicitud) => {
 };
 
 const canGenerateInforme = (solicitudData: Solicitud) => {
-    if(solicitudData.estado === 'Finalizada') {
+    if(solicitudData.estado === 'Finalizada' || usePage().props.auth.user.role === 'Cliente') {
         return false;
     }
     if (!solicitudData.fecha_informe) {
         return true;
     }
-    return  usePage().props.auth.user.role !== 'Cliente'
-        && solicitudData.fecha_informe
+    return  solicitudData.fecha_informe
         && (() => {
             const ts = Date.parse(solicitudData.fecha_informe as unknown as string);
             if (isNaN(ts)) {
