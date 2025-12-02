@@ -31,6 +31,8 @@ interface Props {
         per_page?: number;
         tipo?: string;
         estado?: string;
+        mes?: string;
+        anio?: string;
     };
 }
 
@@ -45,6 +47,8 @@ const searchQuery = ref(props.filters?.search || "");
 const perPage = ref(props.filters?.per_page || 10);
 const tipoFilter = ref(props.filters?.tipo || "");
 const estadoFilter = ref(props.filters?.estado || "");
+const mesFilter = ref(props.filters?.mes || "");
+const anioFilter = ref(props.filters?.anio || "");
 
 // Opciones de filtros
 const tipoOptions = [
@@ -58,6 +62,31 @@ const estadoOptions = [
     { label: 'Nueva', value: 'Nueva' },
     { label: 'Proceso', value: 'Proceso' },
     { label: 'Finalizada', value: 'Finalizada' },
+];
+
+const mesOptions = [
+    { label: 'Todos', value: '' },
+    { label: 'Enero', value: '1' },
+    { label: 'Febrero', value: '2' },
+    { label: 'Marzo', value: '3' },
+    { label: 'Abril', value: '4' },
+    { label: 'Mayo', value: '5' },
+    { label: 'Junio', value: '6' },
+    { label: 'Julio', value: '7' },
+    { label: 'Agosto', value: '8' },
+    { label: 'Septiembre', value: '9' },
+    { label: 'Octubre', value: '10' },
+    { label: 'Noviembre', value: '11' },
+    { label: 'Diciembre', value: '12' }
+];
+
+const currentYear = new Date().getFullYear();
+const anioOptions = [
+    { label: 'Todos', value: '' },
+    ...Array.from({ length: 5 }, (_, i) => ({
+        label: (currentYear - i).toString(),
+        value: (currentYear - i).toString()
+    }))
 ];
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -112,7 +141,7 @@ const handleCancelConfirm = (razon: string) => {
         // Cancelar múltiples solicitudes
         let completedCount = 0;
         const totalCount = selectedSolicitudes.value.length;
-        
+
         selectedSolicitudes.value.forEach(solicitud => {
             solicitudService.cancelar(solicitud.id, razon, () => {
                 completedCount++;
@@ -159,7 +188,9 @@ const performSearch = (page = 1) => {
         per_page: perPage.value,
         search: searchQuery.value || undefined,
         tipo: tipoFilter.value || undefined,
-        estado: estadoFilter.value || undefined
+        estado: estadoFilter.value || undefined,
+        mes: mesFilter.value || undefined,
+        anio: anioFilter.value || undefined
     }, {
         preserveState: true,
         preserveScroll: page !== 1,
@@ -185,6 +216,14 @@ watch(estadoFilter, () => {
     performSearch(1);
 });
 
+watch(mesFilter, () => {
+    performSearch(1);
+});
+
+watch(anioFilter, () => {
+    performSearch(1);
+});
+
 const crearReporte = (solicitudData: Solicitud) => {
     router.get(`/informe/${solicitudData.id}`, {}, {
     });
@@ -195,13 +234,13 @@ const generateReport = (solicitudData: Solicitud) => {
 };
 
 const canGenerateInforme = (solicitudData: Solicitud) => {
-    if(solicitudData.estado === 'Finalizada' || usePage().props.auth.user.role === 'Cliente') {
+    if (solicitudData.estado === 'Finalizada' || usePage().props.auth.user.role === 'Cliente') {
         return false;
     }
     if (!solicitudData.fecha_informe) {
         return true;
     }
-    return  solicitudData.fecha_informe
+    return solicitudData.fecha_informe
         && (() => {
             const ts = Date.parse(solicitudData.fecha_informe as unknown as string);
             if (isNaN(ts)) {
@@ -216,7 +255,9 @@ const exportToExcel = () => {
     const params = new URLSearchParams({
         search: searchQuery.value || '',
         tipo: tipoFilter.value || '',
-        estado: estadoFilter.value || ''
+        estado: estadoFilter.value || '',
+        mes: mesFilter.value || '',
+        anio: anioFilter.value || ''
     });
     window.location.href = `/solicituds-export-excel?${params.toString()}`;
 };
@@ -233,44 +274,35 @@ const exportToExcel = () => {
 
         <div>
             <!-- Barra de búsqueda y filtros -->
-            <div class="mb-4 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-                <div class="flex-1">
-                    <IconField>
-                        <InputIcon>
-                            <i class="pi pi-search" />
-                        </InputIcon>
-                        <Input v-model="searchQuery" placeholder="Buscar solicitudes..." class="w-full" />
-                    </IconField>
+            <div class="mb-4 space-y-3 flex items-center justify-between">
+                <!-- Primera fila: Búsqueda y acciones principales -->
+                <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                    <div class="flex-1">
+                        <IconField>
+                            <InputIcon>
+                                <i class="pi pi-search" />
+                            </InputIcon>
+                            <Input v-model="searchQuery" placeholder="Buscar solicitudes..." class="w-full" />
+                        </IconField>
+                    </div>
+                    <Button v-if="isAutorized() && selectedSolicitudes.length > 0"
+                        :label="`Cancelar (${selectedSolicitudes.length})`" icon="pi pi-ban" severity="danger" size="small"
+                        @click="openBulkCancelModal" />
+                    <Button label="Agregar Solicitud"
+                        v-if="(isAutorized() || ($page.props.auth.user.role === 'Cliente' && props.filters?.tipo === 'Mantenimiento Correctivo')) && props.filters?.tipo"
+                        icon="pi pi-plus" size="small" @click="add" />
+                    <Button label="Exportar a Excel" size="small" icon="pi pi-file-excel" severity="success" @click="exportToExcel" />
                 </div>
-                <Select 
-                    v-model="estadoFilter" 
-                    :options="estadoOptions" 
-                    optionLabel="label" 
-                    optionValue="value"
-                    placeholder="Estado" 
-                    class="w-full sm:w-40"
-                />
-                <Button 
-                    v-if="isAutorized() && selectedSolicitudes.length > 0"
-                    :label="`Cancelar (${selectedSolicitudes.length})`" 
-                    icon="pi pi-ban" 
-                    severity="danger"
-                    size="small" 
-                    @click="openBulkCancelModal" 
-                />
-                <Button 
-                    label="Agregar Solicitud" 
-                    v-if="(isAutorized() || ($page.props.auth.user.role === 'Cliente' && props.filters?.tipo === 'Mantenimiento Correctivo')) && props.filters?.tipo" 
-                    icon="pi pi-plus" 
-                    size="small" 
-                    @click="add" 
-                />
-                <Button 
-                    label="Exportar a Excel" 
-                    icon="pi pi-file-excel" 
-                    severity="success"
-                    @click="exportToExcel"
-                />
+
+                <!-- Segunda fila: Filtros -->
+                <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                    <Select v-model="estadoFilter" :options="estadoOptions" optionLabel="label" optionValue="value"
+                        placeholder="Estado" class="w-full sm:w-40" />
+                    <Select v-model="mesFilter" :options="mesOptions" optionLabel="label" optionValue="value"
+                        placeholder="Mes" class="w-full sm:w-40" />
+                    <Select v-model="anioFilter" :options="anioOptions" optionLabel="label" optionValue="value"
+                        placeholder="Año" class="w-full sm:w-32" />
+                </div>
             </div>
 
             <!-- Vista de Tabla para pantallas grandes -->
@@ -284,26 +316,25 @@ const exportToExcel = () => {
                     </template>
                     <template #select="{ data }">
                         <div class="flex items-center justify-center" v-if="isAutorized() && data.estado !== 'Anulada'">
-                            <input 
-                                type="checkbox" 
-                                :checked="isSelected(data)"
-                                @change="toggleSelect(data)"
-                                class="w-4 h-4 text-red-600 bg-gray-100 border-gray-300 rounded focus:ring-red-500 dark:focus:ring-red-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                            />
+                            <input type="checkbox" :checked="isSelected(data)" @change="toggleSelect(data)"
+                                class="w-4 h-4 text-red-600 bg-gray-100 border-gray-300 rounded focus:ring-red-500 dark:focus:ring-red-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
                         </div>
                     </template>
                     <template #actions="{ data }">
                         <div class="flex justify-end">
                             <Button icon="pi pi-eye" size="small" severity="secondary" text
                                 v-tooltip.left="`Ver Detalles`" @click="viewDetails(data)" />
-                            <Button text v-tooltip.top="`Ver Informe`" @click="generateReport(data)"
-                                icon="pi pi-file-pdf" v-if="data.informe_generado"></Button>
+                            <a :href="`/informe/${data.id}/pdf`" target="_blank" v-if="data.informe_generado" v-tooltip.top="`Ver Informe`">
+                                <Button icon="pi pi-file-pdf" size="small" severity="danger" text/>
+                            </a>
                             <Button icon="pi pi-file" size="small" severity="info" text
-                                v-tooltip.left="`Generar Informe`" @click="crearReporte(data)" v-if="canGenerateInforme(data)" />
-                            <Button icon="pi pi-pencil" size="small" v-if="isAutorized() && data.estado != 'Anulada'" severity="warn" text
-                                v-tooltip.left="`Editar`" @click="edit(data)" />
-                            <Button icon="pi pi-ban" size="small" severity="danger" text v-if="isAutorized() && data.estado != 'Anulada'"
-                                v-tooltip.left="`Cancelar`" @click="openCancelModal(data)" />
+                                v-tooltip.left="`Generar Informe`" @click="crearReporte(data)"
+                                v-if="canGenerateInforme(data)" />
+                            <Button icon="pi pi-pencil" size="small" v-if="isAutorized() && data.estado != 'Anulada'"
+                                severity="warn" text v-tooltip.left="`Editar`" @click="edit(data)" />
+                            <Button icon="pi pi-ban" size="small" severity="danger" text
+                                v-if="isAutorized() && data.estado != 'Anulada'" v-tooltip.left="`Cancelar`"
+                                @click="openCancelModal(data)" />
                         </div>
                     </template>
                 </Datatable>
@@ -317,13 +348,9 @@ const exportToExcel = () => {
                     <div
                         class="px-3 py-2 bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
                         <div class="flex items-center gap-1.5">
-                            <input 
-                                v-if="isAutorized() && solicitudItem.estado !== 'Anulada'"
-                                type="checkbox" 
-                                :checked="isSelected(solicitudItem)"
-                                @change="toggleSelect(solicitudItem)"
-                                class="w-4 h-4 text-red-600 bg-gray-100 border-gray-300 rounded focus:ring-red-500 dark:focus:ring-red-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                            />
+                            <input v-if="isAutorized() && solicitudItem.estado !== 'Anulada'" type="checkbox"
+                                :checked="isSelected(solicitudItem)" @change="toggleSelect(solicitudItem)"
+                                class="w-4 h-4 text-red-600 bg-gray-100 border-gray-300 rounded focus:ring-red-500 dark:focus:ring-red-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
                             <i class="pi pi-file text-gray-500 dark:text-gray-400 text-xs"></i>
                             <span class="text-sm font-semibold text-gray-900 dark:text-white">
                                 #{{ solicitudItem.numero_orden }}
@@ -437,12 +464,15 @@ const exportToExcel = () => {
                             @click="viewDetails(solicitudItem)" class="!p-1.5" />
                         <Button text v-if="solicitudItem.informe_generado" v-tooltip.top="`Ver Informe`"
                             @click="generateReport(solicitudItem)" icon="pi pi-file-pdf" class="!p-1.5" />
-                        <Button v-if="solicitudItem.estado != 'Anulada' && $page.props.auth.user.role !== 'Cliente'" icon="pi pi-file" size="small" severity="info" text v-tooltip.top="'Generar Informe'"
+                        <Button v-if="solicitudItem.estado != 'Anulada' && $page.props.auth.user.role !== 'Cliente'"
+                            icon="pi pi-file" size="small" severity="info" text v-tooltip.top="'Generar Informe'"
                             @click="crearReporte(solicitudItem)" class="!p-1.5" />
-                        <Button icon="pi pi-pencil" size="small"  severity="warn" text v-tooltip.top="'Editar'"
-                            @click="edit(solicitudItem)" class="!p-1.5" v-if="isAutorized() && solicitudItem.estado != 'Anulada'" />
-                        <Button icon="pi pi-ban" size="small" severity="danger" v-if="isAutorized() && solicitudItem.estado != 'Anulada'" text
-                            v-tooltip.top="'Cancelar'" @click="openCancelModal(solicitudItem)" class="!p-1.5" />
+                        <Button icon="pi pi-pencil" size="small" severity="warn" text v-tooltip.top="'Editar'"
+                            @click="edit(solicitudItem)" class="!p-1.5"
+                            v-if="isAutorized() && solicitudItem.estado != 'Anulada'" />
+                        <Button icon="pi pi-ban" size="small" severity="danger"
+                            v-if="isAutorized() && solicitudItem.estado != 'Anulada'" text v-tooltip.top="'Cancelar'"
+                            @click="openCancelModal(solicitudItem)" class="!p-1.5" />
                     </div>
                 </div>
 
@@ -484,11 +514,9 @@ const exportToExcel = () => {
             <Form :solicitud="solicitud" @close="showModal = false" :tipo="filters?.tipo" />
         </Modal>
 
-        <CancelSolicitudModal 
-            v-model="showCancelModal" 
+        <CancelSolicitudModal v-model="showCancelModal"
             :solicitud-numero="solicitudToCancel?.numero_orden || (selectedSolicitudes.length > 0 ? `${selectedSolicitudes.length} solicitudes` : undefined)"
-            @confirm="handleCancelConfirm" 
-        />
+            @confirm="handleCancelConfirm" />
 
         <SolicitudDetailsDrawer v-model="showDetailsDrawer" :solicitud="solicitudToView" />
     </AppLayout>

@@ -4,7 +4,6 @@ namespace App\Repositories;
 
 use App\Interfaces\SolicitudInterface;
 use App\Models\Solicitud;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -23,7 +22,7 @@ class SolicitudRepository extends BaseRepository implements SolicitudInterface
         return Solicitud::class;
     }
 
-    public function getAllSolicitudes($perPage = 15, $search = null, $tipo = null, $estado = null)
+    public function getAllSolicitudes($perPage = 15, $search = null, $tipo = null, $estado = null, $mes = null, $anio = null)
     {
         $user = Auth::user();
         $query = Solicitud::with(['client', 'sucursal', 'equipo', 'user']);
@@ -59,6 +58,16 @@ class SolicitudRepository extends BaseRepository implements SolicitudInterface
             $query->where('estado', $estado);
         }
 
+        // Filtro por mes
+        if ($mes) {
+            $query->whereMonth('fecha_programada', $mes);
+        }
+
+        // Filtro por año
+        if ($anio) {
+            $query->whereYear('fecha_programada', $anio);
+        }
+
         if ($user->role === 'Tecnico') {
             $query->where('user_id', $user->id);
         }
@@ -69,10 +78,7 @@ class SolicitudRepository extends BaseRepository implements SolicitudInterface
         }
 
         if (isset($tipo)) {
-            $query->where('tipo_mantenimiento', $tipo)->whereMonth('fecha_programada', Carbon::now()->month);
-        }
-        if (isset($tipo) && ! $estado) {
-            $query->where('estado', 'Nueva');
+            $query->where('tipo_mantenimiento', 'LIKE', $tipo);
         }
 
         $result = $query->latest()->paginate($perPage);
@@ -116,7 +122,7 @@ class SolicitudRepository extends BaseRepository implements SolicitudInterface
     public function create(array $data): Solicitud
     {
         if ($data['orden_trabajo']) {
-            $data['orden_trabajo'] = 'uploads/' . $data['orden_trabajo']->store('solicitus', 'public');
+            $data['orden_trabajo'] = 'uploads/'.$data['orden_trabajo']->store('solicitus', 'public');
         }
         $solicitus = parent::create($data);
 
@@ -133,7 +139,7 @@ class SolicitudRepository extends BaseRepository implements SolicitudInterface
                 if ($solicitus->orden_trabajo) {
                     Storage::disk('public')->delete($solicitus->orden_trabajo);
                 }
-                $data['orden_trabajo'] = 'uploads/' . $data['orden_trabajo']->store('solicitus', 'public');
+                $data['orden_trabajo'] = 'uploads/'.$data['orden_trabajo']->store('solicitus', 'public');
             }
         }
 

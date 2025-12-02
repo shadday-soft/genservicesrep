@@ -14,14 +14,22 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 class SolicitudesSheet implements FromQuery, WithHeadings, WithMapping, WithStyles, WithTitle
 {
     protected $search;
+
     protected $tipo;
+
     protected $estado;
 
-    public function __construct($search = null, $tipo = null, $estado = null)
+    protected $mes;
+
+    protected $anio;
+
+    public function __construct($search = null, $tipo = null, $estado = null, $mes = null, $anio = null)
     {
         $this->search = $search;
         $this->tipo = $tipo;
         $this->estado = $estado;
+        $this->mes = $mes;
+        $this->anio = $anio;
     }
 
     public function query()
@@ -56,6 +64,16 @@ class SolicitudesSheet implements FromQuery, WithHeadings, WithMapping, WithStyl
         // Aplicar filtro por estado si existe
         if ($this->estado) {
             $query->where('estado', $this->estado);
+        }
+
+        // Aplicar filtro por mes si existe
+        if ($this->mes) {
+            $query->whereMonth('fecha_programada', $this->mes);
+        }
+
+        // Aplicar filtro por año si existe
+        if ($this->anio) {
+            $query->whereYear('fecha_programada', $this->anio);
         }
 
         // Si es cliente, solo ver sus solicitudes

@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { ref } from 'vue';
 import Input from '@/components/Input.vue';
 import RichTextEditor from '@/components/RichTextEditor.vue';
 import SignaturePad from '@/components/SignaturePad.vue';
 import RadioGroup from '@/components/RadioGroup.vue';
+import ImageThumbnail from '@/components/ImageThumbnail.vue';
 import { Button } from 'primevue';
 import RadioButton from 'primevue/radiobutton';
 import AppLayout from '@/layouts/AppLayout.vue';
@@ -49,6 +50,7 @@ const form = useForm({
     nivel_refrigerante: 'N/A',
     nivel_combustible: '',
     capacidad_tanque: '',
+    drenado_tanque: 'N/A',
     fugas: '',
     mangueras: 'N/A',
     // Estado inicial - adicionales
@@ -180,20 +182,17 @@ const form = useForm({
     errors: {} as Record<string, string>
 });
 
-onMounted(() => {
-    if (props.informe) {
-        assignMatchingKeys(props.informe, form);
-    }
-    
-    // Precargar datos del técnico si está disponible
-    console.log(props.tecnico);
-    if (props.tecnico) {
+// Precargar datos del informe y técnico si están disponibles
+if (props.informe) {
+    assignMatchingKeys(props.informe, form);
+}
 
-        form.firma_tecnico = props.tecnico.firma || '';
-        form.nombre_tecnico = props.tecnico.nombre_completo || '';
-        form.cedula_tecnico = props.tecnico.identificacion || '';
-    }
-});
+console.log(props.tecnico);
+if (props.tecnico) {
+    form.firma_tecnico = props.tecnico.firma || '';
+    form.nombre_tecnico = props.tecnico.nombre_completo || '';
+    form.cedula_tecnico = props.tecnico.identificacion || '';
+}
 
 const tiposServicio = [
     { label: 'Mantenimiento', value: 'Mantenimiento' },
@@ -204,22 +203,6 @@ const tiposServicio = [
 ];
 
 const nivelesOptions = ['B', 'R', 'M', 'N/A'];
-
-const myFilesFotoUno = ref<any[]>([]);
-const myFilesFotoDos = ref<any[]>([]);
-const myFilesFotoTres = ref<any[]>([]);
-const myFilesFotoUnoDurante = ref<any[]>([]);
-const myFilesFotoDosDurante = ref<any[]>([]);
-const myFilesFotoTresDurante = ref<any[]>([]);
-const myFilesFotoCuatroDurante = ref<any[]>([]);
-const myFilesFotoCincoDurante = ref<any[]>([]);
-const myFilesFotoSeisDurante = ref<any[]>([]);
-const myFilesFotoSieteDurante = ref<any[]>([]);
-const myFilesFotoOchoDurante = ref<any[]>([]);
-const myFilesFotoNueveDurante = ref<any[]>([]);
-const myFilesFotoUnoDespues = ref<any[]>([]);
-const myFilesFotoDosDespues = ref<any[]>([]);
-const myFilesFotoTresDespues = ref<any[]>([]);
 
 const updateFilesFotoUno = (files: any) => {
     if (files && files.length > 0) {
@@ -388,12 +371,14 @@ const breadcrumbs: BreadcrumbItem[] = [
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <!-- Foto uno antes -->
                     <div class="flex flex-col gap-2">
-                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Foto uno antes
-                        </label>
+                        <div class="flex items-center gap-2">
+                            <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                Foto uno antes
+                            </label>
+                            <ImageThumbnail :image-url="props.informe?.foto_uno_antes" title="Ver foto uno antes" />
+                        </div>
                         <FilePond
                             name="foto_uno_antes"
-                            :files="myFilesFotoUno"
                             :allow-multiple="false"
                             accepted-file-types="image/*"
                             @updatefiles="updateFilesFotoUno"
@@ -411,12 +396,14 @@ const breadcrumbs: BreadcrumbItem[] = [
 
                     <!-- Foto dos antes -->
                     <div class="flex flex-col gap-2">
-                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Foto dos antes
-                        </label>
+                        <div class="flex items-center gap-2">
+                            <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                Foto dos antes
+                            </label>
+                            <ImageThumbnail :image-url="props.informe?.foto_dos_antes" title="Ver foto dos antes" />
+                        </div>
                         <FilePond
                             name="foto_dos_antes"
-                            :files="myFilesFotoDos"
                             :allow-multiple="false"
                             accepted-file-types="image/*"
                             @updatefiles="updateFilesFotoDos"
@@ -434,12 +421,14 @@ const breadcrumbs: BreadcrumbItem[] = [
 
                     <!-- Foto tres antes -->
                     <div class="flex flex-col gap-2">
-                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Foto tres antes
-                        </label>
+                        <div class="flex items-center gap-2">
+                            <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                Foto tres antes
+                            </label>
+                            <ImageThumbnail :image-url="props.informe?.foto_tres_antes" title="Ver foto tres antes" />
+                        </div>
                         <FilePond
                             name="foto_tres_antes"
-                            :files="myFilesFotoTres"
                             :allow-multiple="false"
                             accepted-file-types="image/*"
                             @updatefiles="updateFilesFotoTres"
@@ -527,6 +516,14 @@ const breadcrumbs: BreadcrumbItem[] = [
                         :options="nivelesOptions"
                         unique-id="mangueras"
                         :error="form.errors.mangueras"
+                    />
+
+                    <RadioGroup 
+                        v-model="form.drenado_tanque"
+                        label="Drenado del Tanque"
+                        :options="nivelesOptions"
+                        unique-id="drenado_tanque"
+                        :error="form.errors.drenado_tanque"
                     />
 
                     <!-- Sellos -->
@@ -823,12 +820,14 @@ const breadcrumbs: BreadcrumbItem[] = [
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     <!-- Foto uno durante -->
                     <div class="flex flex-col gap-2">
-                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Foto uno durante
-                        </label>
+                        <div class="flex items-center gap-2">
+                            <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                Foto uno durante
+                            </label>
+                            <ImageThumbnail :image-url="props.informe?.foto_uno_durante" title="Ver foto uno durante" />
+                        </div>
                         <FilePond
                             name="foto_uno_durante"
-                            :files="myFilesFotoUnoDurante"
                             :allow-multiple="false"
                             accepted-file-types="image/*"
                             @updatefiles="updateFilesFotoUnoDurante"
@@ -846,12 +845,14 @@ const breadcrumbs: BreadcrumbItem[] = [
 
                     <!-- Foto dos durante -->
                     <div class="flex flex-col gap-2">
-                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Foto dos durante
-                        </label>
+                        <div class="flex items-center gap-2">
+                            <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                Foto dos durante
+                            </label>
+                            <ImageThumbnail :image-url="props.informe?.foto_dos_durante" title="Ver foto dos durante" />
+                        </div>
                         <FilePond
                             name="foto_dos_durante"
-                            :files="myFilesFotoDosDurante"
                             :allow-multiple="false"
                             accepted-file-types="image/*"
                             @updatefiles="updateFilesFotoDosDurante"
@@ -869,12 +870,14 @@ const breadcrumbs: BreadcrumbItem[] = [
 
                     <!-- Foto tres durante -->
                     <div class="flex flex-col gap-2">
-                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Foto tres durante
-                        </label>
+                        <div class="flex items-center gap-2">
+                            <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                Foto tres durante
+                            </label>
+                            <ImageThumbnail :image-url="props.informe?.foto_tres_durante" title="Ver foto tres durante" />
+                        </div>
                         <FilePond
                             name="foto_tres_durante"
-                            :files="myFilesFotoTresDurante"
                             :allow-multiple="false"
                             accepted-file-types="image/*"
                             @updatefiles="updateFilesFotoTresDurante"
@@ -892,12 +895,14 @@ const breadcrumbs: BreadcrumbItem[] = [
 
                     <!-- Foto cuatro durante -->
                     <div class="flex flex-col gap-2">
-                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Foto cuatro durante
-                        </label>
+                        <div class="flex items-center gap-2">
+                            <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                Foto cuatro durante
+                            </label>
+                            <ImageThumbnail :image-url="props.informe?.foto_cuatro_durante" title="Ver foto cuatro durante" />
+                        </div>
                         <FilePond
                             name="foto_cuatro_durante"
-                            :files="myFilesFotoCuatroDurante"
                             :allow-multiple="false"
                             accepted-file-types="image/*"
                             @updatefiles="updateFilesFotoCuatroDurante"
@@ -915,12 +920,14 @@ const breadcrumbs: BreadcrumbItem[] = [
 
                     <!-- Foto cinco durante -->
                     <div class="flex flex-col gap-2">
-                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Foto cinco durante
-                        </label>
+                        <div class="flex items-center gap-2">
+                            <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                Foto cinco durante
+                            </label>
+                            <ImageThumbnail :image-url="props.informe?.foto_cinco_durante" title="Ver foto cinco durante" />
+                        </div>
                         <FilePond
                             name="foto_cinco_durante"
-                            :files="myFilesFotoCincoDurante"
                             :allow-multiple="false"
                             accepted-file-types="image/*"
                             @updatefiles="updateFilesFotoCincoDurante"
@@ -938,12 +945,14 @@ const breadcrumbs: BreadcrumbItem[] = [
 
                     <!-- Foto seis durante -->
                     <div class="flex flex-col gap-2">
-                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Foto seis durante
-                        </label>
+                        <div class="flex items-center gap-2">
+                            <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                Foto seis durante
+                            </label>
+                            <ImageThumbnail :image-url="props.informe?.foto_seis_durante" title="Ver foto seis durante" />
+                        </div>
                         <FilePond
                             name="foto_seis_durante"
-                            :files="myFilesFotoSeisDurante"
                             :allow-multiple="false"
                             accepted-file-types="image/*"
                             @updatefiles="updateFilesFotoSeisDurante"
@@ -961,12 +970,14 @@ const breadcrumbs: BreadcrumbItem[] = [
 
                     <!-- Foto siete durante -->
                     <div class="flex flex-col gap-2">
-                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Foto siete durante
-                        </label>
+                        <div class="flex items-center gap-2">
+                            <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                Foto siete durante
+                            </label>
+                            <ImageThumbnail :image-url="props.informe?.foto_siete_durante" title="Ver foto siete durante" />
+                        </div>
                         <FilePond
                             name="foto_siete_durante"
-                            :files="myFilesFotoSieteDurante"
                             :allow-multiple="false"
                             accepted-file-types="image/*"
                             @updatefiles="updateFilesFotoSieteDurante"
@@ -984,12 +995,14 @@ const breadcrumbs: BreadcrumbItem[] = [
 
                     <!-- Foto ocho durante -->
                     <div class="flex flex-col gap-2">
-                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Foto ocho durante
-                        </label>
+                        <div class="flex items-center gap-2">
+                            <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                Foto ocho durante
+                            </label>
+                            <ImageThumbnail :image-url="props.informe?.foto_ocho_durante" title="Ver foto ocho durante" />
+                        </div>
                         <FilePond
                             name="foto_ocho_durante"
-                            :files="myFilesFotoOchoDurante"
                             :allow-multiple="false"
                             accepted-file-types="image/*"
                             @updatefiles="updateFilesFotoOchoDurante"
@@ -1007,12 +1020,14 @@ const breadcrumbs: BreadcrumbItem[] = [
 
                     <!-- Foto nueve durante -->
                     <div class="flex flex-col gap-2">
-                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Foto nueve durante
-                        </label>
+                        <div class="flex items-center gap-2">
+                            <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                Foto nueve durante
+                            </label>
+                            <ImageThumbnail :image-url="props.informe?.foto_nueve_durante" title="Ver foto nueve durante" />
+                        </div>
                         <FilePond
                             name="foto_nueve_durante"
-                            :files="myFilesFotoNueveDurante"
                             :allow-multiple="false"
                             accepted-file-types="image/*"
                             @updatefiles="updateFilesFotoNueveDurante"
@@ -1539,12 +1554,14 @@ const breadcrumbs: BreadcrumbItem[] = [
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <!-- Foto uno despues -->
                     <div class="flex flex-col gap-2">
-                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Foto uno despues
-                        </label>
+                        <div class="flex items-center gap-2">
+                            <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                Foto uno despues
+                            </label>
+                            <ImageThumbnail :image-url="props.informe?.foto_uno_despues" title="Ver foto uno después" />
+                        </div>
                         <FilePond
                             name="foto_uno_despues"
-                            :files="myFilesFotoUnoDespues"
                             :allow-multiple="false"
                             accepted-file-types="image/*"
                             @updatefiles="updateFilesFotoUnoDespues"
@@ -1562,12 +1579,14 @@ const breadcrumbs: BreadcrumbItem[] = [
 
                     <!-- Foto dos despues -->
                     <div class="flex flex-col gap-2">
-                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Foto dos despues
-                        </label>
+                        <div class="flex items-center gap-2">
+                            <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                Foto dos despues
+                            </label>
+                            <ImageThumbnail :image-url="props.informe?.foto_dos_despues" title="Ver foto dos después" />
+                        </div>
                         <FilePond
                             name="foto_dos_despues"
-                            :files="myFilesFotoDosDespues"
                             :allow-multiple="false"
                             accepted-file-types="image/*"
                             @updatefiles="updateFilesFotoDosDespues"
@@ -1585,12 +1604,14 @@ const breadcrumbs: BreadcrumbItem[] = [
 
                     <!-- Foto tres despues -->
                     <div class="flex flex-col gap-2">
-                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
-                            Foto tres despues
-                        </label>
+                        <div class="flex items-center gap-2">
+                            <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                Foto tres despues
+                            </label>
+                            <ImageThumbnail :image-url="props.informe?.foto_tres_despues" title="Ver foto tres después" />
+                        </div>
                         <FilePond
                             name="foto_tres_despues"
-                            :files="myFilesFotoTresDespues"
                             :allow-multiple="false"
                             accepted-file-types="image/*"
                             @updatefiles="updateFilesFotoTresDespues"

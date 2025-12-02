@@ -71,6 +71,31 @@
             text-align: center;
             margin-top: 3px;
         }
+        /* Estilos para contenido HTML enriquecido */
+        .rich-text {
+            max-height: 130px;
+            overflow: hidden;
+        }
+        .rich-text p {
+            margin: 0;
+            padding: 0;
+            line-height: 1.3;
+        }
+        .rich-text ul,
+        .rich-text ol {
+            margin: 2px 0;
+            padding-left: 15px;
+        }
+        .rich-text li {
+            margin: 0;
+            padding: 0;
+            line-height: 1.2;
+        }
+        .rich-text br {
+            content: "";
+            display: block;
+            margin: 1px 0;
+        }
     </style>
 </head>
 <body>
@@ -188,7 +213,7 @@
             <th>OBSERVACIONES INICIALES</th>
         </tr>
         <tr>
-            <td style="min-height: 30px; vertical-align: top;">{!! $registro->observaciones_iniciales !!}</td>
+            <td style="min-height: 30px; vertical-align: top;"><div class="rich-text">{!! $registro->observaciones_iniciales !!}</div></td>
         </tr>
     </table>
 
@@ -208,6 +233,7 @@
                         <th style="width: 16%; text-align: center;">M</th>
                     </tr>
                     @foreach ([
+                        'drenado_tanque' => 'DRENADO DEL TANQUE',
                         'nivel_aceite' => 'NIVEL DE ACEITE',
                         'nivel_refrigerante' => 'NIVEL DE REFRIGERANTE',
                         'nivel_combustible' => 'NIVEL DE COMBUSTIBLE',
@@ -235,8 +261,13 @@
                         'limpieza_generador' => 'LIMPIEZA GENERAL',
                     ] as $campo => $label)
                     <tr>
-                        <td style="font-size: 6px; padding: 0.5px 2px;">{{ $label }}</td>
-                        <td style="text-align: center; padding: 0.5px;">
+                        <td style="font-size: 8px; padding: 0.5px 2px;">{{ $label }}</td>
+                        @if ($label == 'FUGAS' || $label == 'NIVEL DE COMBUSTIBLE' || $label == 'CAPACIDAD DEL TANQUE' || $label == 'VOLTAJE ALTERNADOR' || $label == 'VOLTAJE CARGADOR' || $label == 'TIPO CONTROL')
+                        <td style="text-align: center; padding: 0.5px;" colspan="3">
+                            {{ $registro->$campo }}
+                        </td>
+                        @else
+                         <td style="text-align: center; padding: 0.5px;">
                             <span class="checkbox-small">{{ $registro->$campo == 'B' ? 'X' : '' }}</span>
                         </td>
                         <td style="text-align: center; padding: 0.5px;">
@@ -245,6 +276,9 @@
                         <td style="text-align: center; padding: 0.5px;">
                             <span class="checkbox-small">{{ $registro->$campo == 'M' ? 'X' : '' }}</span>
                         </td>
+
+                        @endif
+                       
                     </tr>
                     @endforeach
                 </table>
@@ -256,7 +290,7 @@
                         <th style="background-color: #FF7C61;">ACTIVIDAD REALIZADA</th>
                     </tr>
                     <tr>
-                        <td style="min-height: 80px; vertical-align: top; font-size: 10px; padding: 5px;">{!! $registro->actividad_realizada !!}</td>
+                        <td style="min-height: 80px; vertical-align: top; font-size: 10px; padding: 5px;"><div class="rich-text">{!! $registro->actividad_realizada !!}</div></td>
                     </tr>
                 </table>
                 
@@ -361,7 +395,7 @@
                         <th style="background-color: #b8b8b8;">RECOMENDACIONES</th>
                     </tr>
                     <tr>
-                        <td style="min-height: 25px; vertical-align: top; font-size: 10px; padding: 5px 5px;">{!! $registro->recomendaciones !!}</td>
+                        <td style="min-height: 25px; vertical-align: top; font-size: 10px; padding: 5px 5px;"><div class="rich-text">{!! $registro->recomendaciones !!}</div></td>
                     </tr>
                 </table>
             </td>
@@ -371,48 +405,56 @@
     <!-- FILTROS -->
     <table>
         <tr>
-            <th style="width: 40%; background-color: #b8b8b8;">FILTRO DE AIRE</th>
-            <td style="width: 10%;">{{ $registro->cantidad_filtro_aire }}</td>
-            <td style="width: 40%;">{{ $registro->referencia_filtro_aire }}</td>
-            <th style="width: 40%; background-color: #b8b8b8;">LLEGADA TECNICO</th>
-            <td rowspan="6" style="width: 10%;">
-                Día: {{ date('d', strtotime($registro->llegada_tecnico)) }}<br>
-                Mes: {{ date('m', strtotime($registro->llegada_tecnico)) }}<br>
-                Año: {{ date('Y', strtotime($registro->llegada_tecnico)) }}<br>
-                Hora: {{ date('H:i', strtotime($registro->llegada_tecnico)) }}
-            </td>
+            <th style="width: 20%; background-color: #b8b8b8;">FILTRO DE AIRE</th>
+            <td style="width: 5%;">{{ $registro->cantidad_filtro_aire }}</td>
+            <td style="width: 20%;">{{ $registro->referencia_filtro_aire }}</td>
+            <th colspan="5" style="background-color: #b8b8b8; text-align: center;">LLEGADA TECNICO</th>
         </tr>
         <tr>
             <th style="background-color: #b8b8b8;">FILTRO DE ACEITE</th>
             <td>{{ $registro->cantidad_filtro_aceite }}</td>
             <td>{{ $registro->referencia_filtro_aceite }}</td>
-            <th style="background-color: #b8b8b8;">SALIDA TECNICO</th>
+            <th style="width: 8%; background-color: #d8d8d8; font-size: 8px; text-align: center;">DIA</th>
+            <th style="width: 8%; background-color: #d8d8d8; font-size: 8px; text-align: center;">MES</th>
+            <th style="width: 8%; background-color: #d8d8d8; font-size: 8px; text-align: center;">AÑO</th>
+            <th style="width: 8%; background-color: #d8d8d8; font-size: 8px; text-align: center;">HORA</th>
+            <th style="width: 8%; background-color: #d8d8d8; font-size: 8px; text-align: center;">MIN</th>
         </tr>
         <tr>
             <th style="background-color: #b8b8b8;">FILTRO DE COMBUSTIBLE</th>
             <td>{{ $registro->cantidad_filtro_combustible }}</td>
             <td>{{ $registro->referencia_filtro_combustible }}</td>
-            <td rowspan="4">
-                Día: {{ date('d', strtotime($registro->salida_tecnico)) }}<br>
-                Mes: {{ date('m', strtotime($registro->salida_tecnico)) }}<br>
-                Año: {{ date('Y', strtotime($registro->salida_tecnico)) }}<br>
-                Hora: {{ date('H:i', strtotime($registro->salida_tecnico)) }}
-            </td>
+            <td style="text-align: center; font-size: 8px;">{{ date('d', strtotime($registro->llegada_tecnico)) }}</td>
+            <td style="text-align: center; font-size: 8px;">{{ date('m', strtotime($registro->llegada_tecnico)) }}</td>
+            <td style="text-align: center; font-size: 8px;">{{ date('Y', strtotime($registro->llegada_tecnico)) }}</td>
+            <td style="text-align: center; font-size: 8px;">{{ date('H', strtotime($registro->llegada_tecnico)) }}</td>
+            <td style="text-align: center; font-size: 8px;">{{ date('i', strtotime($registro->llegada_tecnico)) }}</td>
         </tr>
         <tr>
             <th style="background-color: #b8b8b8;">FILTRO SEPARADOR</th>
             <td>{{ $registro->cantidad_filtro_separador }}</td>
             <td>{{ $registro->referencia_filtro_separador }}</td>
+            <th colspan="5" style="background-color: #b8b8b8; text-align: center;">SALIDA TECNICO</th>
         </tr>
         <tr>
             <th style="background-color: #b8b8b8;">FILTRO DE AGUA</th>
             <td>{{ $registro->cantidad_filtro_agua }}</td>
             <td>{{ $registro->referencia_filtro_agua }}</td>
+            <th style="width: 8%; background-color: #d8d8d8; font-size: 8px; text-align: center;">DIA</th>
+            <th style="width: 8%; background-color: #d8d8d8; font-size: 8px; text-align: center;">MES</th>
+            <th style="width: 8%; background-color: #d8d8d8; font-size: 8px; text-align: center;">AÑO</th>
+            <th style="width: 8%; background-color: #d8d8d8; font-size: 8px; text-align: center;">HORA</th>
+            <th style="width: 8%; background-color: #d8d8d8; font-size: 8px; text-align: center;">MIN</th>
         </tr>
         <tr>
             <th style="background-color: #b8b8b8;">CANTIDAD DE ACEITE</th>
             <td>{{ $registro->cantidad_cantidad_aceite }}</td>
             <td>{{ $registro->referencia_cantidad_aceite }}</td>
+            <td style="text-align: center; font-size: 8px;">{{ date('d', strtotime($registro->salida_tecnico)) }}</td>
+            <td style="text-align: center; font-size: 8px;">{{ date('m', strtotime($registro->salida_tecnico)) }}</td>
+            <td style="text-align: center; font-size: 8px;">{{ date('Y', strtotime($registro->salida_tecnico)) }}</td>
+            <td style="text-align: center; font-size: 8px;">{{ date('H', strtotime($registro->salida_tecnico)) }}</td>
+            <td style="text-align: center; font-size: 8px;">{{ date('i', strtotime($registro->salida_tecnico)) }}</td>
         </tr>
     </table>
 
@@ -543,7 +585,24 @@
         <tr>
             @if($registro->foto_uno_antes)
             <td style="width: 50%; text-align: center; vertical-align: top; padding: 5px;">
-                <img src="uploads/{{ $registro->foto_uno_antes }}" alt="uploads/{{ $registro->foto_uno_antes }}" style="max-width: 95%; max-height: 180px; border: 1px solid #ccc;">
+                @php
+                    $fotoSrc = $registro->foto_uno_antes;
+                    if (str_contains($fotoSrc, 'https://reporting.genservices.com.co/storage/')) {
+                        try {
+                            $imageData = @file_get_contents($fotoSrc);
+                            if ($imageData !== false) {
+                                $base64 = base64_encode($imageData);
+                                $mimeType = 'image/jpeg';
+                                $fotoSrc = 'data:' . $mimeType . ';base64,' . $base64;
+                            }
+                        } catch (\Exception $e) {
+                            // Si falla, usar la URL como está
+                        }
+                    } else {
+                        $fotoSrc = 'uploads/' . $fotoSrc;
+                    }
+                @endphp
+                <img src="{{ $fotoSrc }}" alt="Foto 1 Antes" style="max-width: 95%; max-height: 180px; border: 1px solid #ccc;">
                 @if($registro->pie_foto_uno_antes)
                 <div style="font-size: 8px; margin-top: 3px; text-align: center;">{{ $registro->pie_foto_uno_antes }}</div>
                 @endif
@@ -551,7 +610,24 @@
             @endif
             @if($registro->foto_dos_antes)
             <td style="width: 50%; text-align: center; vertical-align: top; padding: 5px;">
-                <img src="uploads/{{ $registro->foto_dos_antes }}" alt="uploads/{{ $registro->foto_dos_antes }}" style="max-width: 95%; max-height: 180px; border: 1px solid #ccc;">
+                @php
+                    $fotoSrc = $registro->foto_dos_antes;
+                    if (str_contains($fotoSrc, 'https://reporting.genservices.com.co/storage/')) {
+                        try {
+                            $imageData = @file_get_contents($fotoSrc);
+                            if ($imageData !== false) {
+                                $base64 = base64_encode($imageData);
+                                $mimeType = 'image/jpeg';
+                                $fotoSrc = 'data:' . $mimeType . ';base64,' . $base64;
+                            }
+                        } catch (\Exception $e) {
+                            // Si falla, usar la URL como está
+                        }
+                    } else {
+                        $fotoSrc = 'uploads/' . $fotoSrc;
+                    }
+                @endphp
+                <img src="{{ $fotoSrc }}" alt="Foto 2 Antes" style="max-width: 95%; max-height: 180px; border: 1px solid #ccc;">
                 @if($registro->pie_foto_dos_antes)
                 <div style="font-size: 8px; margin-top: 3px; text-align: center;">{{ $registro->pie_foto_dos_antes }}</div>
                 @endif
@@ -561,7 +637,24 @@
         @if($registro->foto_tres_antes)
         <tr>
             <td colspan="2" style="text-align: center; vertical-align: top; padding: 5px;">
-                <img src="uploads/{{ $registro->foto_tres_antes }}" alt="uploads/{{ $registro->foto_tres_antes }}" style="max-width: 47%; max-height: 180px; border: 1px solid #ccc;">
+                @php
+                    $fotoSrc = $registro->foto_tres_antes;
+                    if (str_contains($fotoSrc, 'https://reporting.genservices.com.co/storage/')) {
+                        try {
+                            $imageData = @file_get_contents($fotoSrc);
+                            if ($imageData !== false) {
+                                $base64 = base64_encode($imageData);
+                                $mimeType = 'image/jpeg';
+                                $fotoSrc = 'data:' . $mimeType . ';base64,' . $base64;
+                            }
+                        } catch (\Exception $e) {
+                            // Si falla, usar la URL como está
+                        }
+                    } else {
+                        $fotoSrc = 'uploads/' . $fotoSrc;
+                    }
+                @endphp
+                <img src="{{ $fotoSrc }}" alt="Foto 3 Antes" style="max-width: 47%; max-height: 180px; border: 1px solid #ccc;">
                 @if($registro->pie_foto_tres_antes)
                 <div style="font-size: 8px; margin-top: 3px; text-align: center;">{{ $registro->pie_foto_tres_antes }}</div>
                 @endif
@@ -602,7 +695,24 @@
         <tr>
             @foreach($chunk as $item)
             <td style="width: 50%; text-align: center; vertical-align: top; padding: 5px;">
-                <img src="uploads/{{ $item['foto'] }}" alt="Foto Durante" style="max-width: 95%; max-height: 180px; border: 1px solid #ccc;">
+                @php
+                    $fotoSrc = $item['foto'];
+                    if (str_contains($fotoSrc, 'https://reporting.genservices.com.co/storage/')) {
+                        try {
+                            $imageData = @file_get_contents($fotoSrc);
+                            if ($imageData !== false) {
+                                $base64 = base64_encode($imageData);
+                                $mimeType = 'image/jpeg';
+                                $fotoSrc = 'data:' . $mimeType . ';base64,' . $base64;
+                            }
+                        } catch (\Exception $e) {
+                            // Si falla, usar la URL como está
+                        }
+                    } else {
+                        $fotoSrc = 'uploads/' . $fotoSrc;
+                    }
+                @endphp
+                <img src="{{ $fotoSrc }}" alt="Foto Durante" style="max-width: 95%; max-height: 180px; border: 1px solid #ccc;">
                 @if($item['pie'])
                 <div style="font-size: 8px; margin-top: 3px; text-align: center;">{{ $item['pie'] }}</div>
                 @endif
@@ -627,7 +737,24 @@
         <tr>
             @if($registro->foto_uno_despues)
             <td style="width: 50%; text-align: center; vertical-align: top; padding: 5px;">
-                <img src="{{ $registro->foto_uno_despues }}" alt="Foto 1 Después" style="max-width: 95%; max-height: 180px; border: 1px solid #ccc;">
+                @php
+                    $fotoSrc = $registro->foto_uno_despues;
+                    if (str_contains($fotoSrc, 'https://reporting.genservices.com.co/storage/')) {
+                        try {
+                            $imageData = @file_get_contents($fotoSrc);
+                            if ($imageData !== false) {
+                                $base64 = base64_encode($imageData);
+                                $mimeType = 'image/jpeg';
+                                $fotoSrc = 'data:' . $mimeType . ';base64,' . $base64;
+                            }
+                        } catch (\Exception $e) {
+                            // Si falla, usar la URL como está
+                        }
+                    } else {
+                        $fotoSrc = 'uploads/' . $fotoSrc;
+                    }
+                @endphp
+                <img src="{{ $fotoSrc }}" alt="Foto 1 Después" style="max-width: 95%; max-height: 180px; border: 1px solid #ccc;">
                 @if($registro->pie_foto_uno_despues)
                 <div style="font-size: 8px; margin-top: 3px; text-align: center;">{{ $registro->pie_foto_uno_despues }}</div>
                 @endif
@@ -635,7 +762,24 @@
             @endif
             @if($registro->foto_dos_despues)
             <td style="width: 50%; text-align: center; vertical-align: top; padding: 5px;">
-                <img src="{{ $registro->foto_dos_despues }}" alt="Foto 2 Después" style="max-width: 95%; max-height: 180px; border: 1px solid #ccc;">
+                @php
+                    $fotoSrc = $registro->foto_dos_despues;
+                    if (str_contains($fotoSrc, 'https://reporting.genservices.com.co/storage/')) {
+                        try {
+                            $imageData = @file_get_contents($fotoSrc);
+                            if ($imageData !== false) {
+                                $base64 = base64_encode($imageData);
+                                $mimeType = 'image/jpeg';
+                                $fotoSrc = 'data:' . $mimeType . ';base64,' . $base64;
+                            }
+                        } catch (\Exception $e) {
+                            // Si falla, usar la URL como está
+                        }
+                    } else {
+                        $fotoSrc = 'uploads/' . $fotoSrc;
+                    }
+                @endphp
+                <img src="{{ $fotoSrc }}" alt="Foto 2 Después" style="max-width: 95%; max-height: 180px; border: 1px solid #ccc;">
                 @if($registro->pie_foto_dos_despues)
                 <div style="font-size: 8px; margin-top: 3px; text-align: center;">{{ $registro->pie_foto_dos_despues }}</div>
                 @endif
@@ -645,7 +789,24 @@
         @if($registro->foto_tres_despues)
         <tr>
             <td colspan="2" style="text-align: center; vertical-align: top; padding: 5px;">
-                <img src="{{ $registro->foto_tres_despues }}" alt="Foto 3 Después" style="max-width: 47%; max-height: 180px; border: 1px solid #ccc;">
+                @php
+                    $fotoSrc = $registro->foto_tres_despues;
+                    if (str_contains($fotoSrc, 'https://reporting.genservices.com.co/storage/')) {
+                        try {
+                            $imageData = @file_get_contents($fotoSrc);
+                            if ($imageData !== false) {
+                                $base64 = base64_encode($imageData);
+                                $mimeType = 'image/jpeg';
+                                $fotoSrc = 'data:' . $mimeType . ';base64,' . $base64;
+                            }
+                        } catch (\Exception $e) {
+                            // Si falla, usar la URL como está
+                        }
+                    } else {
+                        $fotoSrc = 'uploads/' . $fotoSrc;
+                    }
+                @endphp
+                <img src="{{ $fotoSrc }}" alt="Foto 3 Después" style="max-width: 47%; max-height: 180px; border: 1px solid #ccc;">
                 @if($registro->pie_foto_tres_despues)
                 <div style="font-size: 8px; margin-top: 3px; text-align: center;">{{ $registro->pie_foto_tres_despues }}</div>
                 @endif

@@ -35,8 +35,10 @@ class SolicitudController extends Controller
         $perPage = request('per_page', 15);
         $tipoSolicitudes = request('tipo');
         $estado = request('estado');
+        $mes = request('mes');
+        $anio = request('anio');
 
-        $solicituds = $this->repository->getAllSolicitudes($perPage, $search, $tipoSolicitudes, $estado);
+        $solicituds = $this->repository->getAllSolicitudes($perPage, $search, $tipoSolicitudes, $estado, $mes, $anio);
 
         if (request()->wantsJson()) {
             return response()->json([
@@ -51,6 +53,8 @@ class SolicitudController extends Controller
                 'per_page' => $perPage,
                 'tipo' => $tipoSolicitudes,
                 'estado' => $estado,
+                'mes' => $mes,
+                'anio' => $anio,
             ],
         ]);
     }
@@ -87,7 +91,7 @@ class SolicitudController extends Controller
 
             $s->created_at = $solicitud->created_at ?? now();
             $s->save();
-            
+
         }
     }
 
@@ -210,6 +214,11 @@ class SolicitudController extends Controller
             // skipping the original primary key and numero_orden to avoid collisions.
             foreach (get_object_vars($informe) as $key => $value) {
                 if (in_array($key, ['id', 'numero_orden'], true)) {
+                    continue;
+                }
+                if (str_contains($key, 'foto')) {
+                    $informeNew->{$key} = 'https://reporting.genservices.com.co/storage'.$value;
+
                     continue;
                 }
                 $informeNew->{$key} = $value;
@@ -365,9 +374,11 @@ class SolicitudController extends Controller
         $search = request('search');
         $tipo = request('tipo');
         $estado = request('estado');
+        $mes = request('mes');
+        $anio = request('anio');
 
         $filename = 'solicitudes_'.now()->format('Y-m-d_His').'.xlsx';
 
-        return Excel::download(new SolicitudesExport($search, $tipo, $estado), $filename);
+        return Excel::download(new SolicitudesExport($search, $tipo, $estado, $mes, $anio), $filename);
     }
 }

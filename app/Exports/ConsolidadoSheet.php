@@ -5,7 +5,6 @@ namespace App\Exports;
 use App\Models\Solicitud;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithStyles;
@@ -15,14 +14,22 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 class ConsolidadoSheet implements FromCollection, WithHeadings, WithStyles, WithTitle
 {
     protected $search;
+
     protected $tipo;
+
     protected $estado;
 
-    public function __construct($search = null, $tipo = null, $estado = null)
+    protected $mes;
+
+    protected $anio;
+
+    public function __construct($search = null, $tipo = null, $estado = null, $mes = null, $anio = null)
     {
         $this->search = $search;
         $this->tipo = $tipo;
         $this->estado = $estado;
+        $this->mes = $mes;
+        $this->anio = $anio;
     }
 
     public function collection(): Collection
@@ -55,6 +62,14 @@ class ConsolidadoSheet implements FromCollection, WithHeadings, WithStyles, With
 
         if ($this->estado) {
             $query->where('estado', $this->estado);
+        }
+
+        if ($this->mes) {
+            $query->whereMonth('fecha_programada', $this->mes);
+        }
+
+        if ($this->anio) {
+            $query->whereYear('fecha_programada', $this->anio);
         }
 
         if ($user && $user->role === 'Cliente') {

@@ -31,6 +31,7 @@ class StoreInformeRequest extends FormRequest
             'nivel_aceite' => ['nullable', 'string', 'max:10'],
             'nivel_refrigerante' => ['nullable', 'string', 'max:10'],
             'nivel_combustible' => ['nullable', 'string', 'max:50'],
+            'drenado_tanque' => ['nullable', 'string', 'max:50'],
             'capacidad_tanque' => ['nullable', 'string', 'max:50'],
             'fugas' => ['nullable', 'string'],
             'mangueras' => ['nullable', 'string', 'max:10'],

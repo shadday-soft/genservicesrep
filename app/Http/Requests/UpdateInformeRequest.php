@@ -32,6 +32,7 @@ class UpdateInformeRequest extends FormRequest
             'nivel_combustible' => ['nullable', 'string', 'max:50'],
             'capacidad_tanque' => ['nullable', 'string', 'max:50'],
             'fugas' => ['nullable', 'string'],
+            'drenado_tanque' => ['nullable', 'string', 'max:50'],
             'mangueras' => ['nullable', 'string', 'max:10'],
             'sellos' => ['nullable', 'string', 'max:10'],
             'tuberias' => ['nullable', 'string', 'max:10'],
