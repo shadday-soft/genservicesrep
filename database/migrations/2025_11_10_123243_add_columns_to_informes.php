@@ -149,8 +149,8 @@ return new class extends Migration
             // FICHA DE FIRMAS Y FECHAS
 
             $table->date('fecha_solicitud')->nullable();
-            $table->date('llegada_tecnico')->nullable();
-            $table->date('salida_tecnico')->nullable();
+            $table->string('llegada_tecnico')->nullable();
+            $table->string('salida_tecnico')->nullable();
 
             $table->text('nombre_tecnico')->nullable();
             $table->text('cedula_tecnico')->nullable();

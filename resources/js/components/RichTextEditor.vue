@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref, watch, computed } from 'vue';
 import { QuillEditor } from '@vueup/vue-quill';
 import '@vueup/vue-quill/dist/vue-quill.snow.css';
 
@@ -9,6 +9,7 @@ interface Props {
     error?: string;
     disabled?: boolean;
     placeholder?: string;
+    maxChars?: number | null;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -16,6 +17,7 @@ const props = withDefaults(defineProps<Props>(), {
     label: '',
     disabled: false,
     placeholder: 'Escribe aquí...',
+    maxChars: undefined,
 });
 
 const emit = defineEmits<{
@@ -30,7 +32,24 @@ watch(() => props.modelValue, (newValue) => {
     }
 });
 
+const getPlainText = (html: string) => {
+    const div = document.createElement('div');
+    div.innerHTML = html || '';
+    return div.innerText || div.textContent || '';
+};
+
+const charCount = computed(() => {
+    return getPlainText(content.value).length;
+});
+
 const updateContent = (newContent: string) => {
+    const text = getPlainText(newContent);
+    if (props.maxChars && text.length > props.maxChars) {
+        // If exceeded, revert to previous content and emit previous value
+        emit('update:modelValue', content.value);
+        return;
+    }
+
     content.value = newContent;
     emit('update:modelValue', newContent);
 };
@@ -61,6 +80,9 @@ const toolbarOptions = [
             contentType="html"
             @update:content="updateContent"
         />
+        <div v-if="props.maxChars !== undefined" class="flex justify-end text-xs text-gray-500 mt-1">
+            {{ charCount }} / {{ props.maxChars }} caracteres
+        </div>
         <div v-if="error" class="text-red-600 text-sm mt-1">
             {{ error }}
         </div>

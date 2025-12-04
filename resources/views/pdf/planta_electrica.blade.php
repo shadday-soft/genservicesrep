@@ -297,75 +297,83 @@
                 <!-- PRUEBAS CON EQUIPO OPERANDO -->
                 <table style="margin: 0; margin-top: 2px;">
                     <tr>
-                        <th colspan="6" style="background-color: #b8b8b8;">PRUEBAS CON EQUIPO OPERANDO</th>
+                        <th colspan="7" style="background-color: #b8b8b8;">PRUEBAS CON EQUIPO OPERANDO</th>
                     </tr>
                     <tr style="background-color: #d8d8d8;">
                         <th colspan="3" style="text-align: center; font-size: 9px;">MOTOR</th>
-                        <th colspan="3" style="text-align: center; font-size: 9px;">GENERADOR</th>
+                        <th colspan="4" style="text-align: center; font-size: 9px;">GENERADOR</th>
                     </tr>
                     <tr style="background-color: #d8d8d8;">
                         <th style="width: 20%; font-size: 8px;"></th>
                         <th style="width: 10%; font-size: 8px; text-align: center;">Valor</th>
                         <th style="width: 10%; font-size: 8px; text-align: center;">Unidad</th>
-                        <th style="width: 20%; font-size: 8px;"></th>
-                        <th style="width: 20%; font-size: 8px; text-align: center;">Valor</th>
-                        <th style="width: 20%; font-size: 8px; text-align: center;">Unidad</th>
+                        <th style="width: 15%; font-size: 8px; text-align: center;"></th>
+                        <th style="width: 15%; font-size: 8px; text-align: center;"></th>
+                        <th style="width: 15%; font-size: 8px; text-align: center;"></th>
+                        <th style="width: 15%; font-size: 8px; text-align: center;"></th>
                     </tr>
                     <tr>
-                        <td style="font-size: 8px;">RPM</td>
-                        <td style="font-size: 8px; text-align: center;">{{ $registro->valor_rpm }}</td>
-                        <td style="font-size: 8px; text-align: center;">{{ $registro->cantidad_rpm }}</td>
+                        <td style="font-size: 8px;">Presión de Aceite</td>
+                        <td style="font-size: 8px; text-align: center;">{{ $registro->valor_presion_aceite }}</td>
+                        <td style="font-size: 8px; text-align: center;">{{ $registro->cantidad_presion_aceite }}</td>
                         <td style="font-size: 8px;">VAC FASES</td>
-                        <td style="font-size: 8px; text-align: center;">L1-L2</td>
-                        <td style="font-size: 8px; text-align: center;">AMPERIOS</td>
+                        <td style="font-size: 8px; text-align: center;">{{ $registro->vac_fases_l1_l2 }}</td>
+                        <PER style="font-size: 8px; text-align: center;">AMPERIOS</PER>
+                        <td style="font-size: 8px; text-align: center;">{{ $registro->amperios_l1 }}</td>
                     </tr>
                     <tr>
                         <td style="font-size: 8px;">PRESIÓN ACEITE</td>
                         <td style="font-size: 8px; text-align: center;">{{ $registro->valor_presion_aceite }}</td>
                         <td style="font-size: 8px; text-align: center;">{{ $registro->cantidad_presion_aceite }}</td>
-                        <td style="font-size: 8px;">{{ $registro->vac_fases_l1_l2 }}</td>
-                        <td style="font-size: 8px; text-align: center;">{{ $registro->amperios_l1 }}</td>
-                        <td style="font-size: 8px; text-align: center;">L1</td>
+                        <td style="font-size: 8px;"></td>
+                        <td style="font-size: 8px; text-align: center;">{{ $registro->vac_fases_l2_l3 }}</td>
+                        <td style="font-size: 8px; text-align: center;"></td>
+                        <td style="font-size: 8px; text-align: center;"> {{ $registro->amperios_l2 }}</td>
                     </tr>
                     <tr>
                         <td style="font-size: 8px;">TEMP. REFRIG.</td>
                         <td style="font-size: 8px; text-align: center;">{{ $registro->valor_temp_refrigerante }}</td>
                         <td style="font-size: 8px; text-align: center;">{{ $registro->cantidad_temp_refrigerante }}</td>
-                        <td style="font-size: 8px;">{{ $registro->vac_fases_l2_l3 }}</td>
-                        <td style="font-size: 8px; text-align: center;">{{ $registro->amperios_l2 }}</td>
-                        <td style="font-size: 8px; text-align: center;">L2</td>
+                        <td style="font-size: 8px;"></td>
+                        <td style="font-size: 8px; text-align: center;">{{ $registro->vac_fases_l1_l3 }}</td>
+                        <td style="font-size: 8px; text-align: center;"></td>
+                        <td style="font-size: 8px; text-align: center;">{{ $registro->amperios_l3 }}</td>
                     </tr>
                     <tr>
                         <td style="font-size: 8px;">TEMP. ACEITE</td>
                         <td style="font-size: 8px; text-align: center;">{{ $registro->valor_temp_aceite }}</td>
                         <td style="font-size: 8px; text-align: center;">{{ $registro->cantidad_temp_aceite }}</td>
-                        <td style="font-size: 8px;">{{ $registro->vac_fases_l1_l3 }}</td>
-                        <td style="font-size: 8px; text-align: center;">{{ $registro->amperios_l3 }}</td>
-                        <td style="font-size: 8px; text-align: center;">L3</td>
+                        <td style="font-size: 8px;"></td>
+                        <td style="font-size: 8px; text-align: center;"></td>
+                        <td style="font-size: 8px; text-align: center;"></td>
+                        <td style="font-size: 8px; text-align: center;"></td>
                     </tr>
                     <tr>
                         <td style="font-size: 8px;">RPM</td>
                         <td style="font-size: 8px; text-align: center;"></td>
                         <td style="font-size: 8px; text-align: center;"></td>
-                        <td style="font-size: 8px;">POTENCIA</td>
+                        <td style="font-size: 8px;">VAC FASE N</td>
+                        <td style="font-size: 8px; text-align: center;">{{ $registro->vac_fase_n_l1n }}</td>
+                        <td style="font-size: 8px; text-align: center;">POTENCIA</td>
                         <td style="font-size: 8px; text-align: center;">{{ $registro->potencia }}</td>
-                        <td style="font-size: 8px; text-align: center;">KW</td>
                     </tr>
                     <tr>
+                        <td style="font-size: 8px;">Temp. del Turbo</td>
+                        <td style="font-size: 8px; text-align: center;">{{ $registro->valor_temp_turbo }}</td>
+                        <td style="font-size: 8px; text-align: center;">{{ $registro->cantidad_temp_turbo }}</td>
                         <td style="font-size: 8px;"></td>
-                        <td style="font-size: 8px; text-align: center;"></td>
-                        <td style="font-size: 8px; text-align: center;"></td>
-                        <td style="font-size: 8px;">HZ</td>
-                        <td style="font-size: 8px; text-align: center;">{{ $registro->hz }}</td>
+                        <td style="font-size: 8px; text-align: center;">{{ $registro->vac_fase_n_l2n }}</td>
                         <td style="font-size: 8px; text-align: center;">HZ</td>
+                        <td style="font-size: 8px; text-align: center;">{{ $registro->hz }} </td>
                     </tr>
                     <tr>
+                        <td style="font-size: 8px;">Voltaje Bateria</td>
+                        <td style="font-size: 8px; text-align: center;">{{ $registro->valor_voltaje_bateria }}</td>
+                        <td style="font-size: 8px; text-align: center;">{{ $registro->cantidad_voltaje_bateria }}</td>
                         <td style="font-size: 8px;"></td>
-                        <td style="font-size: 8px; text-align: center;"></td>
-                        <td style="font-size: 8px; text-align: center;"></td>
-                        <td style="font-size: 8px;">FP</td>
-                        <td style="font-size: 8px; text-align: center;">{{ $registro->fp }}</td>
+                        <td style="font-size: 8px; text-align: center;">{{ $registro->vac_fase_n_l3n }}</td>
                         <td style="font-size: 8px; text-align: center;">FP</td>
+                        <td style="font-size: 8px; text-align: center;">{{ $registro->fp }}</td>
                     </tr>
                 </table>
 

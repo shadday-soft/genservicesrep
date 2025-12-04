@@ -804,8 +804,12 @@ const breadcrumbs: BreadcrumbItem[] = [
                     ACTIVIDAD REALIZADA
                 </h3>
                 
-                <RichTextEditor 
-                    v-model="form.actividad_realizada" 
+                <Input
+                    v-model="form.actividad_realizada"
+                    type="textarea"
+                    label="Actividad realizada"
+                    :textAreaRows="6"
+                    :maxLength="500"
                     :error="form.errors.actividad_realizada"
                     placeholder="Describe la actividad realizada..."
                 />

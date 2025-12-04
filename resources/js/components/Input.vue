@@ -77,7 +77,10 @@
 
    
 
-    <Textarea :disabled v-model="value" autoResize :rows="textAreaRows"  v-else-if="type == 'textarea'" />
+    <Textarea :disabled v-model="value" autoResize :rows="textAreaRows"  v-else-if="type == 'textarea'" :maxlength="maxLength" />
+    <span v-if="type == 'textarea' && maxLength" class="text-xs text-gray-500 self-end">
+      {{ (value || '').length }} / {{ maxLength }}
+    </span>
     <Password v-model="value"  v-else-if="type == 'password'"  class="w-full" :pt="{
       pcInputText: {
         root: '!w-full '
@@ -112,6 +115,7 @@ interface Props {
   optionValue?: string | 'value';
   error?: string;
   textAreaRows?: number;
+  maxLength?: number;
   disabled?: boolean | false;
 }
 
