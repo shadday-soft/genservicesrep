@@ -1,94 +1,47 @@
 <template>
   <div class="flex flex-col gap-y-1">
     <label class="font-bold">{{ label }}</label>
-    <InputNumber
-      v-if="type == 'currency'"
-      v-model="valueNumeric"
-      :invalid="(error?.length ?? 0) > 0"
-      :disabled
-      mode="currency"
-      currency="COP"
-      locale="es-co"
-      :minFractionDigits="2"
-      fluid
-    ></InputNumber>
-    <InputNumber
-      v-else-if="type == 'number'"
-      :invalid="(error?.length ?? 0) > 0"
-      :disabled
-      :useGrouping="false"
-      v-model="valueNumeric"
-      fluid
-    ></InputNumber>
+    <InputNumber v-if="type == 'currency'" v-model="valueNumeric" :invalid="(error?.length ?? 0) > 0" :disabled
+      mode="currency" currency="COP" locale="es-co" :minFractionDigits="2" fluid></InputNumber>
+    <InputNumber v-else-if="type == 'number'" :invalid="(error?.length ?? 0) > 0" :disabled :useGrouping="false"
+      v-model="valueNumeric" fluid></InputNumber>
 
-    <Select
-      filter
-      :disabled
-      :invalid="(error?.length ?? 0) > 0"
-      v-else-if="type == 'select'"
-      :placeholder
-      @change="emit('select')"
-      :optionLabel="optionLabel ?? 'label'"
-      :optionValue="optionValue ?? 'value'"
-      :options
-      v-model="value"
-      checkmark
-    />
+    <Select filter :disabled :invalid="(error?.length ?? 0) > 0" v-else-if="type == 'select'" :placeholder
+      @change="emit('select')" :optionLabel="optionLabel ?? 'label'" :optionValue="optionValue ?? 'value'" :options
+      v-model="value" checkmark />
 
-    <MultiSelect :disabled :invalid="(error?.length ?? 0) > 0" v-else-if="type == 'multiselect'" v-model="value" :options="options" :optionLabel="optionLabel ?? 'label'" :optionValue="optionValue ?? 'value'" filter  :placeholder display="chip"
-    :maxSelectedLabels="3" selectedItemsLabel="{0} Selecciones" />
+    <MultiSelect :disabled :invalid="(error?.length ?? 0) > 0" v-else-if="type == 'multiselect'" v-model="value"
+      :options="options" :optionLabel="optionLabel ?? 'label'" :optionValue="optionValue ?? 'value'" filter :placeholder
+      display="chip" :maxSelectedLabels="3" selectedItemsLabel="{0} Selecciones" />
 
-    <DatePicker
-      @date-select="emit('select', $event)"
-      v-else-if="type == 'date'"
-      dateFormat="dd/mm/yy"
-      :disabled
-      v-model="valueDate"
-      :invalid="(error?.length ?? 0) > 0"
-      class="w-full"
-      :placeholder
-    ></DatePicker>
-    
-    <DatePicker
-      v-else-if="type == 'dateRange'"
-      dateFormat="dd/mm/yy"
-      v-model="valueDateRange"
-      class="w-full"
-      :disabled
-      :invalid="(error?.length ?? 0) > 0"
-      selectionMode="range"
-      :placeholder
-    >
+    <DatePicker @date-select="emit('select', $event)" v-else-if="type == 'date'" dateFormat="dd/mm/yy" :disabled
+      v-model="valueDate" :invalid="(error?.length ?? 0) > 0" class="w-full" :placeholder></DatePicker>
+
+    <DatePicker v-else-if="type == 'dateRange'" dateFormat="dd/mm/yy" v-model="valueDateRange" class="w-full" :disabled
+      :invalid="(error?.length ?? 0) > 0" selectionMode="range" :placeholder>
     </DatePicker>
 
-    <DatePicker
-      v-else-if="type == 'datetime'"
-      dateFormat="dd/mm/yy"
-      showTime hourFormat="24" fluid
-      v-model="valueDatetime"
-      class="w-full"
-      :stepMinute="5"
-      :showOnFocus="false"
-      :showIcon="true"
-      :disabled
-      :invalid="(error?.length ?? 0) > 0"
-      :placeholder
-    ></DatePicker>
+    <DatePicker v-else-if="type == 'datetime'" dateFormat="dd/mm/yy" showTime hourFormat="24" fluid
+      v-model="valueDatetime" class="w-full" :stepMinute="5" :showOnFocus="false" :showIcon="true" :disabled
+      :invalid="(error?.length ?? 0) > 0" :placeholder></DatePicker>
 
-   
 
-    <Textarea :disabled v-model="value" autoResize :rows="textAreaRows"  v-else-if="type == 'textarea'" :maxlength="maxLength" />
-    <span v-if="type == 'textarea' && maxLength" class="text-xs text-gray-500 self-end">
-      {{ (value || '').length }} / {{ maxLength }}
+    <span v-else-if="type == 'textarea'">
+      <Textarea :disabled v-model="value" autoResize :rows="textAreaRows" :maxlength="maxLength" />
+      <span v-if="type == 'textarea' && maxLength" class="text-xs text-gray-500 self-end">
+        {{ (value || '').length }} / {{ maxLength }}
+      </span>
     </span>
-    <Password v-model="value"  v-else-if="type == 'password'"  class="w-full" :pt="{
+
+    <Password v-model="value" v-else-if="type == 'password'" class="w-full" :pt="{
       pcInputText: {
         root: '!w-full '
       },
       root: '!w-full '
 
     }" />
-    <InputText v-else v-model="value" class="w-full" :placeholder :invalid="(error?.length ?? 0) > 0" :disabled></InputText>
+    <InputText v-else v-model="value" class="w-full" :placeholder :invalid="(error?.length ?? 0) > 0" :disabled>
+    </InputText>
 
     <span class="text-xs italic text-red-500">{{ error }}</span>
   </div>
@@ -99,7 +52,7 @@ import InputText from "primevue/inputtext";
 import InputNumber from "primevue/inputnumber";
 import Select from "primevue/select";
 import { MultiSelect, Password, Textarea } from "primevue";
-const emit= defineEmits(['select']);
+const emit = defineEmits(['select']);
 
 interface Option {
   label?: string;
