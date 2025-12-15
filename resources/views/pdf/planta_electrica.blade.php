@@ -110,7 +110,7 @@
             <td class="title-cell">
                 <div style="font-size: 11px; font-weight: bold;">HOJA DE SERVICIO TÉCNICO PARA PLANTAS ELÉCTRICAS</div>
                 <div style="font-size: 9px; margin-top: 2px;">
-                    <strong>CÓDIGO FR - HST V3</strong><br>
+                    <strong>CÓDIGO FR - HST V6</strong><br>
                     FECHA: {{ $registro->created_at->format('d/m/Y') }}
                 </div>
             </td>
@@ -258,7 +258,7 @@
                         'conexiones_control' => 'CONEXIONES DE CONTROL',
                         'conexiones_potencia' => 'CONEXIONES DE POTENCIA',
                         'estado_generador' => 'ESTADO DE GENERADOR',
-                        'limpieza_generador' => 'LIMPIEZA GENERAL',
+                        'limpieza_general' => 'LIMPIEZA GENERAL',
                     ] as $campo => $label)
                     <tr>
                         <td style="font-size: 8px; padding: 0.5px 2px;">{{ $label }}</td>
@@ -290,7 +290,7 @@
                         <th style="background-color: #FF7C61;">ACTIVIDAD REALIZADA</th>
                     </tr>
                     <tr>
-                        <td style="min-height: 80px; vertical-align: top; font-size: 10px; padding: 5px;"><div class="rich-text">{!! $registro->actividad_realizada !!}</div></td>
+                        <td style="min-height: 200px; vertical-align: top; font-size: 10px; padding: 5px;"><div class="rich-text">{!! $registro->actividad_realizada !!}</div></td>
                     </tr>
                 </table>
                 
@@ -403,7 +403,7 @@
                         <th style="background-color: #b8b8b8;">RECOMENDACIONES</th>
                     </tr>
                     <tr>
-                        <td style="min-height: 25px; vertical-align: top; font-size: 10px; padding: 5px 5px;"><div class="rich-text">{!! $registro->recomendaciones !!}</div></td>
+                        <td style="min-height: 150px; vertical-align: top; font-size: 10px; padding: 5px 5px;"><div class="rich-text">{!! $registro->recomendaciones !!}</div></td>
                     </tr>
                 </table>
             </td>

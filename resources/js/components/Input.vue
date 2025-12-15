@@ -26,8 +26,8 @@
       :invalid="(error?.length ?? 0) > 0" :placeholder></DatePicker>
 
 
-    <span v-else-if="type == 'textarea'">
-      <Textarea :disabled v-model="value" autoResize :rows="textAreaRows" :maxlength="maxLength" />
+    <span v-else-if="type == 'textarea'" class="w-full">
+      <Textarea :disabled v-model="value" autoResize :rows="textAreaRows" :maxlength="maxLength" class="w-full" />
       <span v-if="type == 'textarea' && maxLength" class="text-xs text-gray-500 self-end">
         {{ (value || '').length }} / {{ maxLength }}
       </span>
