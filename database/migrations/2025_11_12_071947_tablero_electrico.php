@@ -26,6 +26,7 @@ return new class extends Migration
             $table->text('tipo_aplicacion');
             $table->text('control_ats');
             $table->text('tipo_servicio');
+            $table->text('horometro')->nullable();
             
             // OBSERVACIONES INICIALES
 
@@ -160,8 +161,8 @@ return new class extends Migration
             // FICHA DE FIRMAS Y FECHAS
 
             $table->date('fecha_solicitud')->nullable();
-            $table->date('llegada_tecnico')->nullable();
-            $table->date('salida_tecnico')->nullable();
+            $table->string('llegada_tecnico')->nullable();
+            $table->string('salida_tecnico')->nullable();
 
             $table->text('nombre_tecnico');
             $table->text('cedula_tecnico');

@@ -34,9 +34,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('solicituds-export-excel', [SolicitudController::class, 'exportExcel'])->name('solicituds.export');
     Route::resource('actividads', ActividadController::class)->withoutMiddlewareFor(['index'],VerifyadminRole::class);
     Route::resource('tecnicos', TecnicoController::class)->middleware(VerifyadminRole::class);
-    Route::get('clientes/retored', [ClientController::class, 'retored'])->name('clients.retored')->middleware(VerifyadminRole::class);
-    Route::get('retored/sucursales', [SucursalController::class, 'retored'])->name('sucursals.retored')->middleware(VerifyadminRole::class);
-    Route::get('retored/equipos', [EquipoController::class, 'retored'])->name('equipos.retored')->middleware(VerifyadminRole::class);
+    // Route::get('clientes/retored', [ClientController::class, 'retored'])->name('clients.retored')->middleware(VerifyadminRole::class);
+    // Route::get('retored/sucursales', [SucursalController::class, 'retored'])->name('sucursals.retored')->middleware(VerifyadminRole::class);
+    // Route::get('retored/equipos', [EquipoController::class, 'retored'])->name('equipos.retored')->middleware(VerifyadminRole::class);
     Route::get('reestoredSolicituds', [SolicitudController::class, 'reestored'])->name('solicituds.reestored')->middleware(VerifyadminRole::class);
     Route::get('reestoredPlantaElectrica', [SolicitudController::class, 'reestoredPlantaElectrica'])->name('plantaelectricas.reestored')->middleware(VerifyadminRole::class);
 

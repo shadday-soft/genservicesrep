@@ -27,7 +27,7 @@ class InformeController extends Controller
         $informe = $this->repository->findBy('solicitud_id', $solicitud->id);
 
         // Cargar las relaciones necesarias
-        $solicitud->load(['equipo', 'user']);
+        $solicitud->load(['equipo', 'user', 'client', 'sucursal']);
 
         // Obtener el técnico asignado a la solicitud
         $tecnico = null;
@@ -151,7 +151,7 @@ class InformeController extends Controller
 
         // Generar el PDF
         $pdf = Pdf::loadView('pdf.planta_electrica', compact('registro', 'solicitud'));
-        $pdf->setPaper('letter', 'portrait');
+        $pdf->setPaper('legal', 'portrait');
 
         // Descargar el PDF
         $filename = 'Informe_Planta_Electrica_'.$solicitud->numero_orden.'.pdf';

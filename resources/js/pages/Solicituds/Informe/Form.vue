@@ -49,6 +49,7 @@ const form = useForm({
     nivel_aceite: 'N/A',
     nivel_refrigerante: 'N/A',
     nivel_combustible: '',
+    horometro: props.equipo.horometro || '',
     capacidad_tanque: '',
     drenado_tanque: 'N/A',
     fugas: '',
@@ -153,8 +154,8 @@ const form = useForm({
     // Recomendaciones
     recomendaciones: '',
     // Llegada y salida técnico
-    llegada_tecnico: '',
-    salida_tecnico: '',
+    llegada_tecnico: new Date(),
+    salida_tecnico: new Date(),
     // Calificación de servicio
     calificacion_servicio: '',
     // Posición de los instrumentos al concluir el servicio
@@ -332,21 +333,87 @@ const breadcrumbs: BreadcrumbItem[] = [
 <template>
     <AppLayout class="p-4" :breadcrumbs="breadcrumbs">
         <Head :title="`Generar Informe #${props.solicitud?.numero_orden}`" />
+        
+        <!-- Cabecera con información de la solicitud -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-6">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Información de la Solicitud -->
+                <div class="flex flex-col gap-3">
+                    <h3 class="text-sm font-bold text-gray-900 dark:text-white uppercase border-b pb-2">
+                        Solicitud
+                    </h3>
+                    <div class="flex flex-col gap-2">
+                        <div class="flex justify-between">
+                            <span class="text-xs text-gray-600 dark:text-gray-400">Número de Orden:</span>
+                            <span class="text-xs font-semibold text-gray-900 dark:text-white">{{ solicitud.numero_orden }}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-xs text-gray-600 dark:text-gray-400">Fecha Programada:</span>
+                            <span class="text-xs font-semibold text-gray-900 dark:text-white">{{ solicitud.fecha_programada }}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-xs text-gray-600 dark:text-gray-400">Estado:</span>
+                            <span class="text-xs font-semibold text-gray-900 dark:text-white">{{ solicitud.estado }}</span>
+                        </div>
+                        <div class="flex justify-between" v-if="solicitud.quien_solicita">
+                            <span class="text-xs text-gray-600 dark:text-gray-400">Quien Solicita:</span>
+                            <span class="text-xs font-semibold text-gray-900 dark:text-white">{{ solicitud.quien_solicita }}</span>
+                        </div>
+                    </div>
+                </div>
 
-        <!-- Información General de la Solicitud -->
-        <div class="mb-6 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-                <div>
-                    <span class="font-semibold text-gray-600 dark:text-gray-400">Cliente:</span>
-                    <span class="ml-2 text-gray-800 dark:text-gray-200">{{ props.solicitud.client?.enterprise_name }}</span>
+                <!-- Información del Cliente y Sucursal -->
+                <div class="flex flex-col gap-3">
+                    <h3 class="text-sm font-bold text-gray-900 dark:text-white uppercase border-b pb-2">
+                        Cliente / Sucursal
+                    </h3>
+                    <div class="flex flex-col gap-2">
+                        <div class="flex justify-between" v-if="solicitud.client">
+                            <span class="text-xs text-gray-600 dark:text-gray-400">Cliente:</span>
+                            <span class="text-xs font-semibold text-gray-900 dark:text-white">{{ solicitud.client.enterprise_name }}</span>
+                        </div>
+                        <div class="flex justify-between" v-if="solicitud.client?.contact_name">
+                            <span class="text-xs text-gray-600 dark:text-gray-400">Contacto:</span>
+                            <span class="text-xs font-semibold text-gray-900 dark:text-white">{{ solicitud.client.contact_name }}</span>
+                        </div>
+                        <div class="flex justify-between" v-if="solicitud.sucursal">
+                            <span class="text-xs text-gray-600 dark:text-gray-400">Sucursal:</span>
+                            <span class="text-xs font-semibold text-gray-900 dark:text-white">{{ solicitud.sucursal.name }}</span>
+                        </div>
+                        <div class="flex justify-between" v-if="solicitud.ubicacion">
+                            <span class="text-xs text-gray-600 dark:text-gray-400">Ubicación:</span>
+                            <span class="text-xs font-semibold text-gray-900 dark:text-white">{{ solicitud.ubicacion }}</span>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <span class="font-semibold text-gray-600 dark:text-gray-400">Sucursal:</span>
-                    <span class="ml-2 text-gray-800 dark:text-gray-200">{{ props.solicitud.sucursal?.name }}</span>
-                </div>
-                <div>
-                    <span class="font-semibold text-gray-600 dark:text-gray-400">Equipo:</span>
-                    <span class="ml-2 text-gray-800 dark:text-gray-200">{{ props.solicitud.equipo?.nombre_equipo }}</span>
+
+                <!-- Información del Equipo -->
+                <div class="flex flex-col gap-3">
+                    <h3 class="text-sm font-bold text-gray-900 dark:text-white uppercase border-b pb-2">
+                        Equipo
+                    </h3>
+                    <div class="flex flex-col gap-2">
+                        <div class="flex justify-between" v-if="equipo.nombre_equipo">
+                            <span class="text-xs text-gray-600 dark:text-gray-400">Nombre:</span>
+                            <span class="text-xs font-semibold text-gray-900 dark:text-white">{{ equipo.nombre_equipo }}</span>
+                        </div>
+                        <div class="flex justify-between" v-if="equipo.tipo_equipo">
+                            <span class="text-xs text-gray-600 dark:text-gray-400">Tipo:</span>
+                            <span class="text-xs font-semibold text-gray-900 dark:text-white">{{ equipo.tipo_equipo }}</span>
+                        </div>
+                        <div class="flex justify-between" v-if="equipo.marca_generador">
+                            <span class="text-xs text-gray-600 dark:text-gray-400">Marca Generador:</span>
+                            <span class="text-xs font-semibold text-gray-900 dark:text-white">{{ equipo.marca_generador }}</span>
+                        </div>
+                        <div class="flex justify-between" v-if="equipo.modelo_equipo">
+                            <span class="text-xs text-gray-600 dark:text-gray-400">Modelo:</span>
+                            <span class="text-xs font-semibold text-gray-900 dark:text-white">{{ equipo.modelo_equipo }}</span>
+                        </div>
+                        <div class="flex justify-between" v-if="equipo.potencia">
+                            <span class="text-xs text-gray-600 dark:text-gray-400">Potencia:</span>
+                            <span class="text-xs font-semibold text-gray-900 dark:text-white">{{ equipo.potencia }}</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -502,6 +569,18 @@ const breadcrumbs: BreadcrumbItem[] = [
                         />
                     </div>
 
+                    <!-- Horómetro -->
+                    <div class="flex flex-col gap-2">
+                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Horómetro
+                        </label>
+                        <Input 
+                            v-model="form.horometro" 
+                            placeholder="Valor del horómetro" 
+                            :error="form.errors.horometro"
+                        />
+                    </div>
+
                     <!-- Capacidad tanque -->
                     <div class="flex flex-col gap-2">
                         <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -524,6 +603,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                             type="textarea"
                             placeholder="Fugas"
                             :textAreaRows="2"
+                            class="w-full"
                             :error="form.errors.fugas"
                         />
                     </div>
@@ -1479,7 +1559,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                             Llegada técnico
                         </label>
                         <Input 
-                            v-model="form.llegada_tecnico" 
+                            v-model:datetime="form.llegada_tecnico" 
                             type="datetime"
                             placeholder="" 
                             :error="form.errors.llegada_tecnico"
@@ -1491,7 +1571,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                             Salida técnico
                         </label>
                         <Input 
-                            v-model="form.salida_tecnico" 
+                            v-model:datetime="form.salida_tecnico" 
                             type="datetime"
                             placeholder="" 
                             :error="form.errors.salida_tecnico"
