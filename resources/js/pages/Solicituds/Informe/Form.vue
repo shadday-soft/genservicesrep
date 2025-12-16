@@ -332,6 +332,25 @@ const breadcrumbs: BreadcrumbItem[] = [
 <template>
     <AppLayout class="p-4" :breadcrumbs="breadcrumbs">
         <Head :title="`Generar Informe #${props.solicitud?.numero_orden}`" />
+
+        <!-- Información General de la Solicitud -->
+        <div class="mb-6 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                <div>
+                    <span class="font-semibold text-gray-600 dark:text-gray-400">Cliente:</span>
+                    <span class="ml-2 text-gray-800 dark:text-gray-200">{{ props.solicitud.client?.enterprise_name }}</span>
+                </div>
+                <div>
+                    <span class="font-semibold text-gray-600 dark:text-gray-400">Sucursal:</span>
+                    <span class="ml-2 text-gray-800 dark:text-gray-200">{{ props.solicitud.sucursal?.name }}</span>
+                </div>
+                <div>
+                    <span class="font-semibold text-gray-600 dark:text-gray-400">Equipo:</span>
+                    <span class="ml-2 text-gray-800 dark:text-gray-200">{{ props.solicitud.equipo?.nombre_equipo }}</span>
+                </div>
+            </div>
+        </div>
+
         <form @submit.prevent="handleSubmit" class="flex flex-col gap-6">
             <!-- Tipo servicio -->
             <div class="flex flex-col gap-3">

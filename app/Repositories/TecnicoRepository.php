@@ -105,13 +105,13 @@ class TecnicoRepository extends BaseRepository implements TecnicoInterface
             }
 
             // Actualizar el usuario si el correo cambió
-            if (isset($data['correo']) && $data['correo'] !== $tecnico->correo) {
-                $this->userRepository->update($tecnico->user_id, [
-                    'email' => $data['correo'],
-                    'name' => $data['nombre_completo'],
-                    'password' => bcrypt($data['identificacion']),
-                ]);
-            }
+
+            $this->userRepository->update($tecnico->user_id, [
+                'email' => $data['correo'],
+                'name' => $data['nombre_completo'],
+                'password' => bcrypt($data['identificacion']),
+            ]);
+
 
             // Actualizar el nombre si cambió
 
