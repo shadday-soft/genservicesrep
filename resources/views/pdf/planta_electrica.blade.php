@@ -585,12 +585,12 @@
     <div class="footer-text">
         <strong>Carrera 83 No. 72B 06 Tel: (571) 694 9133 / 694 9128 / 694 9125 www.genservices.com.co Bogotá, D.C. - Colombia</strong><br>
         Las partes interesadas que intervienen en este informe, suscriben el presente
-            COMPROMISO DE CONFIDENCIALIDAD Y NO DIVULGACIN DE LA INFORMACIN,
+            COMPROMISO DE CONFIDENCIALIDAD Y NO DIVULGACIÓN DE LA INFORMACIÓN,
             que está clasificada como reservada, en la entrega del informe, esta únicamente será
             compartida con las sucursales, empresas y personas autorizadas para el desarrollo del
             servicio. Las partes interesadas cumplirán los requisitos legales y reglamentarios
-            relacionados con las poltica de confidencialidad de la Empresa GEN SERVICES S.A.S.,
-            por lo tanto, no se emitirn copias, divulgaciones o reproducciones a tercero,
+            relacionados con las política de confidencialidad de la Empresa GEN SERVICES S.A.S.,
+            por lo tanto, no se emitirán copias, divulgaciones o reproducciones a tercero,
             contenidas en el sistema.
     </div>
 
@@ -867,12 +867,12 @@
     <div class="footer-text" style="margin-top: 10px;">
         <strong>Carrera 83 No. 72B 06 Tel: (571) 694 9133 / 694 9128 / 694 9125 www.genservices.com.co Bogotá, D.C. - Colombia</strong><br>
         <p>Las partes interesadas que intervienen en este informe, suscriben el presente
-            COMPROMISO DE CONFIDENCIALIDAD Y NO DIVULGACIN DE LA INFORMACIN,
+            COMPROMISO DE CONFIDENCIALIDAD Y NO DIVULGACIÓN DE LA INFORMACIÓN,
             que está clasificada como reservada, en la entrega del informe, esta únicamente será
             compartida con las sucursales, empresas y personas autorizadas para el desarrollo del
             servicio. Las partes interesadas cumplirán los requisitos legales y reglamentarios
-            relacionados con las poltica de confidencialidad de la Empresa GEN SERVICES S.A.S.,
-            por lo tanto, no se emitirn copias, divulgaciones o reproducciones a tercero,
+            relacionados con las política de confidencialidad de la Empresa GEN SERVICES S.A.S.,
+            por lo tanto, no se emitirán copias, divulgaciones o reproducciones a tercero,
             contenidas en el sistema.</p>
     </div>
 </body>
