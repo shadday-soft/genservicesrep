@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import Input from '@/components/Input.vue';
 import RichTextEditor from '@/components/RichTextEditor.vue';
 import SignaturePad from '@/components/SignaturePad.vue';
@@ -15,6 +15,21 @@ import { getErrorMessage, getSuccessMessage } from '@/composables/Toast';
 import solicituds from '@/routes/solicituds';
 
 const FilePond = vueFilePond(FilePondPluginImagePreview);
+
+// Estado para el header sticky
+const isScrolled = ref(false);
+
+const handleScroll = () => {
+    isScrolled.value = window.scrollY > 50;
+};
+
+onMounted(() => {
+    window.addEventListener('scroll', handleScroll);
+});
+
+onUnmounted(() => {
+    window.removeEventListener('scroll', handleScroll);
+});
 
 interface Props {
     tablero?: any | null;
@@ -295,10 +310,21 @@ const breadcrumbs: BreadcrumbItem[] = [
         <Head :title="`Generar Informe Tablero Eléctrico #${props.solicitud?.numero_orden}`" />
         
         <!-- Cabecera con información de la solicitud -->
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-6">
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div 
+            :class="[
+                'bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm shadow-md border-b border-gray-200 dark:border-gray-700 transition-all duration-300 ease-in-out',
+                'sticky top-0 z-50 -mx-4 px-4',
+                isScrolled ? 'py-2' : 'py-6 mb-6'
+            ]"
+        >
+            <div 
+                :class="[
+                    'grid transition-all duration-300',
+                    isScrolled ? 'grid-cols-3 gap-3' : 'grid-cols-1 lg:grid-cols-3 gap-6'
+                ]"
+            >
                 <!-- Información de la Solicitud -->
-                <div class="flex flex-col gap-3">
+                <div class="flex flex-col gap-3" v-if="!isScrolled">
                     <h3 class="text-sm font-bold text-gray-900 dark:text-white uppercase border-b pb-2">
                         Solicitud
                     </h3>
@@ -323,11 +349,20 @@ const breadcrumbs: BreadcrumbItem[] = [
                 </div>
 
                 <!-- Información del Cliente y Sucursal -->
-                <div class="flex flex-col gap-3">
-                    <h3 class="text-sm font-bold text-gray-900 dark:text-white uppercase border-b pb-2">
+                <div class="flex flex-col" :class="isScrolled ? 'gap-0' : 'gap-3'">
+                    <h3 
+                        v-if="!isScrolled"
+                        class="text-sm font-bold text-gray-900 dark:text-white uppercase border-b pb-2"
+                    >
                         Cliente / Sucursal
                     </h3>
-                    <div class="flex flex-col gap-2">
+                    <div v-if="isScrolled" class="flex items-center gap-2">
+                        <span class="text-xs font-bold text-gray-500 dark:text-gray-400">Cliente:</span>
+                        <span class="text-sm font-semibold text-gray-900 dark:text-white truncate">
+                            {{ solicitud.client?.enterprise_name || 'N/A' }}
+                        </span>
+                    </div>
+                    <div v-else class="flex flex-col gap-2">
                         <div class="flex justify-between" v-if="solicitud.client">
                             <span class="text-xs text-gray-600 dark:text-gray-400">Cliente:</span>
                             <span class="text-xs font-semibold text-gray-900 dark:text-white">{{ solicitud.client.enterprise_name }}</span>
@@ -348,11 +383,20 @@ const breadcrumbs: BreadcrumbItem[] = [
                 </div>
 
                 <!-- Información del Equipo -->
-                <div class="flex flex-col gap-3">
-                    <h3 class="text-sm font-bold text-gray-900 dark:text-white uppercase border-b pb-2">
+                <div class="flex flex-col" :class="isScrolled ? 'gap-0' : 'gap-3'">
+                    <h3 
+                        v-if="!isScrolled"
+                        class="text-sm font-bold text-gray-900 dark:text-white uppercase border-b pb-2"
+                    >
                         Equipo (Tablero Eléctrico)
                     </h3>
-                    <div class="flex flex-col gap-2">
+                    <div v-if="isScrolled" class="flex items-center gap-2">
+                        <span class="text-xs font-bold text-gray-500 dark:text-gray-400">Equipo:</span>
+                        <span class="text-sm font-semibold text-gray-900 dark:text-white truncate">
+                            {{ equipo.nombre_equipo || 'N/A' }}
+                        </span>
+                    </div>
+                    <div v-else class="flex flex-col gap-2">
                         <div class="flex justify-between" v-if="equipo.nombre_equipo">
                             <span class="text-xs text-gray-600 dark:text-gray-400">Nombre:</span>
                             <span class="text-xs font-semibold text-gray-900 dark:text-white">{{ equipo.nombre_equipo }}</span>
@@ -366,9 +410,9 @@ const breadcrumbs: BreadcrumbItem[] = [
                             <span class="text-xs font-semibold text-gray-900 dark:text-white">{{ equipo.tablero_fabricante }}</span>
                         </div>
                     </div>
+                    </div>
                 </div>
             </div>
-        </div>
 
         <form @submit.prevent="handleSubmit" class="flex flex-col gap-6">
             <!-- Tipo servicio -->

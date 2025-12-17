@@ -36,7 +36,7 @@ class InformeController extends Controller
         // Determinar qué tipo de informe mostrar según el tipo de equipo
         $tipoEquipo = $solicitud->equipo->tipo_equipo ?? '';
 
-        if ($tipoEquipo === 'Planta Electrica') {
+        if ($tipoEquipo === 'Planta Eléctrica') {
             // Formulario para Planta Eléctrica
             $informe = $this->repository->findBy('solicitud_id', $solicitud->id);
 
