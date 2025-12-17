@@ -9,6 +9,7 @@ use App\Http\Controllers\GeocodingController;
 use App\Http\Controllers\InformeController;
 use App\Http\Controllers\SolicitudController;
 use App\Http\Controllers\SucursalController;
+use App\Http\Controllers\TableroElectricoController;
 use App\Http\Controllers\TecnicoController;
 use App\Http\Middleware\VerifyadminRole;
 use Illuminate\Support\Facades\Route;
@@ -44,6 +45,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('updateInforme/{informe}', [InformeController::class, 'update'])->name('updateInforme');
     Route::get('informe/{solicitud}', [InformeController::class, 'create'])->name('informe');
     Route::get('informe/{solicitud}/pdf', [InformeController::class, 'generatePDF'])->name('informe.pdf');
+
+    // Rutas para Tableros Eléctricos
+    Route::post('tableros-electricos', [TableroElectricoController::class, 'store'])->name('tableros-electricos.store');
+    Route::post('tableros-electricos/{tableroElectrico}', [TableroElectricoController::class, 'update'])->name('tableros-electricos.update');
 
     // Rutas para geocodificación
     Route::get('geocoding/search', [GeocodingController::class, 'search'])->name('geocoding.search');

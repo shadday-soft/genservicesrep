@@ -20,6 +20,7 @@ class RepositoryServiceProvider extends ServiceProvider
             'Actividad',
             'Tecnico',
             'Informe',
+            'TableroElectrico',
         ];
 
         foreach ($models as $model) {
