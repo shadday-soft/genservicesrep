@@ -159,7 +159,7 @@ class StoreInformeRequest extends FormRequest
             'posicion_cargador' => ['nullable', 'string', 'max:10'],
             'totalizador' => ['nullable', 'string', 'max:10'],
             'precalentador_posicion' => ['nullable', 'string', 'max:10'],
-
+            'estado_generador' => ['nullable', 'string', 'max:20'],
             // Fotos después (archivos de imagen)
             'foto_uno_despues' => ['nullable', 'file', 'image', 'max:5120'],
             'pie_foto_uno_despues' => ['nullable', 'string', 'max:255'],

@@ -30,9 +30,28 @@ interface Props {
 }
 
 function assignMatchingKeys(source: { [key: string]: any }, target: { [key: string]: any }) {
+    // Only consider target keys that are not functions (avoid copying into form methods)
+    const targetKeys = Object.keys(target).filter((k) => typeof (target as any)[k] !== 'function');
+
     Object.keys(source).forEach((key: string) => {
-        if (key in target) {
-            target[key] = source[key];
+        if (targetKeys.includes(key)) {
+            try {
+                const targetVal = (target as any)[key];
+                const sourceVal = source[key];
+
+                // If the target expects a Date and source provides a string/number, convert it
+                if (targetVal instanceof Date && (typeof sourceVal === 'string' || typeof sourceVal === 'number')) {
+                    (target as any)[key] = new Date(sourceVal);
+                } else {
+                    (target as any)[key] = sourceVal;
+                }
+
+                console.log(`Asignando ${key}: ${sourceVal}`);
+            } catch (e) {
+                // Avoid throwing from this helper; log warning instead
+                // eslint-disable-next-line no-console
+                console.warn(`No se pudo asignar la propiedad ${key}:`, e);
+            }
         }
     });
 }
@@ -127,6 +146,8 @@ const form = useForm({
     potencia: props.equipo.potencia || '',
     hz: '',
     fp: '',
+    // Estado del generador (nuevo campo)
+    estado_generador: 'N/A',
     // Protecciones
     baja_presion: '',
     alta_temperatura: '',
@@ -795,6 +816,15 @@ const breadcrumbs: BreadcrumbItem[] = [
                         unique-id="limpieza_general"
                         :error="form.errors.limpieza_general"
                     />
+                     <div class="mb-4">
+                        <RadioGroup
+                            v-model="form.estado_generador"
+                            label="Estado del generador"
+                            :options="nivelesOptions"
+                            unique-id="estado_generador"
+                            :error="form.errors.estado_generador"
+                        />
+                    </div>
                 </div>
 
                 <!-- REPUESTOS / CANTIDADES (después de Limpieza General) -->
@@ -1344,6 +1374,9 @@ const breadcrumbs: BreadcrumbItem[] = [
                     <h4 class="text-sm font-bold text-gray-700 dark:text-gray-300 mb-4 uppercase">
                         Generador
                     </h4>
+
+                    <!-- Estado del generador (nuevo campo) -->
+                   
 
                     <!-- VAC FASES -->
                     <div class="mb-4">

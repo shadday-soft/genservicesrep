@@ -58,14 +58,13 @@ export interface Sucursal{
     name: string;
     client?: Client;
     address: string;
+    ciudad?: string;
     phone_number: string;
     contact_name: string;
     image: string;
     latitude?: number | null;
     longitude?: number | null;
     email: string;
-    latitude?: number | null;
-    longitude?: number | null;
 }
 
 

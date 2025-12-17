@@ -43,6 +43,14 @@ export const columns: Column[] = [
         filterPlaceholder: 'Search by address',
     },
     {
+        header: 'Ciudad',
+        field: 'ciudad',
+        sortable: true,
+        type: 'text',
+        filter: true,
+        filterPlaceholder: 'Search by city',
+    },
+    {
         header: 'Cliente',
         field: 'client.enterprise_name',
         sortable: true,

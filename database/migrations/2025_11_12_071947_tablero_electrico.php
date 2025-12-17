@@ -27,7 +27,7 @@ return new class extends Migration
             $table->text('control_ats');
             $table->text('tipo_servicio');
             $table->text('horometro')->nullable();
-            
+
             // OBSERVACIONES INICIALES
 
             $table->text('observaciones_iniciales');
@@ -68,70 +68,70 @@ return new class extends Migration
 
             // PRUEBAS CON EL EQUIPO EN OPERACION
 
-                // TIEMPOS:
-            
-                $table->text('segundos_tdes');
-                $table->text('segundos_tdne');
-                $table->text('segundos_tdtp');
-                $table->text('segundos_tden');
-                $table->text('segundos_tdec');
+            // TIEMPOS:
 
-                // AJUSTES:
+            $table->text('segundos_tdes');
+            $table->text('segundos_tdne');
+            $table->text('segundos_tdtp');
+            $table->text('segundos_tden');
+            $table->text('segundos_tdec');
 
-                $table->text('alto_voltaje');
-                $table->text('bajo_voltaje');
-                $table->text('alta_frecuencia');
-                $table->text('baja_frecuencia');
-                $table->text('sobre_carga');
-                $table->text('sobre_corriente');
+            // AJUSTES:
 
-                // TEMPERATURA:
+            $table->text('alto_voltaje');
+            $table->text('bajo_voltaje');
+            $table->text('alta_frecuencia');
+            $table->text('baja_frecuencia');
+            $table->text('sobre_carga');
+            $table->text('sobre_corriente');
 
-                $table->text('cables_potencia');
-                $table->text('terminales');
-                $table->text('cuepo_contactores');
-                $table->text('cuerpo_interruptores');
-                $table->text('transformadores');
-                $table->text('punto_mas_caliente');
+            // TEMPERATURA:
 
-                // OBSERVACIONES
+            $table->text('cables_potencia');
+            $table->text('terminales');
+            $table->text('cuepo_contactores');
+            $table->text('cuerpo_interruptores');
+            $table->text('transformadores');
+            $table->text('punto_mas_caliente');
 
-                $table->text('observaciones_pruebas');
-                $table->text('pruebas_con_carga');
+            // OBSERVACIONES
 
-                // VOLTAJE:
+            $table->text('observaciones_pruebas');
+            $table->text('pruebas_con_carga');
 
-                $table->text('l1_n');
-                $table->text('l2_n');
-                $table->text('l3_n');
+            // VOLTAJE:
 
-                // FRECUENCIA
+            $table->text('l1_n');
+            $table->text('l2_n');
+            $table->text('l3_n');
 
-                $table->text('hz');
+            // FRECUENCIA
 
-                // KW
+            $table->text('hz');
 
-                $table->text('l1_kw');
-                $table->text('l2_kw');
-                $table->text('l3_kw');
-                $table->text('avg_kw');
+            // KW
 
-                // CORRIENTE
+            $table->text('l1_kw');
+            $table->text('l2_kw');
+            $table->text('l3_kw');
+            $table->text('avg_kw');
 
-                $table->text('l1_corriente');
-                $table->text('l2_corriente');
-                $table->text('l3_corriente');
+            // CORRIENTE
 
-                // FACTOR P
+            $table->text('l1_corriente');
+            $table->text('l2_corriente');
+            $table->text('l3_corriente');
 
-                $table->text('pf');
+            // FACTOR P
 
-                // KVA
+            $table->text('pf');
 
-                $table->text('l1_kva');
-                $table->text('l2_kva');
-                $table->text('l3_kva');
-                $table->text('avg_kva');
+            // KVA
+
+            $table->text('l1_kva');
+            $table->text('l2_kva');
+            $table->text('l3_kva');
+            $table->text('avg_kva');
 
             // FOTOS DURANTE
 
@@ -174,7 +174,6 @@ return new class extends Migration
 
             $table->timestamps();
 
-            
         });
     }
 

@@ -75,6 +75,7 @@ class UpdateInformeRequest extends FormRequest
             'rpm_valor' => ['nullable', 'string', 'max:50'],
             'rpm_unidad' => ['nullable', 'string', 'max:20'],
             'voltaje_bateria_valor' => ['nullable', 'string', 'max:50'],
+            'estado_generador' => ['nullable', 'string', 'max:20'],
             'voltaje_bateria_unidad' => ['nullable', 'string', 'max:20'],
             'caida_voltaje_bat_valor' => ['nullable', 'string', 'max:50'],
             'caida_voltaje_bat_unidad' => ['nullable', 'string', 'max:20'],

@@ -16,10 +16,10 @@ class VerifyadminRole
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if(Auth::user()->id == 1){
+        if (Auth::user()->id == 1) {
             return $next($request);
         }
-        if (!Auth::check() || Auth::user()->role !== 'Administrador') {
+        if (! Auth::check() || Auth::user()->role !== 'Administrador') {
             return redirect()->route('solicituds.index');
         }
 

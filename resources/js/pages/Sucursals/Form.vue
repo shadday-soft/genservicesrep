@@ -50,6 +50,10 @@ function updateAddress(address: string) {
     form.address = address;
 }
 
+function updateCiudad(ciudad: string) {
+    form.ciudad = ciudad;
+}
+
 onMounted(async () => {
     const response = await clientService.getClients();
     clientsList.value = Array.isArray(response) ? response : Object.values(response);
@@ -67,6 +71,7 @@ onMounted(async () => {
                 option-label="enterprise_name" option-value="id" :options="clientsList"></Input>
             <Input v-model="form.name" label="Nombre de la sucursal" :error="form.errors.name"></Input>
             <Input v-model="form.address" label="Dirección" :error="form.errors.address"></Input>
+            <Input v-model="form.ciudad" label="Ciudad" :error="form.errors.ciudad"></Input>
             <Input v-model="form.contact_name" label="Nombre del contacto" :error="form.errors.contact_name"></Input>
             <Input v-model="form.phone_number" label="Teléfono" :error="form.errors.phone_number"></Input>
             <Input v-model="form.email" label="Correo electrónico" :error="form.errors.email"></Input>
@@ -84,6 +89,7 @@ onMounted(async () => {
                     :model-value="coordinates"
                     @update:model-value="updateCoordinates"
                     @update:address="updateAddress"
+                    @update:ciudad="updateCiudad"
                     :sucursales="props.allSucursales || []"
                     :current-sucursal-id="props.sucursal?.id"
                     label="Ubicación de la sucursal en el mapa"

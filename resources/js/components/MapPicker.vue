@@ -26,6 +26,7 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits<{
     'update:modelValue': [value: { latitude: number | null; longitude: number | null }];
     'update:address': [address: string];
+    'update:ciudad': [ciudad: string];
 }>();
 
 const mapContainer = ref<HTMLDivElement | null>(null);
@@ -339,6 +340,11 @@ const updateCoordinates = async (lat: number, lng: number) => {
     // Emitir la dirección si está disponible
     if (locationInfo.value?.address) {
         emit('update:address', locationInfo.value.address);
+    }
+    
+    // Emitir la ciudad si está disponible
+    if (locationInfo.value?.city) {
+        emit('update:ciudad', locationInfo.value.city);
     }
 };
 

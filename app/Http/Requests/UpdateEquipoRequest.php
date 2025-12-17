@@ -25,6 +25,7 @@ class UpdateEquipoRequest extends FormRequest
     {
 
         $equipo = $this->route('equipo');
+
         return [
             // --- DATOS GENERALES ---
             'nombre_equipo' => ['required', 'string', 'max:100'],
@@ -39,8 +40,8 @@ class UpdateEquipoRequest extends FormRequest
             'modelo_equipo' => ['required_if:tipo_equipo,Planta Eléctrica',  'max:100'],
             'modelo_motor' => ['required_if:tipo_equipo,Planta Eléctrica',  'max:100'],
             'tension_operacion' => ['required_if:tipo_equipo,Planta Eléctrica',  'max:50'],
-            'serie_equipo' => ['nullable',  'max:100', 'unique:equipos,serie_equipo,' . $equipo->id],
-            'serie_motor' => ['nullable',  'max:100', 'unique:equipos,serie_motor,' . $equipo->id],
+            'serie_equipo' => ['nullable',  'max:100', 'unique:equipos,serie_equipo,'.$equipo->id],
+            'serie_motor' => ['nullable',  'max:100', 'unique:equipos,serie_motor,'.$equipo->id],
             'marca_generador' => ['required_if:tipo_equipo,Planta Eléctrica',  'max:100'],
             'horometro' => ['required_if:tipo_equipo,Planta Eléctrica', 'min:0', 'numeric', 'nullable'],
             'marca_motor' => ['required_if:tipo_equipo,Planta Eléctrica',  'max:100'],
@@ -57,28 +58,27 @@ class UpdateEquipoRequest extends FormRequest
 
             // --- INSUMOS (Cantidades y Referencias) ---
             // Los insumos no son obligatorios cuando tipo_equipo != 'Planta Eléctrica'
-            'filtro_aire_cantidad' => ['required_if:tipo_equipo,Planta Eléctrica', ],
+            'filtro_aire_cantidad' => ['required_if:tipo_equipo,Planta Eléctrica'],
             'filtro_aire_referencia' => ['required_if:tipo_equipo,Planta Eléctrica',  'max:100'],
 
-            'filtro_aceite_cantidad' => ['required_if:tipo_equipo,Planta Eléctrica', ],
+            'filtro_aceite_cantidad' => ['required_if:tipo_equipo,Planta Eléctrica'],
             'filtro_aceite_referencia' => ['required_if:tipo_equipo,Planta Eléctrica',  'max:100'],
 
-            'filtro_combustible_cantidad' => ['required_if:tipo_equipo,Planta Eléctrica', ],
+            'filtro_combustible_cantidad' => ['required_if:tipo_equipo,Planta Eléctrica'],
             'filtro_combustible_referencia' => ['required_if:tipo_equipo,Planta Eléctrica', 'max:100'],
 
-            'filtro_separador_cantidad' => ['required_if:tipo_equipo,Planta Eléctrica', ],
+            'filtro_separador_cantidad' => ['required_if:tipo_equipo,Planta Eléctrica'],
             'filtro_separador_referencia' => ['required_if:tipo_equipo,Planta Eléctrica',  'max:100'],
 
-            'filtro_agua_cantidad' => ['required_if:tipo_equipo,Planta Eléctrica', ],
+            'filtro_agua_cantidad' => ['required_if:tipo_equipo,Planta Eléctrica'],
             'filtro_agua_referencia' => ['required_if:tipo_equipo,Planta Eléctrica',  'max:100'],
 
-            'filtro_aceite_2_cantidad' => ['required_if:tipo_equipo,Planta Eléctrica', ],
+            'filtro_aceite_2_cantidad' => ['required_if:tipo_equipo,Planta Eléctrica'],
             'filtro_aceite_2_referencia' => ['required_if:tipo_equipo,Planta Eléctrica',  'max:100'],
 
-            'refrigerante_cantidad' => ['required_if:tipo_equipo,Planta Eléctrica', ],
+            'refrigerante_cantidad' => ['required_if:tipo_equipo,Planta Eléctrica'],
             'refrigerante_referencia' => ['required_if:tipo_equipo,Planta Eléctrica',  'max:100'],
 
-            
         ];
     }
 }

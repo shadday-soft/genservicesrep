@@ -112,7 +112,6 @@ class TecnicoRepository extends BaseRepository implements TecnicoInterface
                 'password' => bcrypt($data['identificacion']),
             ]);
 
-
             // Actualizar el nombre si cambió
 
             return parent::update($id, $data);

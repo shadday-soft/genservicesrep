@@ -18,7 +18,7 @@ return new class extends Migration
             // $table->text('serie_motor')->nullable()->after('modelo_motor');
             // $table->text('marca_motor')->nullable()->after('serie_motor');
             // $table->text('tension_operacion')->nullable()->after('marca_motor');
-            // $table->text('horometro')->nullable()->after('tension_operacion');
+            $table->text('horometro')->nullable();
         });
     }
 

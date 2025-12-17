@@ -16,6 +16,7 @@ export default class Sucursal extends GeneralService {
         client_id: '',
         name: '',
         address: '',
+        ciudad: '',
         phone_number: '',
         contact_name: '',
         email: '',

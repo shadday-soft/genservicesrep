@@ -35,7 +35,7 @@ return new class extends Migration
             $table->text('tuberias')->nullable();
             $table->text('radiador')->nullable();
             $table->text('guardas')->nullable();
-            $table->text('correas_ventilador')->nullable(); 
+            $table->text('correas_ventilador')->nullable();
             $table->text('correas_alternador')->nullable();
             $table->text('amortiguadores')->nullable();
             $table->text('precalentador_estado_inicial')->nullable();

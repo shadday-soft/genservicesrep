@@ -44,7 +44,6 @@ class AuthenticatedSessionController extends Controller
         Auth::login($user, $request->boolean('remember'));
 
         $request->session()->regenerate();
-        
 
         return redirect()->intended(route('solicituds.index', absolute: false));
     }
