@@ -40,7 +40,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Route::get('retored/equipos', [EquipoController::class, 'retored'])->name('equipos.retored')->middleware(VerifyadminRole::class);
     Route::get('reestoredSolicituds', [SolicitudController::class, 'reestored'])->name('solicituds.reestored')->middleware(VerifyadminRole::class);
     Route::get('reestoredPlantaElectrica', [SolicitudController::class, 'reestoredPlantaElectrica'])->name('plantaelectricas.reestored')->middleware(VerifyadminRole::class);
-
+    Route::get('reestoredTableroElectrico', [SolicitudController::class, 'reestoredTableroElectrico'])->name('tableroelectricos.reestored')->middleware(VerifyadminRole::class);
     Route::post('StoreInforme', [InformeController::class, 'store'])->name('StoreInforme');
     Route::post('updateInforme/{informe}', [InformeController::class, 'update'])->name('updateInforme');
     Route::get('informe/{solicitud}', [InformeController::class, 'create'])->name('informe');

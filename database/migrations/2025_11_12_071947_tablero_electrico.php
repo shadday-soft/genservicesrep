@@ -16,147 +16,150 @@ return new class extends Migration
 
             // DATOS DEL CLIENTE
 
-            $table->foreignUuid('solicitud_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('solicitud_id')->constrained()->onDelete('cascade')->nullable();
             // DATOS DEL EQUIPO
 
-            $table->text('tension_operacion');
-            $table->text('corriente_nominal');
-            $table->text('elemento_maniobra');
-            $table->text('fabricante');
-            $table->text('tipo_aplicacion');
-            $table->text('control_ats');
-            $table->text('tipo_servicio');
+            $table->text('tension_operacion')->nullable();
+            $table->text('corriente_nominal')->nullable();
+            $table->text('elemento_maniobra')->nullable();
+            $table->text('fabricante')->nullable();
+            $table->text('tipo_aplicacion')->nullable();
+            $table->text('control_ats')->nullable();
+            $table->text('tipo_servicio')->nullable();
             $table->text('horometro')->nullable();
 
             // OBSERVACIONES INICIALES
 
-            $table->text('observaciones_iniciales');
+            $table->text('observaciones_iniciales')->nullable();
 
             // CHECK LIST
 
-            $table->text('gabinete');
-            $table->text('puertas');
-            $table->text('cerraduras');
-            $table->text('bisagras');
-            $table->text('limpieza_general');
-            $table->text('pilotos_indicadores');
-            $table->text('selectores');
-            $table->text('reles');
-            $table->text('temporizadores');
-            $table->text('contactores');
-            $table->text('interruptores');
-            $table->text('conexiones_control');
-            $table->text('conexiones_potencia');
-            $table->text('barraje_potencia');
-            $table->text('barraje_neutros');
-            $table->text('barraje_tierras');
-            $table->text('plc');
-            $table->text('ats');
-            $table->text('fuentes_auxiliares_check');
-            $table->text('capacitores');
-            $table->text('analizador_de_red');
+            $table->text('gabinete')->nullable();
+            $table->text('puertas')->nullable();
+            $table->text('cerraduras')->nullable();
+            $table->text('bisagras')->nullable();
+            $table->text('limpieza_general')->nullable();
+            $table->text('pilotos_indicadores')->nullable();
+            $table->text('selectores')->nullable();
+            $table->text('reles')->nullable();
+            $table->text('temporizadores')->nullable();
+            $table->text('contactores')->nullable();
+            $table->text('interruptores')->nullable();
+            $table->text('conexiones_control')->nullable();
+            $table->text('conexiones_potencia')->nullable();
+            $table->text('barraje_potencia')->nullable();
+            $table->text('barraje_neutros')->nullable();
+            $table->text('barraje_tierras')->nullable();
+            $table->text('plc')->nullable();
+            $table->text('ats')->nullable();
+            $table->text('fuentes_auxiliares_check')->nullable();
+            $table->text('capacitores')->nullable();
+            $table->text('analizador_de_red')->nullable();
 
             // FOTOS ESTADO INICIAL
 
-            $table->text('Foto_uno_antes');
-            $table->text('Foto_dos_antes');
-            $table->text('Foto_tres_antes');
+            $table->text('Foto_uno_antes')->nullable();
+            $table->text('Foto_dos_antes')->nullable();
+            $table->text('Foto_tres_antes')->nullable();
 
             // ACTIVIDAD REALIZADA
 
-            $table->text('actividad_realizada');
+            $table->text('actividad_realizada')->nullable();
 
             // PRUEBAS CON EL EQUIPO EN OPERACION
 
             // TIEMPOS:
 
-            $table->text('segundos_tdes');
-            $table->text('segundos_tdne');
-            $table->text('segundos_tdtp');
-            $table->text('segundos_tden');
-            $table->text('segundos_tdec');
+            $table->text('segundos_tdes')->nullable();
+            $table->text('segundos_tdne')->nullable();
+            $table->text('segundos_tdtp')->nullable();
+            $table->text('segundos_tden')->nullable();
+            $table->text('segundos_tdec')->nullable();
 
             // AJUSTES:
 
-            $table->text('alto_voltaje');
-            $table->text('bajo_voltaje');
-            $table->text('alta_frecuencia');
-            $table->text('baja_frecuencia');
-            $table->text('sobre_carga');
-            $table->text('sobre_corriente');
+            $table->text('alto_voltaje')->nullable();
+            $table->text('bajo_voltaje')->nullable();
+            $table->text('alta_frecuencia')->nullable();
+            $table->text('baja_frecuencia')->nullable();
+            $table->text('sobre_carga')->nullable();
+            $table->text('sobre_corriente')->nullable();
 
             // TEMPERATURA:
 
-            $table->text('cables_potencia');
-            $table->text('terminales');
-            $table->text('cuepo_contactores');
-            $table->text('cuerpo_interruptores');
-            $table->text('transformadores');
-            $table->text('punto_mas_caliente');
+            $table->text('cables_potencia')->nullable();
+            $table->text('terminales')->nullable();
+            $table->text('cuepo_contactores')->nullable();
+            $table->text('cuerpo_interruptores')->nullable();
+            $table->text('transformadores')->nullable();
+            $table->text('punto_mas_caliente')->nullable();
 
             // OBSERVACIONES
 
-            $table->text('observaciones_pruebas');
-            $table->text('pruebas_con_carga');
+            $table->text('observaciones_pruebas')->nullable();
+            $table->text('pruebas_con_carga')->nullable();
 
             // VOLTAJE:
 
-            $table->text('l1_n');
-            $table->text('l2_n');
-            $table->text('l3_n');
+            $table->text('l1_n')->nullable();
+            $table->text('l2_n')->nullable();
+            $table->text('l3_n')->nullable();
 
             // FRECUENCIA
 
-            $table->text('hz');
+            $table->text('hz')->nullable();
 
             // KW
 
-            $table->text('l1_kw');
-            $table->text('l2_kw');
-            $table->text('l3_kw');
-            $table->text('avg_kw');
+            $table->text('l1_kw')->nullable();
+            $table->text('l2_kw')->nullable();
+            $table->text('l3_kw')->nullable();
+            $table->text('avg_kw')->nullable();
 
             // CORRIENTE
 
-            $table->text('l1_corriente');
-            $table->text('l2_corriente');
-            $table->text('l3_corriente');
+            $table->text('l1_corriente')->nullable();
+            $table->text('l2_corriente')->nullable();
+            $table->text('l3_corriente')->nullable();
 
             // FACTOR P
 
-            $table->text('pf');
+            $table->text('pf')->nullable();
 
             // KVA
 
-            $table->text('l1_kva');
-            $table->text('l2_kva');
-            $table->text('l3_kva');
-            $table->text('avg_kva');
+            $table->text('l1_kva')->nullable();
+            $table->text('l2_kva')->nullable();
+            $table->text('l3_kva')->nullable();
+            $table->text('avg_kva')->nullable();
 
             // FOTOS DURANTE
 
-            $table->text('foto_uno_durante');
-            $table->text('foto_dos_durante');
-            $table->text('foto_tres_durante');
-            $table->text('foto_cuatro_durante');
-            $table->text('foto_cinco_durante');
-            $table->text('foto_seis_durante');
+            $table->text('foto_uno_durante')->nullable();
+            $table->text('foto_dos_durante')->nullable();
+            $table->text('foto_tres_durante')->nullable();
+            $table->text('foto_cuatro_durante')->nullable();
+            $table->text('foto_cinco_durante')->nullable();
+            $table->text('foto_seis_durante')->nullable();
+            $table->text('foto_siete_durante')->nullable();
+            $table->text('foto_ocho_durante')->nullable();
+            $table->text('foto_nueve_durante')->nullable();
 
             // RECOMENDACIONES
 
-            $table->text('recomendaciones');
+            $table->text('recomendaciones')->nullable();
 
             // POSICION DE INSTRUMENTOS AL CONCLUIR EL SERVICIO
 
-            $table->text('control');
-            $table->text('selector');
-            $table->text('fuentes_auxiliares_posicion');
+            $table->text('control')->nullable();
+            $table->text('selector')->nullable();
+            $table->text('fuentes_auxiliares_posicion')->nullable();
 
             // FOTOS DESPUES
 
-            $table->text('foto_uno_despues');
-            $table->text('foto_dos_despues');
-            $table->text('foto_tres_despues');
+            $table->text('foto_uno_despues')->nullable();
+            $table->text('foto_dos_despues')->nullable();
+            $table->text('foto_tres_despues')->nullable();
 
             // FICHA DE FIRMAS Y FECHAS
 
@@ -164,13 +167,13 @@ return new class extends Migration
             $table->string('llegada_tecnico')->nullable();
             $table->string('salida_tecnico')->nullable();
 
-            $table->text('nombre_tecnico');
-            $table->text('cedula_tecnico');
-            $table->text('firma_tecnico');
-            $table->text('nombre_cliente');
-            $table->text('cedula_cliente');
-            $table->text('firma_cliente');
-            $table->text('calificacion_servicio');
+            $table->text('nombre_tecnico')->nullable();
+            $table->text('cedula_tecnico')->nullable();
+            $table->text('firma_tecnico')->nullable();
+            $table->text('nombre_cliente')->nullable();
+            $table->text('cedula_cliente')->nullable();
+            $table->text('firma_cliente')->nullable();
+            $table->text('calificacion_servicio')->nullable();
 
             $table->timestamps();
 

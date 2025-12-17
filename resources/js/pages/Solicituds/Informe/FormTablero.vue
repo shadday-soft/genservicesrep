@@ -4,6 +4,7 @@ import Input from '@/components/Input.vue';
 import RichTextEditor from '@/components/RichTextEditor.vue';
 import SignaturePad from '@/components/SignaturePad.vue';
 import RadioGroup from '@/components/RadioGroup.vue';
+import ImageThumbnail from '@/components/ImageThumbnail.vue';
 import { Button } from 'primevue';
 import RadioButton from 'primevue/radiobutton';
 import AppLayout from '@/layouts/AppLayout.vue';
@@ -526,28 +527,46 @@ const breadcrumbs: BreadcrumbItem[] = [
                 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div class="flex flex-col gap-2">
-                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Foto 1</label>
+                        <div class="flex items-center gap-2">
+                            <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Foto 1</label>
+                            <ImageThumbnail :image-url="props.tablero?.Foto_uno_antes" title="Ver foto 1" />
+                        </div>
                         <FilePond
                             @updatefiles="updateFilesFotoUnoAntes"
                             accepted-file-types="image/*"
                             :label-idle="'Arrastra y suelta tu archivo o <span class=\'filepond--label-action\'>Examinar</span>'"
                         />
+                        <span v-if="form.errors.Foto_uno_antes" class="text-xs italic text-red-500">
+                            {{ form.errors.Foto_uno_antes }}
+                        </span>
                     </div>
                     <div class="flex flex-col gap-2">
-                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Foto 2</label>
+                        <div class="flex items-center gap-2">
+                            <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Foto 2</label>
+                            <ImageThumbnail :image-url="props.tablero?.Foto_dos_antes" title="Ver foto 2" />
+                        </div>
                         <FilePond
                             @updatefiles="updateFilesFotoDosAntes"
                             accepted-file-types="image/*"
                             :label-idle="'Arrastra y suelta tu archivo o <span class=\'filepond--label-action\'>Examinar</span>'"
                         />
+                        <span v-if="form.errors.Foto_dos_antes" class="text-xs italic text-red-500">
+                            {{ form.errors.Foto_dos_antes }}
+                        </span>
                     </div>
                     <div class="flex flex-col gap-2">
-                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Foto 3</label>
+                        <div class="flex items-center gap-2">
+                            <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Foto 3</label>
+                            <ImageThumbnail :image-url="props.tablero?.Foto_tres_antes" title="Ver foto 3" />
+                        </div>
                         <FilePond
                             @updatefiles="updateFilesFotoTresAntes"
                             accepted-file-types="image/*"
                             :label-idle="'Arrastra y suelta tu archivo o <span class=\'filepond--label-action\'>Examinar</span>'"
                         />
+                        <span v-if="form.errors.Foto_tres_antes" class="text-xs italic text-red-500">
+                            {{ form.errors.Foto_tres_antes }}
+                        </span>
                     </div>
                 </div>
             </div>
@@ -698,28 +717,64 @@ const breadcrumbs: BreadcrumbItem[] = [
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     <div class="flex flex-col gap-2">
-                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Foto 1</label>
+                        <div class="flex items-center gap-2">
+                            <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Foto 1</label>
+                            <ImageThumbnail :image-url="props.tablero?.foto_uno_durante" title="Ver foto 1" />
+                        </div>
                         <FilePond @updatefiles="updateFilesFotoUnoDurante" accepted-file-types="image/*" :label-idle="'Arrastra y suelta tu archivo o <span class=\'filepond--label-action\'>Examinar</span>'" />
+                        <span v-if="form.errors.foto_uno_durante" class="text-xs italic text-red-500">
+                            {{ form.errors.foto_uno_durante }}
+                        </span>
                     </div>
                     <div class="flex flex-col gap-2">
-                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Foto 2</label>
+                        <div class="flex items-center gap-2">
+                            <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Foto 2</label>
+                            <ImageThumbnail :image-url="props.tablero?.foto_dos_durante" title="Ver foto 2" />
+                        </div>
                         <FilePond @updatefiles="updateFilesFotoDosDurante" accepted-file-types="image/*" :label-idle="'Arrastra y suelta tu archivo o <span class=\'filepond--label-action\'>Examinar</span>'" />
+                        <span v-if="form.errors.foto_dos_durante" class="text-xs italic text-red-500">
+                            {{ form.errors.foto_dos_durante }}
+                        </span>
                     </div>
                     <div class="flex flex-col gap-2">
-                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Foto 3</label>
+                        <div class="flex items-center gap-2">
+                            <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Foto 3</label>
+                            <ImageThumbnail :image-url="props.tablero?.foto_tres_durante" title="Ver foto 3" />
+                        </div>
                         <FilePond @updatefiles="updateFilesFotoTresDurante" accepted-file-types="image/*" :label-idle="'Arrastra y suelta tu archivo o <span class=\'filepond--label-action\'>Examinar</span>'" />
+                        <span v-if="form.errors.foto_tres_durante" class="text-xs italic text-red-500">
+                            {{ form.errors.foto_tres_durante }}
+                        </span>
                     </div>
                     <div class="flex flex-col gap-2">
-                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Foto 4</label>
+                        <div class="flex items-center gap-2">
+                            <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Foto 4</label>
+                            <ImageThumbnail :image-url="props.tablero?.foto_cuatro_durante" title="Ver foto 4" />
+                        </div>
                         <FilePond @updatefiles="updateFilesFotoCuatroDurante" accepted-file-types="image/*" :label-idle="'Arrastra y suelta tu archivo o <span class=\'filepond--label-action\'>Examinar</span>'" />
+                        <span v-if="form.errors.foto_cuatro_durante" class="text-xs italic text-red-500">
+                            {{ form.errors.foto_cuatro_durante }}
+                        </span>
                     </div>
                     <div class="flex flex-col gap-2">
-                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Foto 5</label>
+                        <div class="flex items-center gap-2">
+                            <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Foto 5</label>
+                            <ImageThumbnail :image-url="props.tablero?.foto_cinco_durante" title="Ver foto 5" />
+                        </div>
                         <FilePond @updatefiles="updateFilesFotoCincoDurante" accepted-file-types="image/*" :label-idle="'Arrastra y suelta tu archivo o <span class=\'filepond--label-action\'>Examinar</span>'" />
+                        <span v-if="form.errors.foto_cinco_durante" class="text-xs italic text-red-500">
+                            {{ form.errors.foto_cinco_durante }}
+                        </span>
                     </div>
                     <div class="flex flex-col gap-2">
-                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Foto 6</label>
+                        <div class="flex items-center gap-2">
+                            <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Foto 6</label>
+                            <ImageThumbnail :image-url="props.tablero?.foto_seis_durante" title="Ver foto 6" />
+                        </div>
                         <FilePond @updatefiles="updateFilesFotoSeisDurante" accepted-file-types="image/*" :label-idle="'Arrastra y suelta tu archivo o <span class=\'filepond--label-action\'>Examinar</span>'" />
+                        <span v-if="form.errors.foto_seis_durante" class="text-xs italic text-red-500">
+                            {{ form.errors.foto_seis_durante }}
+                        </span>
                     </div>
                 </div>
             </div>
@@ -757,16 +812,34 @@ const breadcrumbs: BreadcrumbItem[] = [
                 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div class="flex flex-col gap-2">
-                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Foto 1</label>
+                        <div class="flex items-center gap-2">
+                            <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Foto 1</label>
+                            <ImageThumbnail :image-url="props.tablero?.foto_uno_despues" title="Ver foto 1" />
+                        </div>
                         <FilePond @updatefiles="updateFilesFotoUnoDespues" accepted-file-types="image/*" :label-idle="'Arrastra y suelta tu archivo o <span class=\'filepond--label-action\'>Examinar</span>'" />
+                        <span v-if="form.errors.foto_uno_despues" class="text-xs italic text-red-500">
+                            {{ form.errors.foto_uno_despues }}
+                        </span>
                     </div>
                     <div class="flex flex-col gap-2">
-                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Foto 2</label>
+                        <div class="flex items-center gap-2">
+                            <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Foto 2</label>
+                            <ImageThumbnail :image-url="props.tablero?.foto_dos_despues" title="Ver foto 2" />
+                        </div>
                         <FilePond @updatefiles="updateFilesFotoDosDespues" accepted-file-types="image/*" :label-idle="'Arrastra y suelta tu archivo o <span class=\'filepond--label-action\'>Examinar</span>'" />
+                        <span v-if="form.errors.foto_dos_despues" class="text-xs italic text-red-500">
+                            {{ form.errors.foto_dos_despues }}
+                        </span>
                     </div>
                     <div class="flex flex-col gap-2">
-                        <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Foto 3</label>
+                        <div class="flex items-center gap-2">
+                            <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Foto 3</label>
+                            <ImageThumbnail :image-url="props.tablero?.foto_tres_despues" title="Ver foto 3" />
+                        </div>
                         <FilePond @updatefiles="updateFilesFotoTresDespues" accepted-file-types="image/*" :label-idle="'Arrastra y suelta tu archivo o <span class=\'filepond--label-action\'>Examinar</span>'" />
+                        <span v-if="form.errors.foto_tres_despues" class="text-xs italic text-red-500">
+                            {{ form.errors.foto_tres_despues }}
+                        </span>
                     </div>
                 </div>
             </div>

@@ -15,6 +15,7 @@ use App\Models\Equipo;
 use App\Models\Informe;
 use App\Models\Solicitud;
 use App\Models\Sucursal;
+use App\Models\TableroElectrico;
 use App\Models\Tecnico;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
@@ -255,6 +256,49 @@ class SolicitudController extends Controller
             $solicitud->save();
         }
 
+    }
+
+
+    public function reestoredTableroElectrico(){
+        $informesAnteriores = DB::connection('dbantes')->table('tableros_electricos')->get();
+        foreach ($informesAnteriores as $informe) {
+            $solicitud = Solicitud::where('last_num_order', $informe->numero_solicitud)->first();
+            if (! $solicitud) {
+                // Skip if no matching solicitud found
+                continue;
+            }
+            $tableroNew = new TableroElectrico();
+            // Copy properties from the stdClass record to the Eloquent model,
+            foreach (get_object_vars($informe) as $key => $value) {
+                if (in_array($key, ['id', 'numero_orden'], true)) {
+                    continue;
+                }
+                if (str_contains($key, 'foto')) {
+                    $tableroNew->{$key} = 'https://reporting.genservices.com.co/storage'.$value;
+
+                    continue;
+                }
+                $tableroNew->{$key} = $value;
+            
+            }
+            unset($tableroNew->numero_orden);
+            unset($tableroNew->numero_solicitud);
+            unset($tableroNew->assigment_id);
+            unset($tableroNew->quiensolicita_id);
+            unset($tableroNew->quien_recibe);
+            unset($tableroNew->telefono);
+            unset($tableroNew->actividad);
+            unset($tableroNew->mail);
+            unset($tableroNew->ubicacion);
+            unset($tableroNew->sede_id);
+            unset($tableroNew->equipo_id);
+            unset($tableroNew->user_id);
+            unset($tableroNew->tipo_tablero);
+            $tableroNew->solicitud_id = $solicitud->id;
+            $tableroNew->save();
+            $solicitud->informe_generado = true;
+            $solicitud->save();
+        }
     }
 
     /**

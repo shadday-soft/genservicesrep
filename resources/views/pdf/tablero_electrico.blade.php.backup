@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Informe de Tablero Eléctrico</title>
+    <style>
+        @page {
+            margin: 5mm;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+            margin: 0;
+            padding: 5px;
+            line-height: 1.2;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 2px;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid #000;
+        }
+
+        th,
+        td {
+            padding: 1px 3px;
+            text-align: left;
+            font-size: 9.5px;
+        }
+
+        th {
+            background-color: #d8d8d8;
+            font-weight: bold;
+        }
+
+        .header-table td {
+            vertical-align: top;
+        }
+
+        .logo-cell {
+            width: 18%;
+            text-align: center;
+        }
+
+        .title-cell {
+            width: 60%;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .code-cell {
+            width: 22%;
+            text-align: center;
+        }
+
+        .checkbox-small {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border: 1px solid #000;
+            text-align: center;
+            line-height: 8px;
+            font-size: 9px;
+            margin: 0 0px;
+        }
+
+        .firma-box {
+            min-height: 40px;
+            text-align: center;
+        }
+
+        .footer-text {
+            font-size: 6px;
+            text-align: center;
+            margin-top: 3px;
+        }
+
+        /* Estilos para contenido HTML enriquecido */
+        .rich-text {
+            max-height: 130px;
+            overflow: hidden;
+        }
+
+        .rich-text p {
+            margin: 0;
+            padding: 0;
+            line-height: 1.3;
+        }
+
+        .rich-text ul,
+        .rich-text ol {
+            margin: 2px 0;
+            padding-left: 15px;
+        }
+
+        .rich-text li {
+            margin: 0;
+            padding: 0;
+            line-height: 1.2;
+        }
+
+        .rich-text br {
+            content: "";
+            display: block;
+            margin: 1px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <table class="header-table">
+        <tr>
+            <td class="logo-cell">
+                <img src="{{ public_path('logo_empresa.png') }}" alt="Logo" style="max-width: 70px;">
+                <div style="font-size: 6px; font-weight: bold; margin-top: 2px;">SOLUCIONES DE<br>ENERGÍA</div>
+                <div style="font-size: 5px;">V.I.P. SAS EN BIS</div>
+            </td>
+            <td class="title-cell">
+                <div style="font-size: 11px; font-weight: bold;">HOJA DE SERVICIO TÉCNICO PARA TABLEROS ELÉCTRICOS</div>
+                <div style="font-size: 9px; margin-top: 2px;">
+                    EMPRESA: {{ $solicitud->client->enterprise_name }}<br>
+                    SUCURSAL: {{ $solicitud->sucursal->name }}
+                </div>
+            </td>
+            <td class="code-cell">
+                <div style="font-size: 11px; font-weight: bold;">
+                    ORDEN No.<br>
+                    {{ $solicitud->numero_orden }}
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <!-- FECHA -->
+    <table>
+        <tr>
+            <th style="width: 8%;">DIA</th>
+            <th style="width: 8%;">MES</th>
+            <th style="width: 8%;">AÑO</th>
+            <th>CIUDAD</th>
+        </tr>
+        <tr>
+            <td>{{ $registro->created_at->format('d') }}</td>
+            <td>{{ $registro->created_at->format('m') }}</td>
+            <td>{{ $registro->created_at->format('Y') }}</td>
+            <td>{{ $solicitud->sucursal->ciudad ?? $solicitud->sucursal->address }}</td>
+        </tr>
+    </table>
+
+    <!-- DATOS DEL CLIENTE -->
+    <table>
+        <tr>
+            <th colspan="4">DATOS DEL CLIENTE</th>
+        </tr>
+        <tr>
+            <th style="width: 18%;">RAZÓN SOCIAL</th>
+            <td colspan="3">{{ $solicitud->client->enterprise_name }}</td>
+        </tr>
+        <tr>
+            <th>SUCURSAL</th>
+            <td style="width: 32%;">{{ $solicitud->sucursal->name }}</td>
+            <th style="width: 18%;">CONTACTO</th>
+            <td>{{ $solicitud->sucursal->contact_name }}</td>
+        </tr>
+        <tr>
+            <th>DIRECCIÓN</th>
+            <td>{{ $solicitud->sucursal->address }}</td>
+            <th>TELÉFONO</th>
+            <td>{{ $solicitud->sucursal->phone_number }}</td>
+        </tr>
+        <tr>
+            <th>E-MAIL</th>
+            <td colspan="3">{{ $solicitud->sucursal->email }}</td>
+        </tr>
+    </table>
+
+    <!-- DATOS DEL EQUIPO -->
+    <table>
+        <tr>
+            <th colspan="6">DATOS DEL EQUIPO</th>
+        </tr>
+        <tr>
+            <th style="width: 16%;">TENSIÓN DE OPERACIÓN</th>
+            <td style="width: 17%;">{{ $registro->tension_operacion }}</td>
+            <th style="width: 16%;">CORRIENTE NOMINAL</th>
+            <td style="width: 17%;">{{ $registro->corriente_nominal }}</td>
+            <th style="width: 16%;">ELEMENTO DE MANIOBRA</th>
+            <td style="width: 18%;">{{ $registro->elemento_maniobra }}</td>
+        </tr>
+        <tr>
+            <th>FABRICANTE</th>
+            <td>{{ $registro->fabricante }}</td>
+            <th>TIPO DE APLICACIÓN</th>
+            <td>{{ $registro->tipo_aplicacion }}</td>
+            <th>CONTROL ATS</th>
+            <td>{{ $registro->control_ats }}</td>
+        </tr>
+        <tr>
+            <th>TIPO DE SERVICIO</th>
+            <td colspan="5">
+                <span class="checkbox-small">{{ $registro->tipo_servicio == 'Mantenimiento' ? 'X' : '' }}</span> MANTENIMIENTO
+                <span class="checkbox-small">{{ $registro->tipo_servicio == 'Servicio' ? 'X' : '' }}</span> SERVICIO
+                <span class="checkbox-small">{{ $registro->tipo_servicio == 'Inspeccion' ? 'X' : '' }}</span> INSPECCIÓN
+                <span class="checkbox-small">{{ $registro->tipo_servicio == 'Soporte' ? 'X' : '' }}</span> SOPORTE
+                <span class="checkbox-small">{{ $registro->tipo_servicio == 'Emergencia' ? 'X' : '' }}</span> EMERGENCIA
+            </td>
+        </tr>
+    </table>
+
+    <!-- OBSERVACIONES INICIALES -->
+    <table>
+        <tr>
+            <th>OBSERVACIONES INICIALES</th>
+        </tr>
+        <tr>
+            <td style="min-height: 30px; vertical-align: top;">
+                <div class="rich-text">{!! $registro->observaciones_iniciales !!}</div>
+            </td>
+        </tr>
+    </table>
+
+    <!-- CHECK LIST -->
+    <table>
+        <tr>
+            <th colspan="4">CHECK LIST</th>
+        </tr>
+        <tr>
+            <th style="width: 25%;">GABINETE</th>
+            <td style="width: 25%;">{{ $registro->gabinete }}</td>
+            <th style="width: 25%;">PUERTAS</th>
+            <td style="width: 25%;">{{ $registro->puertas }}</td>
+        </tr>
+        <tr>
+            <th>CERRADURAS</th>
+            <td>{{ $registro->cerraduras }}</td>
+            <th>BISAGRAS</th>
+            <td>{{ $registro->bisagras }}</td>
+        </tr>
+        <tr>
+            <th>LIMPIEZA GENERAL</th>
+            <td>{{ $registro->limpieza_general }}</td>
+            <th>PILOTOS INDICADORES</th>
+            <td>{{ $registro->pilotos_indicadores }}</td>
+        </tr>
+        <tr>
+            <th>SELECTORES</th>
+            <td>{{ $registro->selectores }}</td>
+            <th>RELÉS</th>
+            <td>{{ $registro->reles }}</td>
+        </tr>
+        <tr>
+            <th>TEMPORIZADORES</th>
+            <td>{{ $registro->temporizadores }}</td>
+            <th>CONTACTORES</th>
+            <td>{{ $registro->contactores }}</td>
+        </tr>
+        <tr>
+            <th>INTERRUPTORES</th>
+            <td>{{ $registro->interruptores }}</td>
+            <th>CONEXIONES DE CONTROL</th>
+            <td>{{ $registro->conexiones_control }}</td>
+        </tr>
+        <tr>
+            <th>CONEXIONES DE POTENCIA</th>
+            <td>{{ $registro->conexiones_potencia }}</td>
+            <th>BARRAJE DE POTENCIA</th>
+            <td>{{ $registro->barraje_potencia }}</td>
+        </tr>
+        <tr>
+            <th>BARRAJE DE NEUTROS</th>
+            <td>{{ $registro->barraje_neutros }}</td>
+            <th>BARRAJE DE TIERRAS</th>
+            <td>{{ $registro->barraje_tierras }}</td>
+        </tr>
+        <tr>
+            <th>PLC</th>
+            <td>{{ $registro->plc }}</td>
+            <th>ATS</th>
+            <td>{{ $registro->ats }}</td>
+        </tr>
+        <tr>
+            <th>FUENTES AUXILIARES</th>
+            <td>{{ $registro->fuentes_auxiliares_check }}</td>
+            <th>CAPACITORES</th>
+            <td>{{ $registro->capacitores }}</td>
+        </tr>
+        <tr>
+            <th>ANALIZADOR DE RED</th>
+            <td colspan="3">{{ $registro->analizador_de_red }}</td>
+        </tr>
+    </table>
+
+    <!-- ACTIVIDAD REALIZADA -->
+    <table>
+        <tr>
+            <th>ACTIVIDAD REALIZADA</th>
+        </tr>
+        <tr>
+            <td style="min-height: 30px; vertical-align: top;">
+                <div class="rich-text">{!! $registro->actividad_realizada !!}</div>
+            </td>
+        </tr>
+    </table>
+
+    <div class="section-title">PRUEBAS CON EL EQUIPO EN OPERACIÓN</div>
+    <table>
+        <tr>
+            <th>Segundos TDES</th>
+            <td>{{ $registro->segundos_tdes }}</td>
+            <th>Segundos TDNE</th>
+            <td>{{ $registro->segundos_tdne }}</td>
+        </tr>
+        <tr>
+            <th>Segundos TDTP</th>
+            <td>{{ $registro->segundos_tdtp }}</td>
+            <th>Segundos TDEN</th>
+            <td>{{ $registro->segundos_tden }}</td>
+        </tr>
+        <tr>
+            <th>Segundos TDEC</th>
+            <td colspan="3">{{ $registro->segundos_tdec }}</td>
+        </tr>
+    </table>
+
+    <div class="section-title">AJUSTES</div>
+    <table>
+        <tr>
+            <th>Alto Voltaje</th>
+            <td>{{ $registro->alto_voltaje }}</td>
+            <th>Bajo Voltaje</th>
+            <td>{{ $registro->bajo_voltaje }}</td>
+        </tr>
+        <tr>
+            <th>Alta Frecuencia</th>
+            <td>{{ $registro->alta_frecuencia }}</td>
+            <th>Baja Frecuencia</th>
+            <td>{{ $registro->baja_frecuencia }}</td>
+        </tr>
+        <tr>
+            <th>Sobre Carga</th>
+            <td>{{ $registro->sobre_carga }}</td>
+            <th>Sobre Corriente</th>
+            <td>{{ $registro->sobre_corriente }}</td>
+        </tr>
+    </table>
+
+    <div class="section-title">TEMPERATURA</div>
+    <table>
+        <tr>
+            <th>Cables de Potencia</th>
+            <td>{{ $registro->cables_potencia }}</td>
+            <th>Terminales</th>
+            <td>{{ $registro->terminales }}</td>
+        </tr>
+        <tr>
+            <th>Cuerpo de Contactores</th>
+            <td>{{ $registro->cuepo_contactores }}</td>
+            <th>Cuerpo de Interruptores</th>
+            <td>{{ $registro->cuerpo_interruptores }}</td>
+        </tr>
+        <tr>
+            <th>Transformadores</th>
+            <td>{{ $registro->transformadores }}</td>
+            <th>Punto Más Caliente</th>
+            <td>{{ $registro->punto_mas_caliente }}</td>
+        </tr>
+    </table>
+    
+    <div class="section-title">OBSERVACIONES PRUEBAS</div>
+    <!--<p style="text-align: center">{{ $registro->observaciones_pruebas }}</p>-->
+    <table>    
+        <tr>
+            <td style="text-align: center; padding: 15px;" colspan="3">{{ $registro->observaciones_pruebas }}</td>
+        </tr>
+    </table>
+
+    <div class="section-title">POSICIÓN DE LOS INSTRUMENTOS AL CONCLUIR EL SERVICIO</div>
+    <table>
+        <tr>
+            <th>Control</th>
+            <td>{{ $registro->control }}</td>
+            <th>Selector</th>
+            <td>{{ $registro->selector }}</td>
+        </tr>
+        <tr>
+            <th>Fuentes Auxiliares</th>
+            <td colspan="3">{{ $registro->fuentes_auxiliares_posicion }}</td>
+        </tr>
+    </table>
+
+    <div class="section-title">VOLTAJE</div>
+    <table>
+        <tr>
+            <th>L1-N</th>
+            <td>{{ $registro->l1_n }}</td>
+            <th>L2-N</th>
+            <td>{{ $registro->l2_n }}</td>
+            <th>L3-N</th>
+            <td>{{ $registro->l3_n }}</td>
+        </tr>
+    </table>
+
+    <div class="section-title">FRECUENCIA</div>
+    <table>
+        <tr>
+            <th>HZ</th>
+            <td>{{ $registro->hz }}</td>
+        </tr>
+    </table>
+
+    <div class="section-title">KW</div>
+    <table>
+        <tr>
+            <th>L1</th>
+            <td>{{ $registro->l1_kw }}</td>
+            <th>L2</th>
+            <td>{{ $registro->l2_kw }}</td>
+            <th>L3</th>
+            <td>{{ $registro->l3_kw }}</td>
+            <th>AVG</th>
+            <td>{{ $registro->avg_kw }}</td>
+        </tr>
+    </table>
+
+    <div class="section-title">CORRIENTE</div>
+    <table>
+        <tr>
+            <th>L1</th>
+            <td>{{ $registro->l1_corriente }}</td>
+            <th>L2</th>
+            <td>{{ $registro->l2_corriente }}</td>
+            <th>L3</th>
+            <td>{{ $registro->l3_corriente }}</td>
+        </tr>
+    </table>
+
+    <div class="section-title">FACTOR P</div>
+    <table>
+        <tr>
+            <th>PF</th>
+            <td>{{ $registro->pf }}</td>
+        </tr>
+    </table>
+
+    <div class="section-title">KVA</div>
+    <table>
+        <tr>
+            <th>L1</th>
+            <td>{{ $registro->l1_kva }}</td>
+            <th>L2</th>
+            <td>{{ $registro->l2_kva }}</td>
+            <th>L3</th>
+            <td>{{ $registro->l3_kva }}</td>
+            <th>AVG</th>
+            <td>{{ $registro->avg_kva }}</td>
+        </tr>
+    </table>
+
+    <div class="section-title">FOTOS DURANTE</div>
+    @if ($registro->foto_uno_durante || $registro->foto_dos_durante || $registro->foto_tres_durante)
+    
+    <div style="margin-top: 100px;" class="images">
+        @php
+        $fotosDurante = [
+            ['foto' => $registro->foto_uno_durante, 'numero' => 1],
+            ['foto' => $registro->foto_dos_durante, 'numero' => 2],
+            ['foto' => $registro->foto_tres_durante, 'numero' => 3],
+            ['foto' => $registro->foto_cuatro_durante, 'numero' => 4],
+            ['foto' => $registro->foto_cinco_durante, 'numero' => 5],
+            ['foto' => $registro->foto_seis_durante, 'numero' => 6],
+            ['foto' => $registro->foto_siete_durante, 'numero' => 7],
+            ['foto' => $registro->foto_ocho_durante, 'numero' => 8],
+            ['foto' => $registro->foto_nueve_durante, 'numero' => 9],
+        ];
+        @endphp
+
+        @foreach($fotosDurante as $item)
+            @if($item['foto'])
+                @php
+                    $fotoSrc = $item['foto'];
+                    if (str_contains($fotoSrc, 'https://reporting.genservices.com.co/storage/')) {
+                        try {
+                            $imageData = @file_get_contents($fotoSrc);
+                            if ($imageData !== false) {
+                                $base64 = base64_encode($imageData);
+                                $mimeType = 'image/jpeg';
+                                $fotoSrc = 'data:' . $mimeType . ';base64,' . $base64;
+                            }
+                        } catch (\Exception $e) {
+                            // Si falla, usar la ruta local
+                            $fotoSrc = public_path('uploads/' . $item['foto']);
+                        }
+                    } else {
+                        $fotoSrc = public_path('uploads/' . $fotoSrc);
+                    }
+                @endphp
+                <img style="width: 218px; margin-bottom: 2px;" src="{{ $fotoSrc }}" alt="Foto {{ $item['numero'] }}">
+            @endif
+        @endforeach
+    </div>
+    @endif
+
+    <div class="section-title">RECOMENDACIONES</div>
+    <!--<p style="text-align: center">{{ $registro->recomendaciones }}</p>-->
+    <table>    
+        <tr>
+            <td style="text-align: center; padding: 15px;" colspan="3">{{ $registro->recomendaciones }}</td>
+        </tr>
+    </table>
+
+    <div class="section-title">FOTOS DESPUÉS</div>
+    <div style="margin-top: 100px;" class="images">
+        @if($registro->foto_uno_despues)
+        @php
+            $fotoSrc = $registro->foto_uno_despues;
+            if (str_contains($fotoSrc, 'https://reporting.genservices.com.co/storage/')) {
+                try {
+                    $imageData = @file_get_contents($fotoSrc);
+                    if ($imageData !== false) {
+                        $base64 = base64_encode($imageData);
+                        $mimeType = 'image/jpeg';
+                        $fotoSrc = 'data:' . $mimeType . ';base64,' . $base64;
+                    }
+                } catch (\Exception $e) {
+                    // Si falla, usar la ruta local
+                    $fotoSrc = public_path('uploads/' . $registro->foto_uno_despues);
+                }
+            } else {
+                $fotoSrc = public_path('uploads/' . $fotoSrc);
+            }
+        @endphp
+        <img style="width: 218px;" src="{{ $fotoSrc }}" alt="Foto 1">
+        @endif
+
+        @if($registro->foto_dos_despues)
+        @php
+            $fotoSrc = $registro->foto_dos_despues;
+            if (str_contains($fotoSrc, 'https://reporting.genservices.com.co/storage/')) {
+                try {
+                    $imageData = @file_get_contents($fotoSrc);
+                    if ($imageData !== false) {
+                        $base64 = base64_encode($imageData);
+                        $mimeType = 'image/jpeg';
+                        $fotoSrc = 'data:' . $mimeType . ';base64,' . $base64;
+                    }
+                } catch (\Exception $e) {
+                    // Si falla, usar la ruta local
+                    $fotoSrc = public_path('uploads/' . $registro->foto_dos_despues);
+                }
+            } else {
+                $fotoSrc = public_path('uploads/' . $fotoSrc);
+            }
+        @endphp
+        <img style="width: 218px;" src="{{ $fotoSrc }}" alt="Foto 2">
+        @endif
+
+        @if($registro->foto_tres_despues)
+        @php
+            $fotoSrc = $registro->foto_tres_despues;
+            if (str_contains($fotoSrc, 'https://reporting.genservices.com.co/storage/')) {
+                try {
+                    $imageData = @file_get_contents($fotoSrc);
+                    if ($imageData !== false) {
+                        $base64 = base64_encode($imageData);
+                        $mimeType = 'image/jpeg';
+                        $fotoSrc = 'data:' . $mimeType . ';base64,' . $base64;
+                    }
+                } catch (\Exception $e) {
+                    // Si falla, usar la ruta local
+                    $fotoSrc = public_path('uploads/' . $registro->foto_tres_despues);
+                }
+            } else {
+                $fotoSrc = public_path('uploads/' . $fotoSrc);
+            }
+        @endphp
+        <img style="width: 218px;" src="{{ $fotoSrc }}" alt="Foto 3">
+        @endif
+    </div>
+
+    <div class="section-title">FIRMAS</div>
+    <table>
+        <tr>
+            <th>Firma del Tcnico</th>
+            <td><img src="{{ $registro->firma_tecnico }}" class="firma" alt="Firma del Técnico"></td>
+            <th>Firma del Cliente</th>
+            <td><img src="{{ $registro->firma_cliente }}" class="firma" alt="Firma del Cliente"></td>
+        </tr>
+        <tr>
+            <th>Nombre del Técnico</th>
+            <td>{{ $registro->nombre_tecnico }}</td>
+            <th>Nombre del Cliente</th>
+            <td>{{ $registro->nombre_cliente }}</td>
+        </tr>
+        <tr>
+            <th>Cédula del Técnico</th>
+            <td>{{ $registro->cedula_tecnico }}</td>
+            <th>Cédula del Cliente</th>
+            <td>{{ $registro->cedula_cliente }}</td>
+        </tr>
+    </table>
+
+    <div class="section-title">FECHAS</div>
+    <table>
+        <tr>
+            <th>Fecha de Solicitud</th>
+            <td>Fecha: {{ $registro->fecha_solicitud }}</td>
+            <th>Llegada del Tcnico</th>
+            <td>{{ $registro->llegada_tecnico }}</td>
+        </tr>
+        <tr>
+            <th>Salida del Técnico</th>
+            <td colspan="3">{{ $registro->salida_tecnico }}</td>
+        </tr>
+        <tr>
+            <th>Calificación del Servicio</th>
+            <td colspan="3">{{ $registro->calificacion_servicio }}</td>
+        </tr>
+    </table>
+</main>
+
+<footer class="footer">
+    <p>© {{ date('Y') }} GEN SERVICES. Todos los derechos reservados.</p>
+    <p>Las partes interesadas que intervienen en este informe, suscriben el presente 
+            COMPROMISO DE CONFIDENCIALIDAD Y NO DIVULGACIÓN DE LA INFORMACIÓN, 
+            que está clasificada como reservada, en la entrega del informe, esta únicamente será 
+            compartida con las sucursales, empresas y personas autorizadas para el desarrollo del 
+            servicio. Las partes interesadas cumplirán los requisitos legales y reglamentarios 
+            relacionados con las política de confidencialidad de la Empresa GEN SERVICES S.A.S., 
+            por lo tanto, no se emitirán copias, divulgaciones o reproducciones a tercero, 
+            contenidas en el sistema.
+    </p>
+</footer>
+
+</body>
+</html>
