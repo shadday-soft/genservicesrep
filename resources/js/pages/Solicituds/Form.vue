@@ -115,12 +115,26 @@ onMounted(async () => {
             form.ubicacion = props.solicitud.ubicacion ? props.solicitud.ubicacion : (sucursal ? sucursal.address : '');
             form.telefono = sucursal ? sucursal.phone_number : props.solicitud.telefono;
             form.mail = sucursal ? sucursal.email : props.solicitud.mail;
+
         }
         if (props.solicitud.orden_trabajo) {
             myFiles.value = [props.solicitud.orden_trabajo];
         }
     }
 });
+
+function selectSucursal() {
+    const sucursal = sucursalesList.value.find(s => s.id === form.sucursal_id);
+    if (sucursal && !form.ubicacion ) {
+        form.ubicacion = sucursal.address;
+        form.telefono = sucursal.phone_number;
+        form.mail = sucursal.email;
+    } else {
+        form.ubicacion = '';
+        form.telefono = '';
+        form.mail = '';
+    }
+}
 
 </script>
 
@@ -135,7 +149,7 @@ onMounted(async () => {
 
             <!-- Sucursal -->
             <Input v-model="form.sucursal_id" type="select" label="Sucursal" :error="form.errors.sucursal_id"
-                option-label="name" option-value="id" :options="sucursalesList" :disabled="!form.client_id"></Input>
+                option-label="name" option-value="id" :options="sucursalesList" @select="selectSucursal" :disabled="!form.client_id"></Input>
 
             <!-- Equipo -->
             <Input v-model="form.equipo_id" type="select" label="Equipo" :error="form.errors.equipo_id"
