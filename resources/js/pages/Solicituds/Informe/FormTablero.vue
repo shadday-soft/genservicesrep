@@ -579,6 +579,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                 <Input
                     v-model="form.actividad_realizada"
                     type="textarea"
+                    :maxLength="800"
                     :textAreaRows="6"
                     :error="form.errors.actividad_realizada"
                     placeholder="Describe la actividad realizada..."
@@ -636,6 +637,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                         type="textarea"
                         label="Observaciones de Pruebas"
                         :textAreaRows="4"
+                        :maxLength="800"
                         :error="form.errors.observaciones_pruebas"
                     />
                 </div>
@@ -645,6 +647,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                         v-model="form.pruebas_con_carga"
                         type="textarea"
                         label="Pruebas con Carga"
+                        :maxLength="800"
                         :textAreaRows="4"
                         :error="form.errors.pruebas_con_carga"
                     />
@@ -784,7 +787,9 @@ const breadcrumbs: BreadcrumbItem[] = [
                 <h3 class="text-base font-bold text-gray-800 dark:text-gray-200 mb-4">
                     RECOMENDACIONES
                 </h3>
-                <RichTextEditor 
+                <Input
+                    type="textarea"
+                    :maxLength="800" 
                     v-model="form.recomendaciones" 
                     :error="form.errors.recomendaciones"
                     placeholder="Describe las recomendaciones..."
