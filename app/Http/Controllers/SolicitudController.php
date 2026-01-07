@@ -89,6 +89,8 @@ class SolicitudController extends Controller
                 'user_id' => $tecnico->user_id ?? null,
                 'last_num_order' => $solicitud->numero_orden,
             ]);
+            $sucursal->address = $solicitud->ubicacion ?? null;
+            $sucursal->save();
 
             $s->created_at = $solicitud->created_at ?? now();
             $s->save();
