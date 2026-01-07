@@ -15,16 +15,13 @@ class TableroElectricoController extends Controller
 
     public function store(StoreTableroElectricoRequest $request)
     {
-        try {
-            DB::beginTransaction();
-            $this->repository->create($request->validated());
-            DB::commit();
+        
+        DB::beginTransaction();
+        $this->repository->create($request->validated());
+        DB::commit();
 
-            return back()->with('status', 'Informe de Tablero Eléctrico creado con éxito');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return back()->withErrors(['error' => 'Ocurrió un error al crear el informe: '.$e->getMessage()]);
-        }
+        return back()->with('status', 'Informe de Tablero Eléctrico creado con éxito');
+      
     }
 
     public function update(StoreTableroElectricoRequest $request, TableroElectrico $tableroElectrico)
