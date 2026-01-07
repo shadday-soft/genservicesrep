@@ -67,6 +67,8 @@ watch(() => form.client_id, async (newEmpresaId) => {
     } else {
         sucursalesList.value = [];
     }
+    sucursalesList.value = (await sucursalService.getSucursals()).filter((s: Sucursal) => s.client_id === newEmpresaId);
+
     form.sucursal_id = '';
     form.equipo_id = '';
 });
