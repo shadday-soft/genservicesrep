@@ -182,7 +182,7 @@ export default class Equipo extends GeneralService {
     async getEquipos(sucursal_id: string) {
         try {
             const { data } = await axios.get(index().url);
-            return data.equipos.filter((equipo: EquipoType) => equipo.sucursal_id === sucursal_id) as EquipoType[];
+            return data.equipos as EquipoType[];
         } catch (error) {
             getErrorMessage('Error al obtener los equipos');
             return [];
