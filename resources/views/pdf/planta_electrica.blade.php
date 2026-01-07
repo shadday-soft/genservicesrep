@@ -609,7 +609,7 @@
             <td class="title-cell">
                 <div style="font-size: 11px; font-weight: bold;">REGISTRO FOTOGRÁFICO</div>
                 <div style="font-size: 9px; margin-top: 2px;">
-                    <strong>CÓDIGO FR - HST V7</strong><br>
+                    <strong>CÓDIGO FR - HST V6</strong><br>
                     FECHA: {{ $registro->created_at->format('d/m/Y') }}
                 </div>
             </td>
