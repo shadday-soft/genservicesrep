@@ -45,7 +45,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('updateInforme/{informe}', [InformeController::class, 'update'])->name('updateInforme');
     Route::get('informe/{solicitud}', [InformeController::class, 'create'])->name('informe');
     Route::get('informe/{solicitud}/pdf', [InformeController::class, 'generatePDF'])->name('informe.pdf');
-
+    Route::get('downloadAllInformes', [InformeController::class, 'downloadAllInformes'])->name('downloadAllInformes');
+    Route::get('updateErrorsSolicituds', [SolicitudController::class, 'updateErrorsSolicituds'])->name('updateErrorsSolicituds');
+    Route::get('updateErrorsEquipos', [SolicitudController::class, 'updateErrorsEquipos'])->name('updateErrorsEquipos');
     // Rutas para Tableros Eléctricos
     Route::post('tableros-electricos', [TableroElectricoController::class, 'store'])->name('tableros-electricos.store');
     Route::post('tableros-electricos/{tableroElectrico}', [TableroElectricoController::class, 'update'])->name('tableros-electricos.update');

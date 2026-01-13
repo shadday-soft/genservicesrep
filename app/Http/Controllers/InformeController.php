@@ -7,7 +7,9 @@ use App\Http\Requests\UpdateInformeRequest;
 use App\Interfaces\InformeInterface;
 use App\Models\Informe;
 use App\Models\Solicitud;
+use App\Models\TableroElectrico;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
@@ -179,9 +181,6 @@ class InformeController extends Controller
         } else {
             // Generar PDF para Tablero Eléctrico
             $registro = \App\Models\TableroElectrico::where('solicitud_id', $solicitud->id)->first();
-
-           
-
             // Preparar los datos que necesita la vista
             $registro->numero_orden = $solicitud->numero_orden;
             $registro->numero_solicitud = $solicitud->id;
@@ -202,5 +201,96 @@ class InformeController extends Controller
 
             return $pdf->stream($filename);
         }
+    }
+
+   
+
+    public function downloadAllInformes()
+    {
+        $outputDir = public_path('pdf');
+        File::ensureDirectoryExists($outputDir);
+
+        $solicitudes = Solicitud::with(['client', 'sucursal', 'equipo', 'user'])->take(5)->get();
+        $saved = 0;
+        $errors = [];
+
+        foreach ($solicitudes as $solicitud) {
+            $tipoEquipo = $solicitud->equipo->tipo_equipo ?? '';
+
+            try {
+                if ($tipoEquipo === 'Planta Eléctrica') {
+                    $registro = Informe::where('solicitud_id', $solicitud->id)->first();
+
+                    if (! $registro) {
+                        $errors[] = "Solicitud {$solicitud->id}: no se encontró informe de Planta Eléctrica";
+                        continue;
+                    }
+
+                    // Preparar los datos que necesita la vista
+                    $registro->numero_orden = $solicitud->numero_orden;
+                    $registro->fecha_solicitud = $solicitud->fecha_programada;
+                    $registro->quien_solicita = $solicitud->quien_solicita;
+                    $registro->telefono = $solicitud->telefono;
+                    $registro->mail = $solicitud->mail;
+                    $registro->ubicacion = $solicitud->ubicacion;
+                    $registro->user = $solicitud->user;
+                    $registro->sucursal = $solicitud->sucursal;
+
+                    // Si el equipo tiene los datos, agregarlos
+                    if ($solicitud->equipo) {
+                        $registro->modelo_equipo = $registro->modelo_equipo ?? $solicitud->equipo->modelo_equipo ?? '';
+                        $registro->serie_equipo = $registro->serie_equipo ?? $solicitud->equipo->serie_equipo ?? '';
+                        $registro->marca_generador = $registro->marca_generador ?? $solicitud->equipo->marca_generador ?? '';
+                        $registro->horometro = $registro->horometro ?? $solicitud->equipo->horometro ?? '';
+                        $registro->modelo_motor = $registro->modelo_motor ?? $solicitud->equipo->modelo_motor ?? '';
+                        $registro->serie_motor = $registro->serie_motor ?? $solicitud->equipo->serie_motor ?? '';
+                        $registro->marca_motor = $registro->marca_motor ?? $solicitud->equipo->marca_motor ?? '';
+                        $registro->tension_operacion = $registro->tension_operacion ?? $solicitud->equipo->tension_operacion ?? '';
+                    }
+
+                    $pdf = Pdf::loadView('pdf.planta_electrica', compact('registro', 'solicitud'));
+                    $pdf->setPaper('legal', 'portrait');
+
+                    $filename = 'Informe_Planta_Electrica_'.$solicitud->numero_orden.'.pdf';
+                    File::put($outputDir.DIRECTORY_SEPARATOR.$filename, $pdf->output());
+                    $saved++;
+                } elseif ($tipoEquipo === 'Tablero Eléctrico') {
+                    $registro = TableroElectrico::where('solicitud_id', $solicitud->id)->first();
+
+                    if (! $registro) {
+                        $errors[] = "Solicitud {$solicitud->id}: no se encontró informe de Tablero Eléctrico";
+                        continue;
+                    }
+
+                    // Preparar los datos que necesita la vista
+                    $registro->numero_orden = $solicitud->numero_orden;
+                    $registro->numero_solicitud = $solicitud->id;
+                    $registro->quiensolicita_id = $solicitud->quien_solicita;
+                    $registro->telefono = $solicitud->client->phone_number ?? $solicitud->telefono ?? '';
+                    $registro->mail = $solicitud->client->email ?? $solicitud->mail ?? '';
+                    $registro->ubicacion = $solicitud->sucursal->address ?? $solicitud->ubicacion ?? '';
+                    $registro->user = $solicitud->user;
+                    $registro->sucursal = $solicitud->sucursal;
+                    $registro->equipo = $solicitud->equipo;
+
+                    $pdf = Pdf::loadView('pdf.tablero_electrico', compact('registro', 'solicitud'));
+                    $pdf->setPaper('legal', 'portrait');
+
+                    $filename = 'Informe_Tablero_Electrico_'.$solicitud->numero_orden.'.pdf';
+                    File::put($outputDir.DIRECTORY_SEPARATOR.$filename, $pdf->output());
+                    $saved++;
+                }
+            } catch (\Throwable $e) {
+                $errors[] = "Solicitud {$solicitud->id}: {$e->getMessage()}";
+            }
+        }
+
+        if (count($errors) > 0) {
+            return back()->withErrors([
+                'error' => "Se guardaron {$saved} PDF(s) en public/pdf. Errores: ".implode(' | ', $errors),
+            ]);
+        }
+
+        return back()->with('status', "Se guardaron {$saved} PDF(s) en public/pdf");
     }
 }

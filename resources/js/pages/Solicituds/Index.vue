@@ -240,6 +240,19 @@ const canGenerateInforme = (solicitudData: Solicitud) => {
     if (!solicitudData.fecha_informe) {
         return true;
     }
+    
+    if(usePage().props.auth.user.role === 'Administrador'){
+        return solicitudData.fecha_informe
+        && (() => {
+            const ts = Date.parse(solicitudData.fecha_informe as unknown as string);
+            if (isNaN(ts)) {
+                return false;
+            }
+            const hoursSince = (Date.now() - ts) / (1000 * 60 * 60);
+            return hoursSince <= 240;
+        })();
+    }
+
     return solicitudData.fecha_informe
         && (() => {
             const ts = Date.parse(solicitudData.fecha_informe as unknown as string);
@@ -247,7 +260,7 @@ const canGenerateInforme = (solicitudData: Solicitud) => {
                 return false;
             }
             const hoursSince = (Date.now() - ts) / (1000 * 60 * 60);
-            return hoursSince <= 36;
+            return hoursSince <= 72;
         })();
 }
 
@@ -464,7 +477,7 @@ const exportToExcel = () => {
                             @click="viewDetails(solicitudItem)" class="!p-1.5" />
                         <Button text v-if="solicitudItem.informe_generado" v-tooltip.top="`Ver Informe`"
                             @click="generateReport(solicitudItem)" icon="pi pi-file-pdf" class="!p-1.5" />
-                        <Button v-if="solicitudItem.estado != 'Anulada' && $page.props.auth.user.role !== 'Cliente'"
+                        <Button v-if="canGenerateInforme(solicitudItem)"
                             icon="pi pi-file" size="small" severity="info" text v-tooltip.top="'Generar Informe'"
                             @click="crearReporte(solicitudItem)" class="!p-1.5" />
                         <Button icon="pi pi-pencil" size="small" severity="warn" text v-tooltip.top="'Editar'"

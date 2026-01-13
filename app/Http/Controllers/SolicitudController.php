@@ -98,6 +98,54 @@ class SolicitudController extends Controller
         }
     }
 
+    public function updateErrorsSolicituds()
+    {
+        $solicitudes = Solicitud::get();
+
+        foreach ($solicitudes as $solicitud) {
+            $solicitudAnterior = DB::connection('dbantes')->table('solicitudes')
+            ->where('numero_orden', $solicitud->last_num_order)
+            ->first();
+
+            if ($solicitudAnterior) {
+                $sucursalAnterior = DB::connection('dbantes')->table('sucursales')
+                ->where('id', $solicitudAnterior->sucursal_id)
+                ->first();
+                
+                $equipoAnterior = DB::connection('dbantes')->table('equipos')
+                ->where('id', $solicitudAnterior->equipos_id)
+                ->first();
+
+                $sucursal = Sucursal::where('name', $sucursalAnterior->nombre_sucursal)->first();
+                $equipo = Equipo::where('nombre_equipo', $equipoAnterior->nombre)->first();
+                if ( $sucursal &&  $equipo) {
+                    $solicitud->sucursal_id = $sucursal->id;
+                    $solicitud->equipo_id = $equipo->id;
+                    $solicitud->save();
+                }
+            }
+
+        }
+    }
+    public function updateErrorsEquipos(){
+        $equipos = Equipo::get();
+        foreach ($equipos as $equipo) {
+            $equipoAnterior = DB::connection('dbantes')->table('equipos')
+            ->where('nombre', $equipo->nombre_equipo)
+            ->first();
+                if ($equipoAnterior) {
+                    $sucursalAnterior = DB::connection('dbantes')->table('sucursales')
+                    ->where('id', $equipoAnterior->sucursal_id)
+                    ->first();
+                    $sucursal = Sucursal::where('name', $sucursalAnterior->nombre_sucursal)->first();
+                    if ( $sucursal) {
+                        $equipo->sucursal_id = $sucursal->id;
+                        $equipo->save();
+                    } 
+            }
+        } 
+    }
+
     public function crearTenico($id)
     {
         $tecnicoAnterior = DB::connection('dbantes')->table('users')->where('id', $id)->first();
