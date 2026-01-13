@@ -149,8 +149,8 @@ class DashboardController extends Controller
 
         // Mantenimientos del mes actual para el gauge
         $mantenimientosMesActual = Solicitud::select(
-            DB::raw("SUM(CASE WHEN estado = 'Programada' OR estado = 'Finalizada' THEN 1 ELSE 0 END) as programados"),
-            DB::raw("SUM(CASE WHEN estado = 'Finalizada' AND (tipo_mantenimiento IS NOT NULL OR actividad = 'Mantenimiento Preventivo') THEN 1 ELSE 0 END) as ejecutados")
+            DB::raw("SUM(CASE WHEN estado != 'Finalizada' THEN 1 ELSE 0 END) as programados"),
+            DB::raw("SUM(CASE WHEN estado = 'Finalizada' THEN 1 ELSE 0 END) as ejecutados")
         )
             ->whereMonth('created_at', now()->month)
             ->whereYear('created_at', now()->year)

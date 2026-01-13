@@ -29,7 +29,7 @@ interface Props {
         solicitudesPorTipoEquipo: { tipo: string; total: number }[];
         solicitudesPorMes: { mes: string; total: number }[];
         mantenimientosProgramadosVsEjecutados: { mes: string; programados: number; ejecutados: number }[];
-        mantenimientosMesActual: { programados: number; ejecutados: number };
+        mantenimientosMesActual: { programados: string; ejecutados: string };
         mantenimientosPorTipoMesActual: { tipo: string; total: number }[];
         emergenciasPorClienteMes: { usuario: string; total: number }[];
         solicitudesPorTecnicoMensual: { usuario: string; total: number }[];
@@ -146,12 +146,12 @@ const getEstadoColor = (estado: string) => {
                         </h3>
                         <div class="my-6">
                             <div class="text-7xl font-bold">
-                                {{ charts.mantenimientosMesActual.programados > 0 
-                                    ? Math.round((charts.mantenimientosMesActual.ejecutados / charts.mantenimientosMesActual.programados) * 100) 
+                                {{ parseInt(charts.mantenimientosMesActual.programados)  > 0 
+                                    ? Math.round((parseInt(charts.mantenimientosMesActual.ejecutados) / (parseInt(charts.mantenimientosMesActual.programados) + parseInt(charts.mantenimientosMesActual.ejecutados))) * 100) 
                                     : 0 }}%
                             </div>
                             <div class="mt-4 text-2xl font-semibold">
-                                {{ charts.mantenimientosMesActual.ejecutados }} / {{ charts.mantenimientosMesActual.programados }}
+                                {{ charts.mantenimientosMesActual.ejecutados }} / {{ parseInt(charts.mantenimientosMesActual.programados) + parseInt(charts.mantenimientosMesActual.ejecutados) }}
                             </div>
                         </div>
                         <div class="mt-6 flex justify-center gap-8">
@@ -163,7 +163,7 @@ const getEstadoColor = (estado: string) => {
                             </div>
                             <div class="text-center">
                                 <div class="mb-1 text-3xl font-bold">
-                                    {{ Math.max(0, charts.mantenimientosMesActual.programados - charts.mantenimientosMesActual.ejecutados) }}
+                                    {{ Math.max(0, parseInt(charts.mantenimientosMesActual.programados) ) }}
                                 </div>
                                 <div class="text-sm opacity-90">Pendientes</div>
                             </div>
