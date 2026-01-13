@@ -234,23 +234,15 @@ const generateReport = (solicitudData: Solicitud) => {
 };
 
 const canGenerateInforme = (solicitudData: Solicitud) => {
-    if (solicitudData.estado === 'Finalizada' || usePage().props.auth.user.role === 'Cliente') {
+    if ( usePage().props.auth.user.role === 'Cliente') {
         return false;
     }
-    if (!solicitudData.fecha_informe) {
+    if (!solicitudData.fecha_informe ) {
         return true;
     }
     
     if(usePage().props.auth.user.role === 'Administrador'){
-        return solicitudData.fecha_informe
-        && (() => {
-            const ts = Date.parse(solicitudData.fecha_informe as unknown as string);
-            if (isNaN(ts)) {
-                return false;
-            }
-            const hoursSince = (Date.now() - ts) / (1000 * 60 * 60);
-            return hoursSince <= 240;
-        })();
+        return true;
     }
 
     return solicitudData.fecha_informe

@@ -82,13 +82,52 @@ class InformeRepository extends BaseRepository implements InformeInterface
                         Storage::disk('public')->delete($informe->$field);
                     }
 
-                    // Guardar nueva foto
-                    $data[$field] = $data[$field]->store("informes/{$section}", 'public');
+                    // Convertir y comprimir a WebP
+                    $data[$field] = $this->convertToWebP($data[$field], $section);
                 }
             }
         }
 
         return $data;
+    }
+
+    /**
+     * Convierte una imagen a formato WebP y la comprime
+     *
+     * @param  \Illuminate\Http\UploadedFile  $file
+     * @param  string  $section
+     * @return string Ruta de la imagen guardada
+     */
+    private function convertToWebP($file, string $section): string
+    {
+        // Leer la imagen original
+        $image = imagecreatefromstring(file_get_contents($file->getRealPath()));
+        
+        if ($image === false) {
+            throw new \Exception('No se pudo procesar la imagen');
+        }
+
+        // Mantener transparencia si es PNG
+        imagealphablending($image, false);
+        imagesavealpha($image, true);
+
+        // Generar nombre único para el archivo
+        $filename = uniqid() . '.webp';
+        $filePath = "informes/{$section}/{$filename}";
+
+        // Crear el contenido WebP en un buffer de salida
+        ob_start();
+        imagewebp($image, null, 80); // null = output al buffer en lugar de archivo
+        $webpContent = ob_get_clean();
+
+        // Liberar memoria
+        imagedestroy($image);
+
+        // Guardar usando el disco 'public' configurado en filesystems.php
+        Storage::disk('public')->put($filePath, $webpContent);
+
+        // Retornar la ruta relativa
+        return $filePath;
     }
 
     /**

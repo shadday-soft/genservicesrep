@@ -12,6 +12,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
+use App\Helpers\ImageHelper;
 
 class InformeController extends Controller
 {
@@ -170,6 +171,9 @@ class InformeController extends Controller
                 $registro->tension_operacion = $registro->tension_operacion ?? $solicitud->equipo->tension_operacion ?? '';
             }
 
+            // Pre-procesar todas las imágenes en paralelo (optimización de rendimiento)
+            $registro = ImageHelper::preprocessImagesForPdf($registro);
+
             // Generar el PDF
             $pdf = Pdf::loadView('pdf.planta_electrica', compact('registro', 'solicitud'));
             $pdf->setPaper('legal', 'portrait');
@@ -247,6 +251,9 @@ class InformeController extends Controller
                         $registro->marca_motor = $registro->marca_motor ?? $solicitud->equipo->marca_motor ?? '';
                         $registro->tension_operacion = $registro->tension_operacion ?? $solicitud->equipo->tension_operacion ?? '';
                     }
+
+                    // Pre-procesar todas las imágenes en paralelo (optimización de rendimiento)
+                    $registro = ImageHelper::preprocessImagesForPdf($registro);
 
                     $pdf = Pdf::loadView('pdf.planta_electrica', compact('registro', 'solicitud'));
                     $pdf->setPaper('legal', 'portrait');

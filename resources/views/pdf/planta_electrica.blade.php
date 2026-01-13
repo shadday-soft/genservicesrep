@@ -632,24 +632,7 @@
         <tr>
             @if($registro->foto_uno_antes)
             <td style="width: 50%; text-align: center; vertical-align: top; padding: 5px;">
-                @php
-                $fotoSrc = $registro->foto_uno_antes;
-                if (str_contains($fotoSrc, 'https://reporting.genservices.com.co/storage/')) {
-                try {
-                $imageData = @file_get_contents($fotoSrc);
-                if ($imageData !== false) {
-                $base64 = base64_encode($imageData);
-                $mimeType = 'image/jpeg';
-                $fotoSrc = 'data:' . $mimeType . ';base64,' . $base64;
-                }
-                } catch (\Exception $e) {
-                // Si falla, usar la URL como está
-                }
-                } else {
-                $fotoSrc = 'uploads/' . $fotoSrc;
-                }
-                @endphp
-                <img src="{{ $fotoSrc }}" alt="Foto 1 Antes" style="max-width: 95%; max-height: 180px; border: 1px solid #ccc;">
+                <img src="{{ $registro->foto_uno_antes }}" alt="Foto 1 Antes" style="max-width: 95%; max-height: 180px; border: 1px solid #ccc;">
                 @if($registro->pie_foto_uno_antes)
                 <div style="font-size: 8px; margin-top: 3px; text-align: center;">{{ $registro->pie_foto_uno_antes }}</div>
                 @endif
@@ -657,24 +640,7 @@
             @endif
             @if($registro->foto_dos_antes)
             <td style="width: 50%; text-align: center; vertical-align: top; padding: 5px;">
-                @php
-                $fotoSrc = $registro->foto_dos_antes;
-                if (str_contains($fotoSrc, 'https://reporting.genservices.com.co/storage/')) {
-                try {
-                $imageData = @file_get_contents($fotoSrc);
-                if ($imageData !== false) {
-                $base64 = base64_encode($imageData);
-                $mimeType = 'image/jpeg';
-                $fotoSrc = 'data:' . $mimeType . ';base64,' . $base64;
-                }
-                } catch (\Exception $e) {
-                // Si falla, usar la URL como está
-                }
-                } else {
-                $fotoSrc = 'uploads/' . $fotoSrc;
-                }
-                @endphp
-                <img src="{{ $fotoSrc }}" alt="Foto 2 Antes" style="max-width: 95%; max-height: 180px; border: 1px solid #ccc;">
+                <img src="{{ $registro->foto_dos_antes }}" alt="Foto 2 Antes" style="max-width: 95%; max-height: 180px; border: 1px solid #ccc;">
                 @if($registro->pie_foto_dos_antes)
                 <div style="font-size: 8px; margin-top: 3px; text-align: center;">{{ $registro->pie_foto_dos_antes }}</div>
                 @endif
@@ -684,24 +650,7 @@
         @if($registro->foto_tres_antes)
         <tr>
             <td colspan="2" style="text-align: center; vertical-align: top; padding: 5px;">
-                @php
-                $fotoSrc = $registro->foto_tres_antes;
-                if (str_contains($fotoSrc, 'https://reporting.genservices.com.co/storage/')) {
-                try {
-                $imageData = @file_get_contents($fotoSrc);
-                if ($imageData !== false) {
-                $base64 = base64_encode($imageData);
-                $mimeType = 'image/jpeg';
-                $fotoSrc = 'data:' . $mimeType . ';base64,' . $base64;
-                }
-                } catch (\Exception $e) {
-                // Si falla, usar la URL como está
-                }
-                } else {
-                $fotoSrc = 'uploads/' . $fotoSrc;
-                }
-                @endphp
-                <img src="{{ $fotoSrc }}" alt="Foto 3 Antes" style="max-width: 47%; max-height: 180px; border: 1px solid #ccc;">
+                <img src="{{ $registro->foto_tres_antes }}" alt="Foto 3 Antes" style="max-width: 47%; max-height: 180px; border: 1px solid #ccc;">
                 @if($registro->pie_foto_tres_antes)
                 <div style="font-size: 8px; margin-top: 3px; text-align: center;">{{ $registro->pie_foto_tres_antes }}</div>
                 @endif
@@ -742,24 +691,7 @@
         <tr>
             @foreach($chunk as $item)
             <td style="width: 50%; text-align: center; vertical-align: top; padding: 5px;">
-                @php
-                $fotoSrc = $item['foto'];
-                if (str_contains($fotoSrc, 'https://reporting.genservices.com.co/storage/')) {
-                try {
-                $imageData = @file_get_contents($fotoSrc);
-                if ($imageData !== false) {
-                $base64 = base64_encode($imageData);
-                $mimeType = 'image/jpeg';
-                $fotoSrc = 'data:' . $mimeType . ';base64,' . $base64;
-                }
-                } catch (\Exception $e) {
-                // Si falla, usar la URL como está
-                }
-                } else {
-                $fotoSrc = 'uploads/' . $fotoSrc;
-                }
-                @endphp
-                <img src="{{ $fotoSrc }}" alt="Foto Durante" style="max-width: 95%; max-height: 180px; border: 1px solid #ccc;">
+                <img src="{{ $item['foto'] }}" alt="{{ $item['foto'] }}" style="max-width: 95%; max-height: 180px; border: 1px solid #ccc;">
                 @if($item['pie'])
                 <div style="font-size: 8px; margin-top: 3px; text-align: center;">{{ $item['pie'] }}</div>
                 @endif
@@ -784,24 +716,7 @@
         <tr>
             @if($registro->foto_uno_despues)
             <td style="width: 50%; text-align: center; vertical-align: top; padding: 5px;">
-                @php
-                $fotoSrc = $registro->foto_uno_despues;
-                if (str_contains($fotoSrc, 'https://reporting.genservices.com.co/storage/')) {
-                try {
-                $imageData = @file_get_contents($fotoSrc);
-                if ($imageData !== false) {
-                $base64 = base64_encode($imageData);
-                $mimeType = 'image/jpeg';
-                $fotoSrc = 'data:' . $mimeType . ';base64,' . $base64;
-                }
-                } catch (\Exception $e) {
-                // Si falla, usar la URL como está
-                }
-                } else {
-                $fotoSrc = 'uploads/' . $fotoSrc;
-                }
-                @endphp
-                <img src="{{ $fotoSrc }}" alt="Foto 1 Después" style="max-width: 95%; max-height: 180px; border: 1px solid #ccc;">
+                <img src="{{ $registro->foto_uno_despues }}" alt="Foto 1 Después" style="max-width: 95%; max-height: 180px; border: 1px solid #ccc;">
                 @if($registro->pie_foto_uno_despues)
                 <div style="font-size: 8px; margin-top: 3px; text-align: center;">{{ $registro->pie_foto_uno_despues }}</div>
                 @endif
@@ -809,24 +724,7 @@
             @endif
             @if($registro->foto_dos_despues)
             <td style="width: 50%; text-align: center; vertical-align: top; padding: 5px;">
-                @php
-                $fotoSrc = $registro->foto_dos_despues;
-                if (str_contains($fotoSrc, 'https://reporting.genservices.com.co/storage/')) {
-                try {
-                $imageData = @file_get_contents($fotoSrc);
-                if ($imageData !== false) {
-                $base64 = base64_encode($imageData);
-                $mimeType = 'image/jpeg';
-                $fotoSrc = 'data:' . $mimeType . ';base64,' . $base64;
-                }
-                } catch (\Exception $e) {
-                // Si falla, usar la URL como está
-                }
-                } else {
-                $fotoSrc = 'uploads/' . $fotoSrc;
-                }
-                @endphp
-                <img src="{{ $fotoSrc }}" alt="Foto 2 Después" style="max-width: 95%; max-height: 180px; border: 1px solid #ccc;">
+                <img src="{{ $registro->foto_dos_despues }}" alt="Foto 2 Después" style="max-width: 95%; max-height: 180px; border: 1px solid #ccc;">
                 @if($registro->pie_foto_dos_despues)
                 <div style="font-size: 8px; margin-top: 3px; text-align: center;">{{ $registro->pie_foto_dos_despues }}</div>
                 @endif
@@ -836,24 +734,7 @@
         @if($registro->foto_tres_despues)
         <tr>
             <td colspan="2" style="text-align: center; vertical-align: top; padding: 5px;">
-                @php
-                $fotoSrc = $registro->foto_tres_despues;
-                if (str_contains($fotoSrc, 'https://reporting.genservices.com.co/storage/')) {
-                try {
-                $imageData = @file_get_contents($fotoSrc);
-                if ($imageData !== false) {
-                $base64 = base64_encode($imageData);
-                $mimeType = 'image/jpeg';
-                $fotoSrc = 'data:' . $mimeType . ';base64,' . $base64;
-                }
-                } catch (\Exception $e) {
-                // Si falla, usar la URL como está
-                }
-                } else {
-                $fotoSrc = 'uploads/' . $fotoSrc;
-                }
-                @endphp
-                <img src="{{ $fotoSrc }}" alt="Foto 3 Después" style="max-width: 47%; max-height: 180px; border: 1px solid #ccc;">
+                <img src="{{ $registro->foto_tres_despues }}" alt="Foto 3 Después" style="max-width: 47%; max-height: 180px; border: 1px solid #ccc;">
                 @if($registro->pie_foto_tres_despues)
                 <div style="font-size: 8px; margin-top: 3px; text-align: center;">{{ $registro->pie_foto_tres_despues }}</div>
                 @endif
