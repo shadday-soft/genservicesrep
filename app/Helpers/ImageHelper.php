@@ -5,6 +5,69 @@ namespace App\Helpers;
 class ImageHelper
 {
     /**
+     * Optimiza una imagen: redimensiona, comprime y convierte a WebP
+     * 
+     * @param string $imageData Datos binarios de la imagen
+     * @param int $maxWidth Ancho máximo (default: 1200px)
+     * @param int $maxHeight Altura máxima (default: 1200px)
+     * @param int $quality Calidad WebP (default: 75)
+     * @return string|false Datos binarios de la imagen optimizada o false si falla
+     */
+    private static function optimizeImage(string $imageData, int $maxWidth = 1200, int $maxHeight = 1200, int $quality = 75)
+    {
+        try {
+            // Crear imagen desde los datos
+            $image = @imagecreatefromstring($imageData);
+            
+            if ($image === false) {
+                return false;
+            }
+
+            // Obtener dimensiones originales
+            $originalWidth = imagesx($image);
+            $originalHeight = imagesy($image);
+
+            // Calcular nuevas dimensiones manteniendo el aspect ratio
+            $ratio = min($maxWidth / $originalWidth, $maxHeight / $originalHeight);
+            
+            // Solo redimensionar si la imagen es más grande que el máximo
+            if ($ratio < 1) {
+                $newWidth = (int)round($originalWidth * $ratio);
+                $newHeight = (int)round($originalHeight * $ratio);
+                
+                // Crear imagen redimensionada
+                $resizedImage = imagecreatetruecolor($newWidth, $newHeight);
+                
+                // Mantener transparencia para PNG
+                imagealphablending($resizedImage, false);
+                imagesavealpha($resizedImage, true);
+                
+                // Redimensionar con alta calidad
+                imagecopyresampled(
+                    $resizedImage, $image,
+                    0, 0, 0, 0,
+                    $newWidth, $newHeight,
+                    $originalWidth, $originalHeight
+                );
+                
+                imagedestroy($image);
+                $image = $resizedImage;
+            }
+
+            // Convertir a WebP y obtener los datos
+            ob_start();
+            imagewebp($image, null, $quality);
+            $webpData = ob_get_clean();
+            
+            imagedestroy($image);
+            
+            return $webpData;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+    /**
      * Convierte múltiples URLs de imágenes a base64 en paralelo usando cURL multi
      * 
      * @param array $urls Array de URLs de imágenes
@@ -65,17 +128,13 @@ class ImageHelper
             $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
             
             if ($imageData !== false && $httpCode == 200) {
-                // Detectar el tipo MIME de la imagen
-                $finfo = new \finfo(FILEINFO_MIME_TYPE);
-                $mimeType = $finfo->buffer($imageData);
+                // Optimizar la imagen antes de convertir a base64
+                $optimizedImageData = self::optimizeImage($imageData);
                 
-                // Si no se puede detectar, asumir JPEG
-                if (!$mimeType || !str_starts_with($mimeType, 'image/')) {
-                    $mimeType = 'image/jpeg';
+                if ($optimizedImageData !== false) {
+                    $base64 = base64_encode($optimizedImageData);
+                    $results[$index] = 'data:image/webp;base64,' . $base64;
                 }
-                
-                $base64 = base64_encode($imageData);
-                $results[$index] = 'data:' . $mimeType . ';base64,' . $base64;
             }
             
             curl_multi_remove_handle($multiHandle, $ch);
@@ -116,27 +175,38 @@ class ImageHelper
             'firma_cliente',
         ];
 
-        // Recopilar todas las URLs que necesitan conversión
+        // Clasificar imágenes en una sola pasada
         $urlsToConvert = [];
         $fieldMapping = [];
+        $localFields = [];
         
         foreach ($imageFields as $field) {
-            if (!empty($registro->$field)) {
-                $url = $registro->$field;
-                
-                // Solo procesar URLs remotas
-                if (str_contains($url, 'https://reporting.genservices.com.co/storage/')) {
-                    $urlsToConvert[] = $url;
-                    $fieldMapping[] = $field;
-                }
+            if (empty($registro->$field)) {
+                continue; // Saltar campos vacíos
+            }
+            
+            $url = $registro->$field;
+            
+            // URLs remotas: necesitan descarga y optimización
+            if (str_contains($url, 'https://reporting.genservices.com.co/storage/')) {
+                $urlsToConvert[] = $url;
+                $fieldMapping[] = $field;
+            }
+            // Data URLs (firmas): ya están procesadas, no tocar
+            elseif (str_contains($url, 'data:')) {
+                // Ya está en base64, no hacer nada
+                continue;
+            }
+            // Imágenes locales: solo agregar prefijo
+            elseif (!str_contains($url, 'http')) {
+                $localFields[] = $field;
             }
         }
 
-        // Convertir todas las imágenes en paralelo
+        // Convertir imágenes remotas en paralelo (solo si hay)
         if (!empty($urlsToConvert)) {
             $convertedImages = self::convertImagesToBase64Parallel($urlsToConvert);
             
-            // Asignar las imágenes convertidas de vuelta al registro
             foreach ($fieldMapping as $index => $field) {
                 if ($convertedImages[$index] !== null) {
                     $registro->$field = $convertedImages[$index];
@@ -144,16 +214,9 @@ class ImageHelper
             }
         }
 
-        // Procesar imágenes locales (no remotas)
-        foreach ($imageFields as $field) {
-            if (!empty($registro->$field)) {
-                $url = $registro->$field;
-                
-                // Si no es una URL remota y no es un data URL, agregar el prefijo
-                if (!str_contains($url, 'http') && !str_contains($url, 'data:')) {
-                    $registro->$field = 'uploads/' . $url;
-                }
-            }
+        // Procesar imágenes locales (muy rápido, solo agregar prefijo)
+        foreach ($localFields as $field) {
+            $registro->$field = 'uploads/' . $registro->$field;
         }
 
         return $registro;
