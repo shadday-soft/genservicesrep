@@ -137,8 +137,11 @@ $chunks = array_chunk($fotosAntesFiltradas, 2);
    - Optimiza: redimensiona + WebP + compresión
    - Convierte a base64
    ↓
-4. Procesamiento local (rápido)
-   - Solo agrega prefijo 'uploads/'
+4. Procesamiento local (inteligente)
+   Para cada imagen local:
+   ├─ Verifica tamaño del archivo
+   ├─ Si < 500KB: Solo agrega prefijo 'uploads/' (rápido)
+   └─ Si > 500KB: Optimiza + convierte a base64 (reduce tamaño)
    ↓
 5. Vista recibe registro con imágenes ya procesadas
    ↓
@@ -198,13 +201,27 @@ $chunks = array_chunk($fotosAntesFiltradas, 2);
 - **Transparencia**: Preservada en imágenes PNG
 
 ### Configuración Personalizable
-Puedes ajustar los parámetros en `ImageHelper::optimizeImage()`:
+
+**Parámetros de optimización** en `ImageHelper::optimizeImage()`:
 ```php
 // Valores actuales (recomendados):
 $maxWidth = 1200;   // Ancho máximo en px
 $maxHeight = 1200;  // Altura máxima en px
 $quality = 75;      // Calidad WebP (0-100)
 ```
+
+**Umbral de tamaño** en `ImageHelper::preprocessImagesForPdf()`:
+```php
+// Línea ~225:
+if ($sizeInKB > 500) { // 500KB es el umbral
+    // Optimizar imagen pesada
+}
+```
+
+**Recomendaciones de umbral**:
+- `300KB`: Más agresivo, optimiza más imágenes
+- `500KB`: **Actual**, balance recomendado
+- `1000KB`: Menos agresivo, solo imágenes muy grandes
 
 ### Impacto en Calidad
 - **Imágenes grandes (>2000px)**: Se redimensionan, imperceptible en PDF
@@ -225,9 +242,17 @@ Resultado: data:image/webp;base64,... (optimizada)
 **Imágenes Locales** (de storage local):
 ```
 Ruta: informes/antes/696686b80451f.webp
-→ Solo agrega prefijo
+
+SI tamaño < 500KB (imagen ya optimizada):
+→ Solo agrega prefijo (instantáneo)
 Resultado: uploads/informes/antes/696686b80451f.webp
-Nota: Ya están en WebP optimizado (calidad 80 desde InformeRepository)
+
+SI tamaño > 500KB (imagen pesada):
+→ Optimiza (redimensiona + WebP + compresión)
+→ Convierte a base64
+Resultado: data:image/webp;base64,... (optimizada)
+
+Nota: Imágenes nuevas ya están en WebP optimizado (calidad 80)
 ```
 
 **Firmas** (del frontend SignaturePad):
@@ -239,9 +264,14 @@ Nota: Ya vienen optimizadas desde el frontend
 ```
 
 **Ventajas**:
-- Informes con solo fotos locales: **Instantáneo** (sin procesamiento)
+- Informes con fotos locales ligeras (<500KB): **Instantáneo** (solo prefijo)
+- Informes con fotos locales pesadas (>500KB): **Optimizadas automáticamente**
 - Informes con fotos remotas: **Optimizado en paralelo**
 - `array_chunk($fotos, 2)` divide automáticamente en columnas de 2
+
+**Umbral de Optimización**: 500KB
+- Por debajo: Ruta directa (rápido)
+- Por encima: Optimización + base64 (reduce tamaño)
 
 ### Ejemplo de Reducción de Tamaño
 ```
@@ -253,3 +283,48 @@ Imagen optimizada (200-300 KB)
     ↓
 Reducción: ~90% sin pérdida perceptible de calidad
 ```
+
+### ¿Ruta Local vs Base64? Ventajas y Desventajas
+
+**Ruta Local** (`uploads/informes/...`):
+```php
+✅ Ventajas:
+- Generación instantánea del PDF
+- No aumenta el tamaño del HTML/PDF
+- Usa menos memoria durante generación
+
+❌ Desventajas:
+- Requiere que los archivos existan en el servidor
+- Si se mueven/eliminan las fotos, el PDF queda roto
+- Posibles problemas de permisos
+```
+
+**Base64 Embebido** (`data:image/webp;base64,...`):
+```php
+✅ Ventajas:
+- Imágenes embebidas en el PDF (portabilidad total)
+- No depende de archivos externos
+- El PDF siempre funciona, sin importar dónde esté
+
+❌ Desventajas:
+- Aumenta tamaño del HTML en ~33% (encoding base64)
+- Usa más memoria durante generación
+- Genera el PDF ligeramente más lento
+```
+
+**Nuestra Solución Híbrida** (Lo mejor de ambos):
+```
+Imágenes locales ligeras (<500KB):
+→ Ruta local (rápido, no aumenta tamaño)
+
+Imágenes locales pesadas (>500KB):
+→ Optimiza + base64 (reduce tamaño, garantiza portabilidad)
+
+Imágenes remotas (siempre):
+→ Optimiza + base64 (necesario para acceso)
+```
+
+**Resultado**: 
+- PDFs con fotos ligeras: **Instantáneos**
+- PDFs con fotos pesadas: **Optimizados automáticamente**
+- PDFs portables: **Imágenes siempre disponibles**

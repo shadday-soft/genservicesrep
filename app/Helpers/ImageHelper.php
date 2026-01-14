@@ -220,9 +220,41 @@ class ImageHelper
             }
         }
 
-        // Procesar imágenes locales (muy rápido, solo agregar prefijo)
+        // Procesar imágenes locales
         foreach ($localFields as $field) {
-            $registro->$field = 'uploads/' . $registro->$field;
+            $localPath = $registro->$field;
+            $fullPath = public_path('uploads/' . $localPath);
+            
+            // Verificar si el archivo existe y su tamaño
+            if (file_exists($fullPath)) {
+                $fileSize = filesize($fullPath);
+                $sizeInKB = $fileSize / 1024;
+                
+                // Si la imagen es pesada (>500KB), optimizarla y convertir a base64
+                if ($sizeInKB > 500) {
+                    try {
+                        $imageData = file_get_contents($fullPath);
+                        $optimizedData = self::optimizeImage($imageData, 1200, 1200, 75);
+                        
+                        if ($optimizedData !== false) {
+                            $base64 = base64_encode($optimizedData);
+                            $registro->$field = 'data:image/webp;base64,' . $base64;
+                        } else {
+                            // Si falla la optimización, usar ruta normal
+                            $registro->$field = 'uploads/' . $localPath;
+                        }
+                    } catch (\Exception $e) {
+                        // Si hay error, usar ruta normal
+                        $registro->$field = 'uploads/' . $localPath;
+                    }
+                } else {
+                    // Imagen ligera, solo agregar prefijo (rápido)
+                    $registro->$field = 'uploads/' . $localPath;
+                }
+            } else {
+                // Archivo no existe, agregar prefijo de todos modos
+                $registro->$field = 'uploads/' . $localPath;
+            }
         }
 
         return $registro;
