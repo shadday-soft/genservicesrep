@@ -195,7 +195,8 @@ class InformeController extends Controller
             $registro->user = $solicitud->user;
             $registro->sucursal = $solicitud->sucursal;
             $registro->equipo = $solicitud->equipo;
-
+            
+            $registro = ImageHelper::preprocessImagesForPdf($registro);
             // Generar el PDF
             $pdf = Pdf::loadView('pdf.tablero_electrico', compact('registro', 'solicitud'));
             $pdf->setPaper('legal', 'portrait');

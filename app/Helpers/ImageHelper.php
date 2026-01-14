@@ -154,8 +154,9 @@ class ImageHelper
      */
     public static function preprocessImagesForPdf($registro): object
     {
-        // Lista de campos de imagen a procesar
+        // Lista de campos de imagen a procesar (PlantaElectrica y TableroElectrico)
         $imageFields = [
+            // PlantaElectrica (minúsculas)
             'foto_uno_antes',
             'foto_dos_antes',
             'foto_tres_antes',
@@ -171,6 +172,11 @@ class ImageHelper
             'foto_uno_despues',
             'foto_dos_despues',
             'foto_tres_despues',
+            // TableroElectrico (con mayúsculas)
+            'Foto_uno_antes',
+            'Foto_dos_antes',
+            'Foto_tres_antes',
+            // Firmas (ambos modelos)
             'firma_tecnico',
             'firma_cliente',
         ];

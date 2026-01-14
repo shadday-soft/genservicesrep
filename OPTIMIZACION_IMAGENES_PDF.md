@@ -1,7 +1,7 @@
 # Optimización de Imágenes en PDF
 
 ## Problema Original
-Antes, la vista Blade `planta_electrica.blade.php` procesaba cada imagen individualmente:
+Antes, las vistas Blade (`planta_electrica.blade.php` y `tablero_electrico.blade.php`) procesaban cada imagen individualmente:
 - Hacía peticiones HTTP a URLs remotas para cada foto
 - Convertía cada imagen a base64 de forma secuencial
 - **Problema de rendimiento**: Para un informe con 15 fotos, hacía 15 peticiones HTTP separadas
@@ -9,7 +9,14 @@ Antes, la vista Blade `planta_electrica.blade.php` procesaba cada imagen individ
 ## Solución Implementada
 
 ### 1. Pre-procesamiento en el Controlador
-**Archivo**: `app/Http/Controllers/InformeController.php` (línea 175)
+**Archivo**: `app/Http/Controllers/InformeController.php`
+
+Para **Planta Eléctrica** (línea 175):
+```php
+$registro = ImageHelper::preprocessImagesForPdf($registro);
+```
+
+Para **Tablero Eléctrico** (línea 199):
 ```php
 $registro = ImageHelper::preprocessImagesForPdf($registro);
 ```
@@ -46,8 +53,10 @@ private static function optimizeImage($imageData, $maxWidth = 1200, $maxHeight =
 - ✅ **Mantiene**: Transparencia y aspect ratio
 - ✅ **Robusto**: Manejo de errores
 
-### 3. Vista Simplificada
-**Archivo**: `resources/views/pdf/planta_electrica.blade.php`
+### 3. Vistas Simplificadas
+**Archivos**: 
+- `resources/views/pdf/planta_electrica.blade.php`
+- `resources/views/pdf/tablero_electrico.blade.php`
 
 Antes (código repetitivo):
 ```php
@@ -147,16 +156,25 @@ $chunks = array_chunk($fotosAntesFiltradas, 2);
    - Disco 'public' apunta a `public/uploads`
 
 3. ✅ `app/Http/Controllers/InformeController.php`
-   - Usa `ImageHelper::preprocessImagesForPdf()`
+   - Usa `ImageHelper::preprocessImagesForPdf()` para ambos tipos de informe
 
 4. ✅ `app/Helpers/ImageHelper.php`
    - Conversión paralela con cURL multi
    - Procesamiento batch de todas las imágenes
+   - Optimización: redimensiona + WebP + compresión
+   - Soporta campos de PlantaElectrica y TableroElectrico
 
 5. ✅ `resources/views/pdf/planta_electrica.blade.php`
    - Eliminadas conversiones duplicadas
    - Usa arrays para código más limpio
    - Renderizado directo de imágenes preprocesadas
+   - 3 fotos antes, 9 durante, 3 después
+
+6. ✅ `resources/views/pdf/tablero_electrico.blade.php`
+   - Eliminadas conversiones duplicadas
+   - Usa arrays para código más limpio
+   - Renderizado directo de imágenes preprocesadas
+   - 3 fotos antes, 6 durante, 3 después
 
 ## Beneficios Adicionales
 
