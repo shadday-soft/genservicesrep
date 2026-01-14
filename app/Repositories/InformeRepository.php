@@ -107,17 +107,49 @@ class InformeRepository extends BaseRepository implements InformeInterface
             throw new \Exception('No se pudo procesar la imagen');
         }
 
-        // Mantener transparencia si es PNG
-        imagealphablending($image, false);
-        imagesavealpha($image, true);
+        // Obtener dimensiones originales
+        $originalWidth = imagesx($image);
+        $originalHeight = imagesy($image);
+
+        // OPTIMIZACIÓN AGRESIVA: Redimensionar a máximo 800px
+        $maxWidth = 800;
+        $maxHeight = 800;
+        $ratio = min($maxWidth / $originalWidth, $maxHeight / $originalHeight);
+        
+        // Si la imagen es más grande que el máximo, redimensionar
+        if ($ratio < 1) {
+            $newWidth = (int)round($originalWidth * $ratio);
+            $newHeight = (int)round($originalHeight * $ratio);
+            
+            $resizedImage = imagecreatetruecolor($newWidth, $newHeight);
+            
+            // Mantener transparencia
+            imagealphablending($resizedImage, false);
+            imagesavealpha($resizedImage, true);
+            
+            // Redimensionar con alta calidad
+            imagecopyresampled(
+                $resizedImage, $image,
+                0, 0, 0, 0,
+                $newWidth, $newHeight,
+                $originalWidth, $originalHeight
+            );
+            
+            imagedestroy($image);
+            $image = $resizedImage;
+        } else {
+            // Mantener transparencia si no se redimensiona
+            imagealphablending($image, false);
+            imagesavealpha($image, true);
+        }
 
         // Generar nombre único para el archivo
         $filename = uniqid() . '.webp';
         $filePath = "informes/{$section}/{$filename}";
 
-        // Crear el contenido WebP en un buffer de salida
+        // Crear el contenido WebP con compresión agresiva (calidad 60)
         ob_start();
-        imagewebp($image, null, 80); // null = output al buffer en lugar de archivo
+        imagewebp($image, null, 60); // Calidad 60 = PDFs más ligeros
         $webpContent = ob_get_clean();
 
         // Liberar memoria

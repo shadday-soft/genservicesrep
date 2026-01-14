@@ -8,12 +8,12 @@ class ImageHelper
      * Optimiza una imagen: redimensiona, comprime y convierte a WebP
      * 
      * @param string $imageData Datos binarios de la imagen
-     * @param int $maxWidth Ancho máximo (default: 1200px)
-     * @param int $maxHeight Altura máxima (default: 1200px)
-     * @param int $quality Calidad WebP (default: 75)
+     * @param int $maxWidth Ancho máximo (default: 800px - optimizado para PDF)
+     * @param int $maxHeight Altura máxima (default: 800px - optimizado para PDF)
+     * @param int $quality Calidad WebP (default: 60 - balance óptimo para PDF)
      * @return string|false Datos binarios de la imagen optimizada o false si falla
      */
-    private static function optimizeImage(string $imageData, int $maxWidth = 1200, int $maxHeight = 1200, int $quality = 75)
+    private static function optimizeImage(string $imageData, int $maxWidth = 800, int $maxHeight = 800, int $quality = 60)
     {
         try {
             // Crear imagen desde los datos
@@ -220,7 +220,7 @@ class ImageHelper
             }
         }
 
-        // Procesar imágenes locales
+        // Procesar imágenes locales (OPTIMIZACIÓN AGRESIVA para PDFs ligeros)
         foreach ($localFields as $field) {
             $localPath = $registro->$field;
             $fullPath = public_path('uploads/' . $localPath);
@@ -230,11 +230,13 @@ class ImageHelper
                 $fileSize = filesize($fullPath);
                 $sizeInKB = $fileSize / 1024;
                 
-                // Si la imagen es pesada (>500KB), optimizarla y convertir a base64
-                if ($sizeInKB > 500) {
+                // OPTIMIZAR SIEMPRE si es mayor a 150KB (umbral agresivo)
+                // Esto garantiza PDFs ligeros
+                if ($sizeInKB > 150) {
                     try {
                         $imageData = file_get_contents($fullPath);
-                        $optimizedData = self::optimizeImage($imageData, 1200, 1200, 75);
+                        // Usar parámetros agresivos: 800px max, calidad 60
+                        $optimizedData = self::optimizeImage($imageData, 800, 800, 60);
                         
                         if ($optimizedData !== false) {
                             $base64 = base64_encode($optimizedData);
@@ -248,7 +250,7 @@ class ImageHelper
                         $registro->$field = 'uploads/' . $localPath;
                     }
                 } else {
-                    // Imagen ligera, solo agregar prefijo (rápido)
+                    // Imagen muy ligera (<150KB), solo agregar prefijo
                     $registro->$field = 'uploads/' . $localPath;
                 }
             } else {
