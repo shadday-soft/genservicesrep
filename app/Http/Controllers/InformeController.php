@@ -173,7 +173,7 @@ class InformeController extends Controller
 
             // Pre-procesar todas las imágenes en paralelo (optimización de rendimiento)
             $registro = ImageHelper::preprocessImagesForPdf($registro);
-
+           
             // Generar el PDF
             $pdf = Pdf::loadView('pdf.planta_electrica', compact('registro', 'solicitud'));
             $pdf->setPaper('legal', 'portrait');

@@ -629,34 +629,33 @@
         </tr>
     </table>
     <table style="margin-top: 3px;">
+        @php
+        $fotosAntes = [
+            ['foto' => $registro->foto_uno_antes, 'pie' => $registro->pie_foto_uno_antes, 'alt' => 'Foto 1 Antes'],
+            ['foto' => $registro->foto_dos_antes, 'pie' => $registro->pie_foto_dos_antes, 'alt' => 'Foto 2 Antes'],
+            ['foto' => $registro->foto_tres_antes, 'pie' => $registro->pie_foto_tres_antes, 'alt' => 'Foto 3 Antes'],
+        ];
+        $fotosAntesFiltradas = array_filter($fotosAntes, function($item) {
+            return !empty($item['foto']);
+        });
+        $chunks = array_chunk($fotosAntesFiltradas, 2);
+        @endphp
+        @foreach($chunks as $chunk)
         <tr>
-            @if($registro->foto_uno_antes)
+            @foreach($chunk as $item)
             <td style="width: 50%; text-align: center; vertical-align: top; padding: 5px;">
-                <img src="{{ $registro->foto_uno_antes }}" alt="Foto 1 Antes" style="max-width: 95%; max-height: 180px; border: 1px solid #ccc;">
-                @if($registro->pie_foto_uno_antes)
-                <div style="font-size: 8px; margin-top: 3px; text-align: center;">{{ $registro->pie_foto_uno_antes }}</div>
+                {{-- Las imágenes ya fueron procesadas por ImageHelper::preprocessImagesForPdf() --}}
+                <img src="{{ $item['foto'] }}" alt="{{ $item['alt'] }}" style="max-width: 95%; max-height: 180px; border: 1px solid #ccc;">
+                @if($item['pie'])
+                <div style="font-size: 8px; margin-top: 3px; text-align: center;">{{ $item['pie'] }}</div>
                 @endif
             </td>
-            @endif
-            @if($registro->foto_dos_antes)
-            <td style="width: 50%; text-align: center; vertical-align: top; padding: 5px;">
-                <img src="{{ $registro->foto_dos_antes }}" alt="Foto 2 Antes" style="max-width: 95%; max-height: 180px; border: 1px solid #ccc;">
-                @if($registro->pie_foto_dos_antes)
-                <div style="font-size: 8px; margin-top: 3px; text-align: center;">{{ $registro->pie_foto_dos_antes }}</div>
-                @endif
-            </td>
+            @endforeach
+            @if(count($chunk) == 1)
+            <td style="width: 50%;"></td>
             @endif
         </tr>
-        @if($registro->foto_tres_antes)
-        <tr>
-            <td colspan="2" style="text-align: center; vertical-align: top; padding: 5px;">
-                <img src="{{ $registro->foto_tres_antes }}" alt="Foto 3 Antes" style="max-width: 47%; max-height: 180px; border: 1px solid #ccc;">
-                @if($registro->pie_foto_tres_antes)
-                <div style="font-size: 8px; margin-top: 3px; text-align: center;">{{ $registro->pie_foto_tres_antes }}</div>
-                @endif
-            </td>
-        </tr>
-        @endif
+        @endforeach
     </table>
     @endif
 
@@ -672,18 +671,18 @@
     <table style="margin-top: 3px;">
         @php
         $fotosDurante = [
-        ['foto' => $registro->foto_uno_durante, 'pie' => $registro->pie_foto_uno_durante],
-        ['foto' => $registro->foto_dos_durante, 'pie' => $registro->pie_foto_dos_durante],
-        ['foto' => $registro->foto_tres_durante, 'pie' => $registro->pie_foto_tres_durante],
-        ['foto' => $registro->foto_cuatro_durante, 'pie' => $registro->pie_foto_cuatro_durante],
-        ['foto' => $registro->foto_cinco_durante, 'pie' => $registro->pie_foto_cinco_durante],
-        ['foto' => $registro->foto_seis_durante, 'pie' => $registro->pie_foto_seis_durante],
-        ['foto' => $registro->foto_siete_durante, 'pie' => $registro->pie_foto_siete_durante],
-        ['foto' => $registro->foto_ocho_durante, 'pie' => $registro->pie_foto_ocho_durante],
-        ['foto' => $registro->foto_nueve_durante, 'pie' => $registro->pie_foto_nueve_durante],
+            ['foto' => $registro->foto_uno_durante, 'pie' => $registro->pie_foto_uno_durante, 'alt' => 'Foto 1 Durante'],
+            ['foto' => $registro->foto_dos_durante, 'pie' => $registro->pie_foto_dos_durante, 'alt' => 'Foto 2 Durante'],
+            ['foto' => $registro->foto_tres_durante, 'pie' => $registro->pie_foto_tres_durante, 'alt' => 'Foto 3 Durante'],
+            ['foto' => $registro->foto_cuatro_durante, 'pie' => $registro->pie_foto_cuatro_durante, 'alt' => 'Foto 4 Durante'],
+            ['foto' => $registro->foto_cinco_durante, 'pie' => $registro->pie_foto_cinco_durante, 'alt' => 'Foto 5 Durante'],
+            ['foto' => $registro->foto_seis_durante, 'pie' => $registro->pie_foto_seis_durante, 'alt' => 'Foto 6 Durante'],
+            ['foto' => $registro->foto_siete_durante, 'pie' => $registro->pie_foto_siete_durante, 'alt' => 'Foto 7 Durante'],
+            ['foto' => $registro->foto_ocho_durante, 'pie' => $registro->pie_foto_ocho_durante, 'alt' => 'Foto 8 Durante'],
+            ['foto' => $registro->foto_nueve_durante, 'pie' => $registro->pie_foto_nueve_durante, 'alt' => 'Foto 9 Durante'],
         ];
         $fotosDuranteFiltradas = array_filter($fotosDurante, function($item) {
-        return !empty($item['foto']);
+            return !empty($item['foto']);
         });
         $chunks = array_chunk($fotosDuranteFiltradas, 2);
         @endphp
@@ -691,7 +690,8 @@
         <tr>
             @foreach($chunk as $item)
             <td style="width: 50%; text-align: center; vertical-align: top; padding: 5px;">
-                <img src="{{ $item['foto'] }}" alt="{{ $item['foto'] }}" style="max-width: 95%; max-height: 180px; border: 1px solid #ccc;">
+                {{-- Las imágenes ya fueron procesadas por ImageHelper::preprocessImagesForPdf() --}}
+                <img src="{{ $item['foto'] }}" alt="{{ $item['alt'] }}" style="max-width: 95%; max-height: 180px; border: 1px solid #ccc;">
                 @if($item['pie'])
                 <div style="font-size: 8px; margin-top: 3px; text-align: center;">{{ $item['pie'] }}</div>
                 @endif
@@ -713,34 +713,33 @@
         </tr>
     </table>
     <table style="margin-top: 3px;">
+        @php
+        $fotosDespues = [
+            ['foto' => $registro->foto_uno_despues, 'pie' => $registro->pie_foto_uno_despues, 'alt' => 'Foto 1 Después'],
+            ['foto' => $registro->foto_dos_despues, 'pie' => $registro->pie_foto_dos_despues, 'alt' => 'Foto 2 Después'],
+            ['foto' => $registro->foto_tres_despues, 'pie' => $registro->pie_foto_tres_despues, 'alt' => 'Foto 3 Después'],
+        ];
+        $fotosDespuesFiltradas = array_filter($fotosDespues, function($item) {
+            return !empty($item['foto']);
+        });
+        $chunks = array_chunk($fotosDespuesFiltradas, 2);
+        @endphp
+        @foreach($chunks as $chunk)
         <tr>
-            @if($registro->foto_uno_despues)
+            @foreach($chunk as $item)
             <td style="width: 50%; text-align: center; vertical-align: top; padding: 5px;">
-                <img src="{{ $registro->foto_uno_despues }}" alt="Foto 1 Después" style="max-width: 95%; max-height: 180px; border: 1px solid #ccc;">
-                @if($registro->pie_foto_uno_despues)
-                <div style="font-size: 8px; margin-top: 3px; text-align: center;">{{ $registro->pie_foto_uno_despues }}</div>
+                {{-- Las imágenes ya fueron procesadas por ImageHelper::preprocessImagesForPdf() --}}
+                <img src="{{ $item['foto'] }}" alt="{{ $item['alt'] }}" style="max-width: 95%; max-height: 180px; border: 1px solid #ccc;">
+                @if($item['pie'])
+                <div style="font-size: 8px; margin-top: 3px; text-align: center;">{{ $item['pie'] }}</div>
                 @endif
             </td>
-            @endif
-            @if($registro->foto_dos_despues)
-            <td style="width: 50%; text-align: center; vertical-align: top; padding: 5px;">
-                <img src="{{ $registro->foto_dos_despues }}" alt="Foto 2 Después" style="max-width: 95%; max-height: 180px; border: 1px solid #ccc;">
-                @if($registro->pie_foto_dos_despues)
-                <div style="font-size: 8px; margin-top: 3px; text-align: center;">{{ $registro->pie_foto_dos_despues }}</div>
-                @endif
-            </td>
+            @endforeach
+            @if(count($chunk) == 1)
+            <td style="width: 50%;"></td>
             @endif
         </tr>
-        @if($registro->foto_tres_despues)
-        <tr>
-            <td colspan="2" style="text-align: center; vertical-align: top; padding: 5px;">
-                <img src="{{ $registro->foto_tres_despues }}" alt="Foto 3 Después" style="max-width: 47%; max-height: 180px; border: 1px solid #ccc;">
-                @if($registro->pie_foto_tres_despues)
-                <div style="font-size: 8px; margin-top: 3px; text-align: center;">{{ $registro->pie_foto_tres_despues }}</div>
-                @endif
-            </td>
-        </tr>
-        @endif
+        @endforeach
     </table>
     @endif
 
