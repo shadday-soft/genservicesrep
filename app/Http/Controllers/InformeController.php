@@ -233,7 +233,7 @@ class InformeController extends Controller
         $solicitudes = Solicitud::with(['client', 'sucursal', 'equipo', 'user'])
             ->where('informe_generado', true)
             ->whereNull('pdf_path')
-            ->take(2)
+            ->take(20)
             ->get();
         $saved = 0;
         $errors = [];
@@ -340,8 +340,8 @@ class InformeController extends Controller
                 'error' => "Se guardaron {$saved} PDF(s) en public/pdf. Errores: ".implode(' | ', $errors),
             ]);
         }
-
-        return redirect('downloadAllInformes');
+        if(count($solicitudes) > 0)
+            return redirect('downloadAllInformes');
 
         return back()->with('status', "Se guardaron {$saved} PDF(s) en public/pdf");
     }
