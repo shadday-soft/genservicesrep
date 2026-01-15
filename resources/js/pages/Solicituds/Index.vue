@@ -267,7 +267,12 @@ const exportToExcel = () => {
     window.location.href = `/solicituds-export-excel?${params.toString()}`;
 };
 
-
+const getRoutePdf = (solicitudData: Solicitud) => {
+    if(solicitudData.pdf_path){
+        return '/public/' + solicitudData.pdf_path;
+    }
+    return `/informe/${solicitudData.id}/pdf`;
+}
 
 
 </script>
@@ -329,7 +334,8 @@ const exportToExcel = () => {
                         <div class="flex justify-end">
                             <Button icon="pi pi-eye" size="small" severity="secondary" text
                                 v-tooltip.left="`Ver Detalles`" @click="viewDetails(data)" />
-                            <a :href="`/informe/${data.id}/pdf`" target="_blank" v-if="data.informe_generado" v-tooltip.top="`Ver Informe`">
+                            
+                            <a :href="getRoutePdf(data)" target="_blank" v-if="data.informe_generado" v-tooltip.top="`Ver Informe`">
                                 <Button icon="pi pi-file-pdf" size="small" severity="danger" text/>
                             </a>
                             <Button icon="pi pi-file" size="small" severity="info" text
@@ -467,11 +473,13 @@ const exportToExcel = () => {
                         <!-- ver detalles  -->
                         <Button icon="pi pi-eye" size="small" severity="secondary" text v-tooltip.top="'Ver Detalles'"
                             @click="viewDetails(solicitudItem)" class="!p-1.5" />
-                        <Button text v-if="solicitudItem.informe_generado" v-tooltip.top="`Ver Informe`"
-                            @click="generateReport(solicitudItem)" icon="pi pi-file-pdf" class="!p-1.5" />
+                        <a :href="getRoutePdf(solicitudItem)" target="_blank" v-if="solicitudItem.informe_generado" v-tooltip.top="`Ver Informe`"
+                            class="!p-1.5"  />
+
                         <Button v-if="canGenerateInforme(solicitudItem)"
                             icon="pi pi-file" size="small" severity="info" text v-tooltip.top="'Generar Informe'"
                             @click="crearReporte(solicitudItem)" class="!p-1.5" />
+
                         <Button icon="pi pi-pencil" size="small" severity="warn" text v-tooltip.top="'Editar'"
                             @click="edit(solicitudItem)" class="!p-1.5"
                             v-if="isAutorized() && solicitudItem.estado != 'Anulada'" />

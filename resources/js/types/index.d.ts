@@ -149,7 +149,7 @@ export interface Solicitud {
     orden_trabajo?: string | null;
     created_at: string;
     updated_at: string;
-
+    pdf_path?: string | null;
     client?: Client;
     sucursal?: Sucursal;
     equipo?: Equipo;
