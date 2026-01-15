@@ -215,7 +215,9 @@ class InformeController extends Controller
         $outputDir = public_path('pdf');
         File::ensureDirectoryExists($outputDir);
 
-        $solicitudes = Solicitud::with(['client', 'sucursal', 'equipo', 'user'])->take(5)->get();
+        $solicitudes = Solicitud::with(['client', 'sucursal', 'equipo', 'user'])
+        ->where('informe_generado', true)
+        ->take(10)->get();
         $saved = 0;
         $errors = [];
 
@@ -261,6 +263,8 @@ class InformeController extends Controller
 
                     $filename = 'Informe_Planta_Electrica_'.$solicitud->numero_orden.'.pdf';
                     File::put($outputDir.DIRECTORY_SEPARATOR.$filename, $pdf->output());
+                    $solicitud->pdf_path = $filename;
+                    $solicitud->save();
                     $saved++;
                 } elseif ($tipoEquipo === 'Tablero Eléctrico') {
                     $registro = TableroElectrico::where('solicitud_id', $solicitud->id)->first();
@@ -281,12 +285,17 @@ class InformeController extends Controller
                     $registro->sucursal = $solicitud->sucursal;
                     $registro->equipo = $solicitud->equipo;
 
+                    $registro = ImageHelper::preprocessImagesForPdf($registro);
+
                     $pdf = Pdf::loadView('pdf.tablero_electrico', compact('registro', 'solicitud'));
                     $pdf->setPaper('legal', 'portrait');
 
                     $filename = 'Informe_Tablero_Electrico_'.$solicitud->numero_orden.'.pdf';
                     File::put($outputDir.DIRECTORY_SEPARATOR.$filename, $pdf->output());
+                    $solicitud->pdf_path = $filename;
+                    $solicitud->save();
                     $saved++;
+                    
                 }
             } catch (\Throwable $e) {
                 $errors[] = "Solicitud {$solicitud->id}: {$e->getMessage()}";
