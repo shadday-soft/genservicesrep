@@ -269,7 +269,7 @@ const exportToExcel = () => {
 
 const getRoutePdf = (solicitudData: Solicitud) => {
     if(solicitudData.pdf_path){
-        return '/public/' + solicitudData.pdf_path;
+        return '/public/pdf/' + solicitudData.pdf_path;
     }
     return `/informe/${solicitudData.id}/pdf`;
 }
