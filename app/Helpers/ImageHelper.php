@@ -6,19 +6,19 @@ class ImageHelper
 {
     /**
      * Optimiza una imagen: redimensiona, comprime y convierte a WebP
-     * 
-     * @param string $imageData Datos binarios de la imagen
-     * @param int $maxWidth Ancho máximo (default: 800px - optimizado para PDF)
-     * @param int $maxHeight Altura máxima (default: 800px - optimizado para PDF)
-     * @param int $quality Calidad WebP (default: 60 - balance óptimo para PDF)
+     *
+     * @param  string  $imageData  Datos binarios de la imagen
+     * @param  int  $maxWidth  Ancho máximo (default: 400px - optimizado para PDF)
+     * @param  int  $maxHeight  Altura máxima (default: 400px - optimizado para PDF)
+     * @param  int  $quality  Calidad WebP (default: 30 - máxima compresión para PDFs ligeros)
      * @return string|false Datos binarios de la imagen optimizada o false si falla
      */
-    private static function optimizeImage(string $imageData, int $maxWidth = 800, int $maxHeight = 800, int $quality = 60)
+    private static function optimizeImage(string $imageData, int $maxWidth = 400, int $maxHeight = 400, int $quality = 30)
     {
         try {
             // Crear imagen desde los datos
             $image = @imagecreatefromstring($imageData);
-            
+
             if ($image === false) {
                 return false;
             }
@@ -29,19 +29,19 @@ class ImageHelper
 
             // Calcular nuevas dimensiones manteniendo el aspect ratio
             $ratio = min($maxWidth / $originalWidth, $maxHeight / $originalHeight);
-            
+
             // Solo redimensionar si la imagen es más grande que el máximo
             if ($ratio < 1) {
-                $newWidth = (int)round($originalWidth * $ratio);
-                $newHeight = (int)round($originalHeight * $ratio);
-                
+                $newWidth = (int) round($originalWidth * $ratio);
+                $newHeight = (int) round($originalHeight * $ratio);
+
                 // Crear imagen redimensionada
                 $resizedImage = imagecreatetruecolor($newWidth, $newHeight);
-                
+
                 // Mantener transparencia para PNG
                 imagealphablending($resizedImage, false);
                 imagesavealpha($resizedImage, true);
-                
+
                 // Redimensionar con alta calidad
                 imagecopyresampled(
                     $resizedImage, $image,
@@ -49,18 +49,18 @@ class ImageHelper
                     $newWidth, $newHeight,
                     $originalWidth, $originalHeight
                 );
-                
+
                 imagedestroy($image);
                 $image = $resizedImage;
             }
 
-            // Convertir a WebP y obtener los datos
+            // Convertir a WebP con máxima compresión
             ob_start();
             imagewebp($image, null, $quality);
             $webpData = ob_get_clean();
-            
+
             imagedestroy($image);
-            
+
             return $webpData;
         } catch (\Exception $e) {
             return false;
@@ -68,9 +68,55 @@ class ImageHelper
     }
 
     /**
+     * Comprime imágenes de forma más agresiva específicamente para PDFs
+     * Convierte a JPEG en lugar de WebP para mejor compatibilidad en PDFs
+     */
+    private static function compressImageForPdf(string $imageData, int $maxWidth = 350, int $maxHeight = 350, int $jpegQuality = 60): string|false
+    {
+        try {
+            $image = @imagecreatefromstring($imageData);
+
+            if ($image === false) {
+                return false;
+            }
+
+            $originalWidth = imagesx($image);
+            $originalHeight = imagesy($image);
+            $ratio = min($maxWidth / $originalWidth, $maxHeight / $originalHeight);
+
+            if ($ratio < 1) {
+                $newWidth = (int) round($originalWidth * $ratio);
+                $newHeight = (int) round($originalHeight * $ratio);
+
+                $resizedImage = imagecreatetruecolor($newWidth, $newHeight);
+                imagecopyresampled(
+                    $resizedImage, $image,
+                    0, 0, 0, 0,
+                    $newWidth, $newHeight,
+                    $originalWidth, $originalHeight
+                );
+
+                imagedestroy($image);
+                $image = $resizedImage;
+            }
+
+            // Convertir a JPEG con máxima compresión
+            ob_start();
+            imagejpeg($image, null, $jpegQuality);
+            $jpegData = ob_get_clean();
+
+            imagedestroy($image);
+
+            return $jpegData;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+    /**
      * Convierte múltiples URLs de imágenes a base64 en paralelo usando cURL multi
-     * 
-     * @param array $urls Array de URLs de imágenes
+     *
+     * @param  array  $urls  Array de URLs de imágenes
      * @return array Array con las imágenes convertidas a base64 (mismo orden que input)
      */
     public static function convertImagesToBase64Parallel(array $urls): array
@@ -80,8 +126,8 @@ class ImageHelper
         }
 
         // Filtrar URLs vacías
-        $validUrls = array_filter($urls, fn($url) => !empty($url));
-        
+        $validUrls = array_filter($urls, fn ($url) => ! empty($url));
+
         if (empty($validUrls)) {
             return array_fill(0, count($urls), null);
         }
@@ -89,7 +135,7 @@ class ImageHelper
         // Crear un mapa para mantener el orden original
         $urlMap = [];
         foreach ($urls as $index => $url) {
-            if (!empty($url)) {
+            if (! empty($url)) {
                 $urlMap[$index] = $url;
             }
         }
@@ -97,7 +143,7 @@ class ImageHelper
         // Inicializar cURL multi
         $multiHandle = curl_multi_init();
         $curlHandles = [];
-        
+
         // Crear handles para cada URL
         foreach ($urlMap as $index => $url) {
             $ch = curl_init();
@@ -108,7 +154,7 @@ class ImageHelper
             curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
             curl_setopt($ch, CURLOPT_TIMEOUT, 10);
             curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
-            
+
             curl_multi_add_handle($multiHandle, $ch);
             $curlHandles[$index] = $ch;
         }
@@ -122,34 +168,34 @@ class ImageHelper
 
         // Recoger los resultados
         $results = array_fill(0, count($urls), null);
-        
+
         foreach ($curlHandles as $index => $ch) {
             $imageData = curl_multi_getcontent($ch);
             $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-            
+
             if ($imageData !== false && $httpCode == 200) {
-                // Optimizar la imagen antes de convertir a base64
-                $optimizedImageData = self::optimizeImage($imageData);
-                
-                if ($optimizedImageData !== false) {
-                    $base64 = base64_encode($optimizedImageData);
-                    $results[$index] = 'data:image/webp;base64,' . $base64;
+                // Comprimir la imagen para PDF (JPEG = mejor compresión)
+                $compressedImageData = self::compressImageForPdf($imageData, 350, 350, 60);
+
+                if ($compressedImageData !== false) {
+                    $base64 = base64_encode($compressedImageData);
+                    $results[$index] = 'data:image/jpeg;base64,'.$base64;
                 }
             }
-            
+
             curl_multi_remove_handle($multiHandle, $ch);
             curl_close($ch);
         }
-        
+
         curl_multi_close($multiHandle);
-        
+
         return $results;
     }
 
     /**
      * Preprocesa todas las imágenes de un registro para PDF
-     * 
-     * @param object $registro Registro con URLs de imágenes
+     *
+     * @param  object  $registro  Registro con URLs de imágenes
      * @return object Registro con imágenes convertidas
      */
     public static function preprocessImagesForPdf($registro): object
@@ -185,14 +231,14 @@ class ImageHelper
         $urlsToConvert = [];
         $fieldMapping = [];
         $localFields = [];
-        
+
         foreach ($imageFields as $field) {
             if (empty($registro->$field)) {
                 continue; // Saltar campos vacíos
             }
-            
+
             $url = $registro->$field;
-            
+
             // URLs remotas: necesitan descarga y optimización
             if (str_contains($url, 'https://reporting.genservices.com.co/storage/')) {
                 $urlsToConvert[] = $url;
@@ -204,15 +250,15 @@ class ImageHelper
                 continue;
             }
             // Imágenes locales: solo agregar prefijo
-            elseif (!str_contains($url, 'http')) {
+            elseif (! str_contains($url, 'http')) {
                 $localFields[] = $field;
             }
         }
 
         // Convertir imágenes remotas en paralelo (solo si hay)
-        if (!empty($urlsToConvert)) {
+        if (! empty($urlsToConvert)) {
             $convertedImages = self::convertImagesToBase64Parallel($urlsToConvert);
-            
+
             foreach ($fieldMapping as $index => $field) {
                 if ($convertedImages[$index] !== null) {
                     $registro->$field = $convertedImages[$index];
@@ -223,39 +269,39 @@ class ImageHelper
         // Procesar imágenes locales (OPTIMIZACIÓN AGRESIVA para PDFs ligeros)
         foreach ($localFields as $field) {
             $localPath = $registro->$field;
-            $fullPath = public_path('uploads/' . $localPath);
-            
+            $fullPath = public_path('uploads/'.$localPath);
+
             // Verificar si el archivo existe y su tamaño
             if (file_exists($fullPath)) {
                 $fileSize = filesize($fullPath);
                 $sizeInKB = $fileSize / 1024;
-                
-                // OPTIMIZAR SIEMPRE si es mayor a 150KB (umbral agresivo)
+
+                // OPTIMIZAR SIEMPRE si es mayor a 100KB (umbral más agresivo)
                 // Esto garantiza PDFs ligeros
-                if ($sizeInKB > 150) {
+                if ($sizeInKB > 100) {
                     try {
                         $imageData = file_get_contents($fullPath);
-                        // Usar parámetros agresivos: 800px max, calidad 60
-                        $optimizedData = self::optimizeImage($imageData, 800, 800, 60);
-                        
-                        if ($optimizedData !== false) {
-                            $base64 = base64_encode($optimizedData);
-                            $registro->$field = 'data:image/webp;base64,' . $base64;
+                        // Usar parámetros muy agresivos: 350px max, JPEG calidad 60
+                        $compressedData = self::compressImageForPdf($imageData, 350, 350, 60);
+
+                        if ($compressedData !== false) {
+                            $base64 = base64_encode($compressedData);
+                            $registro->$field = 'data:image/jpeg;base64,'.$base64;
                         } else {
                             // Si falla la optimización, usar ruta normal
-                            $registro->$field = 'uploads/' . $localPath;
+                            $registro->$field = 'uploads/'.$localPath;
                         }
                     } catch (\Exception $e) {
                         // Si hay error, usar ruta normal
-                        $registro->$field = 'uploads/' . $localPath;
+                        $registro->$field = 'uploads/'.$localPath;
                     }
                 } else {
-                    // Imagen muy ligera (<150KB), solo agregar prefijo
-                    $registro->$field = 'uploads/' . $localPath;
+                    // Imagen muy ligera (<100KB), solo agregar prefijo
+                    $registro->$field = 'uploads/'.$localPath;
                 }
             } else {
                 // Archivo no existe, agregar prefijo de todos modos
-                $registro->$field = 'uploads/' . $localPath;
+                $registro->$field = 'uploads/'.$localPath;
             }
         }
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ImageHelper;
 use App\Http\Requests\StoreInformeRequest;
 use App\Http\Requests\UpdateInformeRequest;
 use App\Interfaces\InformeInterface;
@@ -9,10 +10,9 @@ use App\Models\Informe;
 use App\Models\Solicitud;
 use App\Models\TableroElectrico;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Inertia\Inertia;
-use App\Helpers\ImageHelper;
 
 class InformeController extends Controller
 {
@@ -173,10 +173,19 @@ class InformeController extends Controller
 
             // Pre-procesar todas las imágenes en paralelo (optimización de rendimiento)
             $registro = ImageHelper::preprocessImagesForPdf($registro);
-           
-            // Generar el PDF
+
+            // Generar el PDF con opciones de compresión
             $pdf = Pdf::loadView('pdf.planta_electrica', compact('registro', 'solicitud'));
             $pdf->setPaper('legal', 'portrait');
+
+            // Configurar opciones de compresión de DomPDF
+            $pdf->getOptions()
+                ->set('isPhpEnabled', false)
+                ->set('isRemoteEnabled', false)
+                ->set('compress', true)
+                ->set('enableJavaScript', false)
+                ->set('logOutputFile', storage_path('logs/pdf-errors.log'))
+                ->set('debugKeepFiles', false);
 
             // Descargar el PDF
             $filename = 'Informe_Planta_Electrica_'.$solicitud->numero_orden.'.pdf';
@@ -195,12 +204,20 @@ class InformeController extends Controller
             $registro->user = $solicitud->user;
             $registro->sucursal = $solicitud->sucursal;
             $registro->equipo = $solicitud->equipo;
-            
+
             $registro = ImageHelper::preprocessImagesForPdf($registro);
-            // Generar el PDF
+
             $pdf = Pdf::loadView('pdf.tablero_electrico', compact('registro', 'solicitud'));
             $pdf->setPaper('legal', 'portrait');
 
+            // Configurar opciones de compresión de DomPDF
+            $pdf->getOptions()
+                ->set('isPhpEnabled', false)
+                ->set('isRemoteEnabled', false)
+                ->set('compress', true)
+                ->set('enableJavaScript', false)
+                ->set('logOutputFile', storage_path('logs/pdf-errors.log'))
+                ->set('debugKeepFiles', false);
             // Descargar el PDF
             $filename = 'Informe_Tablero_Electrico_'.$solicitud->numero_orden.'.pdf';
 
@@ -208,16 +225,15 @@ class InformeController extends Controller
         }
     }
 
-   
-
     public function downloadAllInformes()
     {
         $outputDir = public_path('pdf');
         File::ensureDirectoryExists($outputDir);
 
         $solicitudes = Solicitud::with(['client', 'sucursal', 'equipo', 'user'])
-        ->where('informe_generado', true)
-        ->take(10)->get();
+            ->where('informe_generado', true)
+            ->whereNull('pdf_path')
+            ->get();
         $saved = 0;
         $errors = [];
 
@@ -230,6 +246,7 @@ class InformeController extends Controller
 
                     if (! $registro) {
                         $errors[] = "Solicitud {$solicitud->id}: no se encontró informe de Planta Eléctrica";
+
                         continue;
                     }
 
@@ -261,6 +278,13 @@ class InformeController extends Controller
                     $pdf = Pdf::loadView('pdf.planta_electrica', compact('registro', 'solicitud'));
                     $pdf->setPaper('legal', 'portrait');
 
+                    // Configurar opciones de compresión
+                    $pdf->getOptions()
+                        ->set('isPhpEnabled', false)
+                        ->set('isRemoteEnabled', false)
+                        ->set('compress', true)
+                        ->set('enableJavaScript', false);
+
                     $filename = 'Informe_Planta_Electrica_'.$solicitud->numero_orden.'.pdf';
                     File::put($outputDir.DIRECTORY_SEPARATOR.$filename, $pdf->output());
                     $solicitud->pdf_path = $filename;
@@ -271,6 +295,7 @@ class InformeController extends Controller
 
                     if (! $registro) {
                         $errors[] = "Solicitud {$solicitud->id}: no se encontró informe de Tablero Eléctrico";
+
                         continue;
                     }
 
@@ -290,12 +315,19 @@ class InformeController extends Controller
                     $pdf = Pdf::loadView('pdf.tablero_electrico', compact('registro', 'solicitud'));
                     $pdf->setPaper('legal', 'portrait');
 
+                    // Configurar opciones de compresión
+                    $pdf->getOptions()
+                        ->set('isPhpEnabled', false)
+                        ->set('isRemoteEnabled', false)
+                        ->set('compress', true)
+                        ->set('enableJavaScript', false);
+
                     $filename = 'Informe_Tablero_Electrico_'.$solicitud->numero_orden.'.pdf';
                     File::put($outputDir.DIRECTORY_SEPARATOR.$filename, $pdf->output());
                     $solicitud->pdf_path = $filename;
                     $solicitud->save();
                     $saved++;
-                    
+
                 }
             } catch (\Throwable $e) {
                 $errors[] = "Solicitud {$solicitud->id}: {$e->getMessage()}";
