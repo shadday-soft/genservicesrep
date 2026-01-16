@@ -473,8 +473,10 @@ const getRoutePdf = (solicitudData: Solicitud) => {
                         <!-- ver detalles  -->
                         <Button icon="pi pi-eye" size="small" severity="secondary" text v-tooltip.top="'Ver Detalles'"
                             @click="viewDetails(solicitudItem)" class="!p-1.5" />
-                        <a :href="getRoutePdf(solicitudItem)" target="_blank" v-if="solicitudItem.informe_generado" v-tooltip.top="`Ver Informe`"
-                            class="!p-1.5"  />
+                            
+                        <a :href="getRoutePdf(solicitudItem)" target="_blank" v-if="solicitudItem.informe_generado" v-tooltip.top="`Ver Informe`">
+                                <Button icon="pi pi-file-pdf" size="small" severity="danger" text/>
+                            </a>
 
                         <Button v-if="canGenerateInforme(solicitudItem)"
                             icon="pi pi-file" size="small" severity="info" text v-tooltip.top="'Generar Informe'"
