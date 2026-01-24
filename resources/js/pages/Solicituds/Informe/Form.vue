@@ -226,7 +226,6 @@ if (props.informe) {
 
 console.log(props.tecnico);
 if (props.tecnico) {
-    form.firma_tecnico = props.tecnico.firma || '';
     form.nombre_tecnico = props.tecnico.nombre_completo || '';
     form.cedula_tecnico = props.tecnico.identificacion || '';
 }

@@ -58,10 +58,10 @@ const resizeCanvas = () => {
     canvas.value.height = canvas.value.offsetHeight * ratio;
     canvas.value.getContext('2d')?.scale(ratio, ratio);
     
-    // Redibujar si hay datos
-    if (props.modelValue) {
-        signaturePad.fromDataURL(props.modelValue);
-    }
+    // // Redibujar si hay datos
+    // if (props.modelValue) {
+    //     signaturePad.fromDataURL(props.modelValue);
+    // }
 };
 
 const clear = () => {

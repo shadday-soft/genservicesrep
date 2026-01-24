@@ -367,13 +367,17 @@ const getRoutePdf = (solicitudData: Solicitud) => {
                                 #{{ solicitudItem.numero_orden }}
                             </span>
                         </div>
+                        <div class="space-x-2">
+                        <span class="text-[10px]  py-0.5 px-2 rounded-sm bg-slate-800 text-white">
+                            {{ solicitudItem.actividad }}
+                        </span>
                         <span :class="{
                             'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-200': solicitudItem.prioridad === 'Normal',
                             'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-200': solicitudItem.prioridad === 'Intermedio',
                             'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-200': solicitudItem.prioridad === 'Urgente'
                         }" class="px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wide">
                             {{ solicitudItem.prioridad }}
-                        </span>
+                        </span> </div>
                     </div>
 
                     <!-- Contenido compacto en 2 columnas -->
@@ -450,6 +454,9 @@ const getRoutePdf = (solicitudData: Solicitud) => {
                                 </p>
                             </div>
                         </div>
+                    </div>
+                    <div class="text-[12px] justify-center items-center flex font-semibold w-full px-3 py-2 bg-gray-100 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
+                        <p v-html="solicitudItem.detalles"></p>
                     </div>
 
                     <div
