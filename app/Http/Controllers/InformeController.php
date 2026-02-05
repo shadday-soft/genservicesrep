@@ -158,7 +158,6 @@ class InformeController extends Controller
             $registro->ubicacion = $solicitud->ubicacion;
             $registro->user = $solicitud->user;
             $registro->sucursal = $solicitud->sucursal;
-            dd($registro);
             // Si el equipo tiene los datos, agregarlos
             if ($solicitud->equipo) {
                 $registro->modelo_equipo = $registro->modelo_equipo ?? $solicitud->equipo->modelo_equipo ?? '';
