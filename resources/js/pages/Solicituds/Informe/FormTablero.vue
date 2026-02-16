@@ -283,11 +283,12 @@ const updateFilesFotoTresDespues = (files: any) => {
 };
 
 const handleSubmit = () => {
-    const url = props.tablero 
-        ? `/tableros-electricos/${props.tablero.id}` 
+    const url = props.tablero
+        ? `/tableros-electricos/${props.tablero.id}`
         : '/tableros-electricos';
-    
+
     form.post(url, {
+        forceFormData: true,
         preserveState: true,
         onSuccess: () => {
             getSuccessMessage(props.tablero ? 'Informe actualizado con éxito.' : 'Informe generado con éxito.');
@@ -309,16 +310,16 @@ const breadcrumbs: BreadcrumbItem[] = [
 <template>
     <AppLayout class="p-4" :breadcrumbs="breadcrumbs">
         <Head :title="`Generar Informe Tablero Eléctrico #${props.solicitud?.numero_orden}`" />
-        
+
         <!-- Cabecera con información de la solicitud -->
-        <div 
+        <div
             :class="[
                 'bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm shadow-md border-b border-gray-200 dark:border-gray-700 transition-all duration-300 ease-in-out',
                 'sticky top-0 z-50 -mx-4 px-4',
                 isScrolled ? 'py-2' : 'py-6 mb-6'
             ]"
         >
-            <div 
+            <div
                 :class="[
                     'grid transition-all duration-300',
                     isScrolled ? 'grid-cols-3 gap-3' : 'grid-cols-1 lg:grid-cols-3 gap-6'
@@ -351,7 +352,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
                 <!-- Información del Cliente y Sucursal -->
                 <div class="flex flex-col" :class="isScrolled ? 'gap-0' : 'gap-3'">
-                    <h3 
+                    <h3
                         v-if="!isScrolled"
                         class="text-sm font-bold text-gray-900 dark:text-white uppercase border-b pb-2"
                     >
@@ -385,7 +386,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
                 <!-- Información del Equipo -->
                 <div class="flex flex-col" :class="isScrolled ? 'gap-0' : 'gap-3'">
-                    <h3 
+                    <h3
                         v-if="!isScrolled"
                         class="text-sm font-bold text-gray-900 dark:text-white uppercase border-b pb-2"
                     >
@@ -423,9 +424,9 @@ const breadcrumbs: BreadcrumbItem[] = [
                 </label>
                 <div class="flex flex-wrap gap-4">
                     <div v-for="tipo in tiposServicio" :key="tipo.value" class="flex items-center gap-2">
-                        <RadioButton 
-                            v-model="form.tipo_servicio" 
-                            :inputId="tipo.value" 
+                        <RadioButton
+                            v-model="form.tipo_servicio"
+                            :inputId="tipo.value"
                             :value="tipo.value"
                         />
                         <label :for="tipo.value" class="text-sm cursor-pointer">{{ tipo.label }}</label>
@@ -441,7 +442,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                 <h3 class="text-base font-bold text-gray-800 dark:text-gray-200 mb-4">
                     DATOS DEL EQUIPO
                 </h3>
-                
+
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <Input
                         v-model="form.tension_operacion"
@@ -481,8 +482,8 @@ const breadcrumbs: BreadcrumbItem[] = [
                 <h3 class="text-base font-bold text-gray-800 dark:text-gray-200 mb-4">
                     OBSERVACIONES INICIALES
                 </h3>
-                <RichTextEditor 
-                    v-model="form.observaciones_iniciales" 
+                <RichTextEditor
+                    v-model="form.observaciones_iniciales"
                     :error="form.errors.observaciones_iniciales"
                     placeholder="Describe las observaciones iniciales..."
                 />
@@ -493,7 +494,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                 <h3 class="text-base font-bold text-gray-800 dark:text-gray-200 mb-4">
                     CHECK LIST
                 </h3>
-                
+
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <RadioGroup v-model="form.gabinete" label="Gabinete" :options="checkOptions" unique-id="gabinete" :error="form.errors.gabinete" />
                     <RadioGroup v-model="form.puertas" label="Puertas" :options="checkOptions" unique-id="puertas" :error="form.errors.puertas" />
@@ -524,7 +525,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                 <h3 class="text-base font-bold text-gray-800 dark:text-gray-200 mb-4">
                     FOTOS ESTADO INICIAL
                 </h3>
-                
+
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div class="flex flex-col gap-2">
                         <div class="flex items-center gap-2">
@@ -717,7 +718,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                 <h3 class="text-base font-bold text-gray-800 dark:text-gray-200 mb-4">
                     FOTOS DURANTE
                 </h3>
-                
+
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     <div class="flex flex-col gap-2">
                         <div class="flex items-center gap-2">
@@ -789,8 +790,8 @@ const breadcrumbs: BreadcrumbItem[] = [
                 </h3>
                 <Input
                     type="textarea"
-                    :maxLength="800" 
-                    v-model="form.recomendaciones" 
+                    :maxLength="800"
+                    v-model="form.recomendaciones"
                     :error="form.errors.recomendaciones"
                     placeholder="Describe las recomendaciones..."
                 />
@@ -801,7 +802,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                 <h3 class="text-base font-bold text-gray-800 dark:text-gray-200 mb-4">
                     POSICIÓN DE INSTRUMENTOS AL CONCLUIR EL SERVICIO
                 </h3>
-                
+
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <RadioGroup v-model="form.control" label="Control" :options="['Manual', 'Auto', 'Off']" unique-id="control" :error="form.errors.control" />
                     <RadioGroup v-model="form.selector" label="Selector" :options="['Manual', 'Auto', 'Off']" unique-id="selector" :error="form.errors.selector" />
@@ -814,7 +815,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                 <h3 class="text-base font-bold text-gray-800 dark:text-gray-200 mb-4">
                     FOTOS DESPUÉS
                 </h3>
-                
+
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div class="flex flex-col gap-2">
                         <div class="flex items-center gap-2">
@@ -854,7 +855,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                 <h3 class="text-base font-bold text-gray-800 dark:text-gray-200 mb-4">
                     LLEGADA Y SALIDA TÉCNICO
                 </h3>
-                
+
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <Input
                         v-model:datetime="form.llegada_tecnico"
@@ -876,8 +877,8 @@ const breadcrumbs: BreadcrumbItem[] = [
                 <h3 class="text-base font-bold text-gray-800 dark:text-gray-200 mb-4">
                     CALIFICACIÓN DE SERVICIO (Cliente)
                 </h3>
-                
-                <RadioGroup 
+
+                <RadioGroup
                     v-model="form.calificacion_servicio"
                     :options="['Bueno', 'Regular', 'Malo']"
                     unique-id="calificacion"
@@ -890,13 +891,13 @@ const breadcrumbs: BreadcrumbItem[] = [
                 <h3 class="text-base font-bold text-gray-800 dark:text-gray-200 mb-4">
                     FIRMAS
                 </h3>
-                
+
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <!-- Técnico -->
                     <div class="flex flex-col gap-4">
                         <h4 class="text-sm font-bold text-gray-700 dark:text-gray-300">Técnico</h4>
-                        <SignaturePad 
-                            v-model="form.firma_tecnico" 
+                        <SignaturePad
+                            v-model="form.firma_tecnico"
                             label="Firma del Técnico"
                             :error="form.errors.firma_tecnico"
                         />
@@ -915,8 +916,8 @@ const breadcrumbs: BreadcrumbItem[] = [
                     <!-- Cliente -->
                     <div class="flex flex-col gap-4">
                         <h4 class="text-sm font-bold text-gray-700 dark:text-gray-300">Cliente</h4>
-                        <SignaturePad 
-                            v-model="form.firma_cliente" 
+                        <SignaturePad
+                            v-model="form.firma_cliente"
                             label="Firma del Cliente"
                             :error="form.errors.firma_cliente"
                         />
@@ -936,22 +937,22 @@ const breadcrumbs: BreadcrumbItem[] = [
 
             <!-- Form Actions -->
             <div class="flex justify-end gap-3 border-t pt-4">
-                <Link 
-                    :href="solicituds.index()" 
+                <Link
+                    :href="solicituds.index()"
                     class="no-underline">
-                    <Button 
+                    <Button
                         type="button"
-                        label="Cancelar" 
-                        severity="secondary" 
+                        label="Cancelar"
+                        severity="secondary"
                         icon="pi pi-times"
                         :disabled="form.processing"
                     />
                 </Link>
-               
-                <Button 
-                    type="submit" 
-                    label="Guardar" 
-                    icon="pi pi-save" 
+
+                <Button
+                    type="submit"
+                    label="Guardar"
+                    icon="pi pi-save"
                     :loading="form.processing"
                 />
             </div>

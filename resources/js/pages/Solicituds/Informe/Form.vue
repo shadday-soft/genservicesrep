@@ -11,8 +11,8 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import vueFilePond from 'vue-filepond';
 import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
 import { BreadcrumbItem, Equipo, Solicitud } from '@/types';
-import { Head, Link, router, useForm } from '@inertiajs/vue3';
-import { informe, StoreInforme, updateInforme } from '@/routes';
+import { Head, Link,  useForm } from '@inertiajs/vue3';
+import { StoreInforme, updateInforme } from '@/routes';
 import { getErrorMessage, getSuccessMessage } from '@/composables/Toast';
 import solicituds from '@/routes/solicituds';
 
@@ -63,8 +63,7 @@ function assignMatchingKeys(source: { [key: string]: any }, target: { [key: stri
 
                 console.log(`Asignando ${key}: ${sourceVal}`);
             } catch (e) {
-                // Avoid throwing from this helper; log warning instead
-                // eslint-disable-next-line no-console
+
                 console.warn(`No se pudo asignar la propiedad ${key}:`, e);
             }
         }
@@ -334,27 +333,28 @@ const updateFilesFotoTresDespues = (files: any) => {
 const handleSubmit = () => {
     if (props.informe) {
         form.post(updateInforme.url(props.informe.id), {
+            forceFormData: true,
             preserveState: true,
             onSuccess: () => {
                 getSuccessMessage('Informe actualizado con éxito.');
             },
             onError: (error) => {
-                getErrorMessage('Ocurrió un error al enviar el formulario.');
+                getErrorMessage('Ocurrió un error al enviar el formulario. ' + error);
             }
         });
         return;
     }
     form.post(StoreInforme.url(), {
-
+        forceFormData: true,
         preserveState: true,
         onSuccess: () => {
             getSuccessMessage('Informe generado con éxito.');
         },
         onError: (error) => {
-            getErrorMessage('Ocurrió un error al enviar el formulario.');
+            getErrorMessage('Ocurrió un error al enviar el formulario.' + error);
         }
     });
-    
+
 };
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -369,16 +369,16 @@ const breadcrumbs: BreadcrumbItem[] = [
 <template>
     <AppLayout class="p-4" :breadcrumbs="breadcrumbs">
         <Head :title="`Generar Informe #${props.solicitud?.numero_orden}`" />
-        
+
         <!-- Cabecera con información de la solicitud -->
-        <div 
+        <div
             :class="[
                 'bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm shadow-md border-b border-gray-200 dark:border-gray-700 transition-all duration-300 ease-in-out',
                 'sticky top-0 z-50 -mx-4 px-4',
                 isScrolled ? 'py-2' : 'py-6 mb-6'
             ]"
         >
-            <div 
+            <div
                 :class="[
                     'grid transition-all duration-300',
                     isScrolled ? 'grid-cols-3 gap-3' : 'grid-cols-1 lg:grid-cols-3 gap-6'
@@ -411,7 +411,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
                 <!-- Información del Cliente y Sucursal -->
                 <div class="flex flex-col" :class="isScrolled ? 'gap-0' : 'gap-3'">
-                    <h3 
+                    <h3
                         v-if="!isScrolled"
                         class="text-sm font-bold text-gray-900 dark:text-white uppercase border-b pb-2"
                     >
@@ -445,7 +445,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
                 <!-- Información del Equipo -->
                 <div class="flex flex-col" :class="isScrolled ? 'gap-0' : 'gap-3'">
-                    <h3 
+                    <h3
                         v-if="!isScrolled"
                         class="text-sm font-bold text-gray-900 dark:text-white uppercase border-b pb-2"
                     >
@@ -491,9 +491,9 @@ const breadcrumbs: BreadcrumbItem[] = [
                 </label>
                 <div class="flex flex-wrap gap-4">
                     <div v-for="tipo in tiposServicio" :key="tipo.value" class="flex items-center gap-2">
-                        <RadioButton 
-                            v-model="form.tipo_servicio" 
-                            :inputId="tipo.value" 
+                        <RadioButton
+                            v-model="form.tipo_servicio"
+                            :inputId="tipo.value"
                             :value="tipo.value"
                         />
                         <label :for="tipo.value" class="text-sm cursor-pointer">{{ tipo.label }}</label>
@@ -506,8 +506,8 @@ const breadcrumbs: BreadcrumbItem[] = [
 
             <!-- Observaciones iniciales -->
             <div class="flex flex-col gap-2">
-                <RichTextEditor 
-                    v-model="form.observaciones_iniciales" 
+                <RichTextEditor
+                    v-model="form.observaciones_iniciales"
                     label="Observaciones iniciales"
                     :error="form.errors.observaciones_iniciales"
                     placeholder="Describe las observaciones iniciales..."
@@ -518,7 +518,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                 <h3 class="text-base font-bold text-gray-800 dark:text-gray-200 mb-4">
                     FOTOS ANTES
                 </h3>
-                
+
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <!-- Foto uno antes -->
                     <div class="flex flex-col gap-2">
@@ -538,9 +538,9 @@ const breadcrumbs: BreadcrumbItem[] = [
                         <span v-if="form.errors.foto_uno_antes" class="text-xs italic text-red-500">
                             {{ form.errors.foto_uno_antes }}
                         </span>
-                        <Input 
-                            v-model="form.pie_foto_uno_antes" 
-                            placeholder="Pie de página para esta foto" 
+                        <Input
+                            v-model="form.pie_foto_uno_antes"
+                            placeholder="Pie de página para esta foto"
                             :error="form.errors.pie_foto_uno_antes"
                         />
                     </div>
@@ -563,9 +563,9 @@ const breadcrumbs: BreadcrumbItem[] = [
                         <span v-if="form.errors.foto_dos_antes" class="text-xs italic text-red-500">
                             {{ form.errors.foto_dos_antes }}
                         </span>
-                        <Input 
-                            v-model="form.pie_foto_dos_antes" 
-                            placeholder="Pie de página para esta foto" 
+                        <Input
+                            v-model="form.pie_foto_dos_antes"
+                            placeholder="Pie de página para esta foto"
                             :error="form.errors.pie_foto_dos_antes"
                         />
                     </div>
@@ -588,9 +588,9 @@ const breadcrumbs: BreadcrumbItem[] = [
                         <span v-if="form.errors.foto_tres_antes" class="text-xs italic text-red-500">
                             {{ form.errors.foto_tres_antes }}
                         </span>
-                        <Input 
-                            v-model="form.pie_foto_tres_antes" 
-                            placeholder="Pie de página para esta foto" 
+                        <Input
+                            v-model="form.pie_foto_tres_antes"
+                            placeholder="Pie de página para esta foto"
                             :error="form.errors.pie_foto_tres_antes"
                         />
                     </div>
@@ -602,10 +602,10 @@ const breadcrumbs: BreadcrumbItem[] = [
                 <h3 class="text-base font-bold text-gray-800 dark:text-gray-200 mb-4">
                     ESTADO INICIAL
                 </h3>
-                
+
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <!-- Nivel aceite -->
-                    <RadioGroup 
+                    <RadioGroup
                         v-model="form.nivel_aceite"
                         label="Nivel aceite"
                         :options="nivelesOptions"
@@ -614,7 +614,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                     />
 
                     <!-- Nivel refrigerante -->
-                    <RadioGroup 
+                    <RadioGroup
                         v-model="form.nivel_refrigerante"
                         label="Nivel refrigerante"
                         :options="nivelesOptions"
@@ -627,9 +627,9 @@ const breadcrumbs: BreadcrumbItem[] = [
                         <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
                             Nivel combustible
                         </label>
-                        <Input 
-                            v-model="form.nivel_combustible" 
-                            placeholder="" 
+                        <Input
+                            v-model="form.nivel_combustible"
+                            placeholder=""
                             :error="form.errors.nivel_combustible"
                         />
                     </div>
@@ -639,9 +639,9 @@ const breadcrumbs: BreadcrumbItem[] = [
                         <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
                             Horómetro
                         </label>
-                        <Input 
-                            v-model="form.horometro" 
-                            placeholder="Valor del horómetro" 
+                        <Input
+                            v-model="form.horometro"
+                            placeholder="Valor del horómetro"
                             :error="form.errors.horometro"
                         />
                     </div>
@@ -651,9 +651,9 @@ const breadcrumbs: BreadcrumbItem[] = [
                         <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
                             Capacidad tanque
                         </label>
-                        <Input 
-                            v-model="form.capacidad_tanque" 
-                            placeholder="" 
+                        <Input
+                            v-model="form.capacidad_tanque"
+                            placeholder=""
                             :error="form.errors.capacidad_tanque"
                         />
                     </div>
@@ -663,8 +663,8 @@ const breadcrumbs: BreadcrumbItem[] = [
                         <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
                             Fugas
                         </label>
-                        <Input 
-                            v-model="form.fugas" 
+                        <Input
+                            v-model="form.fugas"
                             type="textarea"
                             placeholder="Fugas"
                             :textAreaRows="2"
@@ -674,7 +674,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                     </div>
 
                     <!-- Mangueras -->
-                    <RadioGroup 
+                    <RadioGroup
                         v-model="form.mangueras"
                         label="Mangueras"
                         :options="nivelesOptions"
@@ -682,7 +682,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                         :error="form.errors.mangueras"
                     />
 
-                    <RadioGroup 
+                    <RadioGroup
                         v-model="form.drenado_tanque"
                         label="Drenado del Tanque"
                         :options="nivelesOptions"
@@ -691,7 +691,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                     />
 
                     <!-- Sellos -->
-                    <RadioGroup 
+                    <RadioGroup
                         v-model="form.sellos"
                         label="Sellos"
                         :options="nivelesOptions"
@@ -700,7 +700,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                     />
 
                     <!-- Tuberías -->
-                    <RadioGroup 
+                    <RadioGroup
                         v-model="form.tuberias"
                         label="Tuberías"
                         :options="nivelesOptions"
@@ -709,7 +709,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                     />
 
                     <!-- Radiador -->
-                    <RadioGroup 
+                    <RadioGroup
                         v-model="form.radiador"
                         label="Radiador"
                         :options="nivelesOptions"
@@ -718,7 +718,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                     />
 
                     <!-- Guardas -->
-                    <RadioGroup 
+                    <RadioGroup
                         v-model="form.guardas"
                         label="Guardas"
                         :options="nivelesOptions"
@@ -727,7 +727,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                     />
 
                     <!-- Correas ventilador -->
-                    <RadioGroup 
+                    <RadioGroup
                         v-model="form.correas_ventilador"
                         label="Correas ventilador"
                         :options="nivelesOptions"
@@ -736,7 +736,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                     />
 
                     <!-- Correas alternador -->
-                    <RadioGroup 
+                    <RadioGroup
                         v-model="form.correas_alternador"
                         label="Correas alternador"
                         :options="nivelesOptions"
@@ -745,7 +745,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                     />
 
                     <!-- Amortiguadores -->
-                    <RadioGroup 
+                    <RadioGroup
                         v-model="form.amortiguadores"
                         label="Amortiguadores"
                         :options="nivelesOptions"
@@ -754,7 +754,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                     />
 
                     <!-- Precalentador estado inicial -->
-                    <RadioGroup 
+                    <RadioGroup
                         v-model="form.precalentador_estado_inicial"
                         label="Precalentador estado inicial"
                         :options="nivelesOptions"
@@ -763,7 +763,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                     />
 
                     <!-- Bateria -->
-                    <RadioGroup 
+                    <RadioGroup
                         v-model="form.bateria"
                         label="Batería"
                         :options="nivelesOptions"
@@ -772,7 +772,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                     />
 
                     <!-- Nivel electrolito -->
-                    <RadioGroup 
+                    <RadioGroup
                         v-model="form.nivel_electrolito"
                         label="Nivel electrolito"
                         :options="nivelesOptions"
@@ -781,7 +781,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                     />
 
                     <!-- Voltaje batería -->
-                    <RadioGroup 
+                    <RadioGroup
                         v-model="form.voltaje_bateria"
                         label="Voltaje batería"
                         :options="nivelesOptions"
@@ -790,7 +790,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                     />
 
                     <!-- Estado cargador -->
-                    <RadioGroup 
+                    <RadioGroup
                         v-model="form.estado_cargador"
                         label="Estado cargador"
                         :options="nivelesOptions"
@@ -803,9 +803,9 @@ const breadcrumbs: BreadcrumbItem[] = [
                         <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
                             Voltaje cargador
                         </label>
-                        <Input 
-                            v-model="form.voltaje_cargador" 
-                            placeholder="" 
+                        <Input
+                            v-model="form.voltaje_cargador"
+                            placeholder=""
                             :error="form.errors.voltaje_cargador"
                         />
                     </div>
@@ -815,9 +815,9 @@ const breadcrumbs: BreadcrumbItem[] = [
                         <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
                             Tipo control
                         </label>
-                        <Input 
-                            v-model="form.tipo_control" 
-                            placeholder="" 
+                        <Input
+                            v-model="form.tipo_control"
+                            placeholder=""
                             :error="form.errors.tipo_control"
                         />
                     </div>
@@ -827,15 +827,15 @@ const breadcrumbs: BreadcrumbItem[] = [
                         <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
                             Voltaje alternador
                         </label>
-                        <Input 
-                            v-model="form.voltaje_alternador" 
-                            placeholder="" 
+                        <Input
+                            v-model="form.voltaje_alternador"
+                            placeholder=""
                             :error="form.errors.voltaje_alternador"
                         />
                     </div>
 
                     <!-- Conexiones control -->
-                    <RadioGroup 
+                    <RadioGroup
                         v-model="form.conexiones_control"
                         label="Conexiones control"
                         :options="nivelesOptions"
@@ -844,7 +844,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                     />
 
                     <!-- Conexiones potencia -->
-                    <RadioGroup 
+                    <RadioGroup
                         v-model="form.conexiones_potencia"
                         label="Conexiones potencia"
                         :options="nivelesOptions"
@@ -853,7 +853,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                     />
 
                     <!-- Limpieza General -->
-                    <RadioGroup 
+                    <RadioGroup
                         v-model="form.limpieza_general"
                         label="Limpieza General"
                         :options="nivelesOptions"
@@ -969,14 +969,14 @@ const breadcrumbs: BreadcrumbItem[] = [
             </div>
 
             <!-- FOTOS ANTES Section -->
-            
+
 
             <!-- ACTIVIDAD REALIZADA Section -->
             <div class="border-t pt-4">
                 <h3 class="text-base font-bold text-gray-800 dark:text-gray-200 mb-4">
                     ACTIVIDAD REALIZADA
                 </h3>
-                
+
                 <Input
                     v-model="form.actividad_realizada"
                     type="textarea"
@@ -993,7 +993,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                 <h3 class="text-base font-bold text-gray-800 dark:text-gray-200 mb-4">
                     FOTOS DURANTE
                 </h3>
-                
+
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     <!-- Foto uno durante -->
                     <div class="flex flex-col gap-2">
@@ -1013,9 +1013,9 @@ const breadcrumbs: BreadcrumbItem[] = [
                         <span v-if="form.errors.foto_uno_durante" class="text-xs italic text-red-500">
                             {{ form.errors.foto_uno_durante }}
                         </span>
-                        <Input 
-                            v-model="form.pie_foto_uno_durante" 
-                            placeholder="Pie de página para esta foto" 
+                        <Input
+                            v-model="form.pie_foto_uno_durante"
+                            placeholder="Pie de página para esta foto"
                             :error="form.errors.pie_foto_uno_durante"
                         />
                     </div>
@@ -1038,9 +1038,9 @@ const breadcrumbs: BreadcrumbItem[] = [
                         <span v-if="form.errors.foto_dos_durante" class="text-xs italic text-red-500">
                             {{ form.errors.foto_dos_durante }}
                         </span>
-                        <Input 
-                            v-model="form.pie_foto_dos_durante" 
-                            placeholder="Pie de página para esta foto" 
+                        <Input
+                            v-model="form.pie_foto_dos_durante"
+                            placeholder="Pie de página para esta foto"
                             :error="form.errors.pie_foto_dos_durante"
                         />
                     </div>
@@ -1063,9 +1063,9 @@ const breadcrumbs: BreadcrumbItem[] = [
                         <span v-if="form.errors.foto_tres_durante" class="text-xs italic text-red-500">
                             {{ form.errors.foto_tres_durante }}
                         </span>
-                        <Input 
-                            v-model="form.pie_foto_tres_durante" 
-                            placeholder="Pie de página para esta foto" 
+                        <Input
+                            v-model="form.pie_foto_tres_durante"
+                            placeholder="Pie de página para esta foto"
                             :error="form.errors.pie_foto_tres_durante"
                         />
                     </div>
@@ -1088,9 +1088,9 @@ const breadcrumbs: BreadcrumbItem[] = [
                         <span v-if="form.errors.foto_cuatro_durante" class="text-xs italic text-red-500">
                             {{ form.errors.foto_cuatro_durante }}
                         </span>
-                        <Input 
-                            v-model="form.pie_foto_cuatro_durante" 
-                            placeholder="Pie de página para esta foto" 
+                        <Input
+                            v-model="form.pie_foto_cuatro_durante"
+                            placeholder="Pie de página para esta foto"
                             :error="form.errors.pie_foto_cuatro_durante"
                         />
                     </div>
@@ -1113,9 +1113,9 @@ const breadcrumbs: BreadcrumbItem[] = [
                         <span v-if="form.errors.foto_cinco_durante" class="text-xs italic text-red-500">
                             {{ form.errors.foto_cinco_durante }}
                         </span>
-                        <Input 
-                            v-model="form.pie_foto_cinco_durante" 
-                            placeholder="Pie de página para esta foto" 
+                        <Input
+                            v-model="form.pie_foto_cinco_durante"
+                            placeholder="Pie de página para esta foto"
                             :error="form.errors.pie_foto_cinco_durante"
                         />
                     </div>
@@ -1138,9 +1138,9 @@ const breadcrumbs: BreadcrumbItem[] = [
                         <span v-if="form.errors.foto_seis_durante" class="text-xs italic text-red-500">
                             {{ form.errors.foto_seis_durante }}
                         </span>
-                        <Input 
-                            v-model="form.pie_foto_seis_durante" 
-                            placeholder="Pie de página para esta foto" 
+                        <Input
+                            v-model="form.pie_foto_seis_durante"
+                            placeholder="Pie de página para esta foto"
                             :error="form.errors.pie_foto_seis_durante"
                         />
                     </div>
@@ -1163,9 +1163,9 @@ const breadcrumbs: BreadcrumbItem[] = [
                         <span v-if="form.errors.foto_siete_durante" class="text-xs italic text-red-500">
                             {{ form.errors.foto_siete_durante }}
                         </span>
-                        <Input 
-                            v-model="form.pie_foto_siete_durante" 
-                            placeholder="Pie de página para esta foto" 
+                        <Input
+                            v-model="form.pie_foto_siete_durante"
+                            placeholder="Pie de página para esta foto"
                             :error="form.errors.pie_foto_siete_durante"
                         />
                     </div>
@@ -1188,9 +1188,9 @@ const breadcrumbs: BreadcrumbItem[] = [
                         <span v-if="form.errors.foto_ocho_durante" class="text-xs italic text-red-500">
                             {{ form.errors.foto_ocho_durante }}
                         </span>
-                        <Input 
-                            v-model="form.pie_foto_ocho_durante" 
-                            placeholder="Pie de página para esta foto" 
+                        <Input
+                            v-model="form.pie_foto_ocho_durante"
+                            placeholder="Pie de página para esta foto"
                             :error="form.errors.pie_foto_ocho_durante"
                         />
                     </div>
@@ -1213,9 +1213,9 @@ const breadcrumbs: BreadcrumbItem[] = [
                         <span v-if="form.errors.foto_nueve_durante" class="text-xs italic text-red-500">
                             {{ form.errors.foto_nueve_durante }}
                         </span>
-                        <Input 
-                            v-model="form.pie_foto_nueve_durante" 
-                            placeholder="Pie de página para esta foto" 
+                        <Input
+                            v-model="form.pie_foto_nueve_durante"
+                            placeholder="Pie de página para esta foto"
                             :error="form.errors.pie_foto_nueve_durante"
                         />
                     </div>
@@ -1233,7 +1233,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                     <h4 class="text-sm font-bold text-gray-700 dark:text-gray-300 mb-4 uppercase">
                         Motor
                     </h4>
-                    
+
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         <!-- Presión aceite -->
                         <div class="flex flex-col gap-2">
@@ -1243,17 +1243,17 @@ const breadcrumbs: BreadcrumbItem[] = [
                             <div class="grid grid-cols-2 gap-2">
                                 <div>
                                     <label class="text-xs text-gray-600 dark:text-gray-400">Valor</label>
-                                    <Input 
-                                        v-model="form.valor_presion_aceite" 
-                                        placeholder="" 
+                                    <Input
+                                        v-model="form.valor_presion_aceite"
+                                        placeholder=""
                                         :error="form.errors.valor_presion_aceite"
                                     />
                                 </div>
                                 <div>
                                     <label class="text-xs text-gray-600 dark:text-gray-400">Unidad</label>
-                                    <Input 
-                                        v-model="form.cantidad_presion_aceite" 
-                                        placeholder="" 
+                                    <Input
+                                        v-model="form.cantidad_presion_aceite"
+                                        placeholder=""
                                         :error="form.errors.cantidad_presion_aceite"
                                     />
                                 </div>
@@ -1268,17 +1268,17 @@ const breadcrumbs: BreadcrumbItem[] = [
                             <div class="grid grid-cols-2 gap-2">
                                 <div>
                                     <label class="text-xs text-gray-600 dark:text-gray-400">Valor</label>
-                                    <Input 
-                                        v-model="form.valor_temp_refrigerante" 
-                                        placeholder="" 
+                                    <Input
+                                        v-model="form.valor_temp_refrigerante"
+                                        placeholder=""
                                         :error="form.errors.valor_temp_refrigerante"
                                     />
                                 </div>
                                 <div>
                                     <label class="text-xs text-gray-600 dark:text-gray-400">Unidad (Galones)</label>
-                                    <Input 
-                                        v-model="form.cantidad_temp_refrigerante" 
-                                        placeholder="" 
+                                    <Input
+                                        v-model="form.cantidad_temp_refrigerante"
+                                        placeholder=""
                                         :error="form.errors.cantidad_temp_refrigerante"
                                     />
                                 </div>
@@ -1293,17 +1293,17 @@ const breadcrumbs: BreadcrumbItem[] = [
                             <div class="grid grid-cols-2 gap-2">
                                 <div>
                                     <label class="text-xs text-gray-600 dark:text-gray-400">Valor</label>
-                                    <Input 
-                                        v-model="form.valor_temp_aceite" 
-                                        placeholder="" 
+                                    <Input
+                                        v-model="form.valor_temp_aceite"
+                                        placeholder=""
                                         :error="form.errors.valor_temp_aceite"
                                     />
                                 </div>
                                 <div>
                                     <label class="text-xs text-gray-600 dark:text-gray-400">Unidad (Galones)</label>
-                                    <Input 
-                                        v-model="form.cantidad_temp_aceite" 
-                                        placeholder="" 
+                                    <Input
+                                        v-model="form.cantidad_temp_aceite"
+                                        placeholder=""
                                         :error="form.errors.cantidad_temp_aceite"
                                     />
                                 </div>
@@ -1318,17 +1318,17 @@ const breadcrumbs: BreadcrumbItem[] = [
                             <div class="grid grid-cols-2 gap-2">
                                 <div>
                                     <label class="text-xs text-gray-600 dark:text-gray-400">Valor</label>
-                                    <Input 
-                                        v-model="form.valor_temp_turbo" 
-                                        placeholder="" 
+                                    <Input
+                                        v-model="form.valor_temp_turbo"
+                                        placeholder=""
                                         :error="form.errors.valor_temp_turbo"
                                     />
                                 </div>
                                 <div>
                                     <label class="text-xs text-gray-600 dark:text-gray-400">Unidad</label>
-                                    <Input 
-                                        v-model="form.cantidad_temp_turbo" 
-                                        placeholder="" 
+                                    <Input
+                                        v-model="form.cantidad_temp_turbo"
+                                        placeholder=""
                                         :error="form.errors.cantidad_temp_turbo"
                                     />
                                 </div>
@@ -1343,17 +1343,17 @@ const breadcrumbs: BreadcrumbItem[] = [
                             <div class="grid grid-cols-2 gap-2">
                                 <div>
                                     <label class="text-xs text-gray-600 dark:text-gray-400">Valor</label>
-                                    <Input 
-                                        v-model="form.valor_rpm" 
-                                        placeholder="" 
+                                    <Input
+                                        v-model="form.valor_rpm"
+                                        placeholder=""
                                         :error="form.errors.valor_rpm"
                                     />
                                 </div>
                                 <div>
                                     <label class="text-xs text-gray-600 dark:text-gray-400">Unidad</label>
-                                    <Input 
-                                        v-model="form.cantidad_rpm" 
-                                        placeholder="" 
+                                    <Input
+                                        v-model="form.cantidad_rpm"
+                                        placeholder=""
                                         :error="form.errors.cantidad_rpm"
                                     />
                                 </div>
@@ -1368,17 +1368,17 @@ const breadcrumbs: BreadcrumbItem[] = [
                             <div class="grid grid-cols-2 gap-2">
                                 <div>
                                     <label class="text-xs text-gray-600 dark:text-gray-400">Valor</label>
-                                    <Input 
-                                        v-model="form.valor_voltaje_bateria" 
-                                        placeholder="" 
+                                    <Input
+                                        v-model="form.valor_voltaje_bateria"
+                                        placeholder=""
                                         :error="form.errors.valor_voltaje_bateria"
                                     />
                                 </div>
                                 <div>
                                     <label class="text-xs text-gray-600 dark:text-gray-400">Unidad</label>
-                                    <Input 
-                                        v-model="form.cantidad_voltaje_bateria" 
-                                        placeholder="" 
+                                    <Input
+                                        v-model="form.cantidad_voltaje_bateria"
+                                        placeholder=""
                                         :error="form.errors.cantidad_voltaje_bateria"
                                     />
                                 </div>
@@ -1392,21 +1392,21 @@ const breadcrumbs: BreadcrumbItem[] = [
                     <h4 class="text-sm font-bold text-gray-700 dark:text-gray-300 mb-4 uppercase">
                         Caída Voltaje de Bat
                     </h4>
-                    
+
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="text-xs text-gray-600 dark:text-gray-400">Valor</label>
-                            <Input 
-                                v-model="form.valor_caida_voltaje_bat" 
-                                placeholder="" 
+                            <Input
+                                v-model="form.valor_caida_voltaje_bat"
+                                placeholder=""
                                 :error="form.errors.valor_caida_voltaje_bat"
                             />
                         </div>
                         <div>
                             <label class="text-xs text-gray-600 dark:text-gray-400">Unidad</label>
-                            <Input 
-                                v-model="form.cantidad_caida_voltaje_bat" 
-                                placeholder="" 
+                            <Input
+                                v-model="form.cantidad_caida_voltaje_bat"
+                                placeholder=""
                                 :error="form.errors.cantidad_caida_voltaje_bat"
                             />
                         </div>
@@ -1420,7 +1420,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                     </h4>
 
                     <!-- Estado del generador (nuevo campo) -->
-                   
+
 
                     <!-- VAC FASES -->
                     <div class="mb-4">
@@ -1430,25 +1430,25 @@ const breadcrumbs: BreadcrumbItem[] = [
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div>
                                 <label class="text-xs text-gray-600 dark:text-gray-400">L1 L2</label>
-                                <Input 
-                                    v-model="form.vac_fases_l1_l2" 
-                                    placeholder="" 
+                                <Input
+                                    v-model="form.vac_fases_l1_l2"
+                                    placeholder=""
                                     :error="form.errors.vac_fases_l1_l2"
                                 />
                             </div>
                             <div>
                                 <label class="text-xs text-gray-600 dark:text-gray-400">L2 L3</label>
-                                <Input 
-                                    v-model="form.vac_fases_l2_l3" 
-                                    placeholder="" 
+                                <Input
+                                    v-model="form.vac_fases_l2_l3"
+                                    placeholder=""
                                     :error="form.errors.vac_fases_l2_l3"
                                 />
                             </div>
                             <div>
                                 <label class="text-xs text-gray-600 dark:text-gray-400">L1 L3</label>
-                                <Input 
-                                    v-model="form.vac_fases_l1_l3" 
-                                    placeholder="" 
+                                <Input
+                                    v-model="form.vac_fases_l1_l3"
+                                    placeholder=""
                                     :error="form.errors.vac_fases_l1_l3"
                                 />
                             </div>
@@ -1463,25 +1463,25 @@ const breadcrumbs: BreadcrumbItem[] = [
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div>
                                 <label class="text-xs text-gray-600 dark:text-gray-400">L1</label>
-                                <Input 
-                                    v-model="form.amperios_l1" 
-                                    placeholder="" 
+                                <Input
+                                    v-model="form.amperios_l1"
+                                    placeholder=""
                                     :error="form.errors.amperios_l1"
                                 />
                             </div>
                             <div>
                                 <label class="text-xs text-gray-600 dark:text-gray-400">L2</label>
-                                <Input 
-                                    v-model="form.amperios_l2" 
-                                    placeholder="" 
+                                <Input
+                                    v-model="form.amperios_l2"
+                                    placeholder=""
                                     :error="form.errors.amperios_l2"
                                 />
                             </div>
                             <div>
                                 <label class="text-xs text-gray-600 dark:text-gray-400">L3</label>
-                                <Input 
-                                    v-model="form.amperios_l3" 
-                                    placeholder="" 
+                                <Input
+                                    v-model="form.amperios_l3"
+                                    placeholder=""
                                     :error="form.errors.amperios_l3"
                                 />
                             </div>
@@ -1496,25 +1496,25 @@ const breadcrumbs: BreadcrumbItem[] = [
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div>
                                 <label class="text-xs text-gray-600 dark:text-gray-400">L1</label>
-                                <Input 
-                                    v-model="form.vac_fase_n_l1n" 
-                                    placeholder="" 
+                                <Input
+                                    v-model="form.vac_fase_n_l1n"
+                                    placeholder=""
                                     :error="form.errors.vac_fase_n_l1n"
                                 />
                             </div>
                             <div>
                                 <label class="text-xs text-gray-600 dark:text-gray-400">L2</label>
-                                <Input 
-                                    v-model="form.vac_fase_n_l2n" 
-                                    placeholder="" 
+                                <Input
+                                    v-model="form.vac_fase_n_l2n"
+                                    placeholder=""
                                     :error="form.errors.vac_fase_n_l2n"
                                 />
                             </div>
                             <div>
                                 <label class="text-xs text-gray-600 dark:text-gray-400">L3</label>
-                                <Input 
-                                    v-model="form.vac_fase_n_l3n" 
-                                    placeholder="" 
+                                <Input
+                                    v-model="form.vac_fase_n_l3n"
+                                    placeholder=""
                                     :error="form.errors.vac_fase_n_l3n"
                                 />
                             </div>
@@ -1529,25 +1529,25 @@ const breadcrumbs: BreadcrumbItem[] = [
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div>
                                 <label class="text-xs text-gray-600 dark:text-gray-400">Potencia</label>
-                                <Input 
-                                    v-model="form.potencia" 
-                                    placeholder="" 
+                                <Input
+                                    v-model="form.potencia"
+                                    placeholder=""
                                     :error="form.errors.potencia"
                                 />
                             </div>
                             <div>
                                 <label class="text-xs text-gray-600 dark:text-gray-400">HZ</label>
-                                <Input 
-                                    v-model="form.hz" 
-                                    placeholder="" 
+                                <Input
+                                    v-model="form.hz"
+                                    placeholder=""
                                     :error="form.errors.hz"
                                 />
                             </div>
                             <div>
                                 <label class="text-xs text-gray-600 dark:text-gray-400">FP</label>
-                                <Input 
-                                    v-model="form.fp" 
-                                    placeholder="" 
+                                <Input
+                                    v-model="form.fp"
+                                    placeholder=""
                                     :error="form.errors.fp"
                                 />
                             </div>
@@ -1561,15 +1561,15 @@ const breadcrumbs: BreadcrumbItem[] = [
                 <h3 class="text-base font-bold text-gray-800 dark:text-gray-200 mb-4">
                     PROTECCIONES
                 </h3>
-                
+
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     <div class="flex flex-col gap-2">
                         <label class="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase">
                             Baja presión
                         </label>
-                        <Input 
-                            v-model="form.baja_presion" 
-                            placeholder="" 
+                        <Input
+                            v-model="form.baja_presion"
+                            placeholder=""
                             :error="form.errors.baja_presion"
                         />
                     </div>
@@ -1578,9 +1578,9 @@ const breadcrumbs: BreadcrumbItem[] = [
                         <label class="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase">
                             Alta temperatura
                         </label>
-                        <Input 
-                            v-model="form.alta_temperatura" 
-                            placeholder="" 
+                        <Input
+                            v-model="form.alta_temperatura"
+                            placeholder=""
                             :error="form.errors.alta_temperatura"
                         />
                     </div>
@@ -1589,9 +1589,9 @@ const breadcrumbs: BreadcrumbItem[] = [
                         <label class="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase">
                             Bajo nivel de regrigerante
                         </label>
-                        <Input 
-                            v-model="form.bajo_nivel_refrigerante" 
-                            placeholder="" 
+                        <Input
+                            v-model="form.bajo_nivel_refrigerante"
+                            placeholder=""
                             :error="form.errors.bajo_nivel_refrigerante"
                         />
                     </div>
@@ -1600,25 +1600,25 @@ const breadcrumbs: BreadcrumbItem[] = [
                         <label class="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase">
                             Bajo voltaje de AC
                         </label>
-                        <Input 
-                            v-model="form.bajo_voltaje_ac" 
-                            placeholder="" 
+                        <Input
+                            v-model="form.bajo_voltaje_ac"
+                            placeholder=""
                             :error="form.errors.bajo_voltaje_ac"
                         />
                     </div>
                 </div>
             </div>
 
-            
+
 
             <!-- RECOMENDACIONES Section -->
             <div class="border-t pt-4">
                 <h3 class="text-base font-bold text-gray-800 dark:text-gray-200 mb-4">
                     RECOMENDACIONES
                 </h3>
-                
-                <RichTextEditor 
-                    v-model="form.recomendaciones" 
+
+                <RichTextEditor
+                    v-model="form.recomendaciones"
                     :error="form.errors.recomendaciones"
                     placeholder="Describe las recomendaciones..."
                 />
@@ -1629,16 +1629,16 @@ const breadcrumbs: BreadcrumbItem[] = [
                 <h3 class="text-base font-bold text-gray-800 dark:text-gray-200 mb-4">
                     LLEGADA Y SALIDA TÉCNICO
                 </h3>
-                
+
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="flex flex-col gap-2">
                         <label class="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase">
                             Llegada técnico
                         </label>
-                        <Input 
-                            v-model:datetime="form.llegada_tecnico" 
+                        <Input
+                            v-model:datetime="form.llegada_tecnico"
                             type="datetime"
-                            placeholder="" 
+                            placeholder=""
                             :error="form.errors.llegada_tecnico"
                         />
                     </div>
@@ -1647,10 +1647,10 @@ const breadcrumbs: BreadcrumbItem[] = [
                         <label class="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase">
                             Salida técnico
                         </label>
-                        <Input 
-                            v-model:datetime="form.salida_tecnico" 
+                        <Input
+                            v-model:datetime="form.salida_tecnico"
                             type="datetime"
-                            placeholder="" 
+                            placeholder=""
                             :error="form.errors.salida_tecnico"
                         />
                     </div>
@@ -1662,8 +1662,8 @@ const breadcrumbs: BreadcrumbItem[] = [
                 <h3 class="text-base font-bold text-gray-800 dark:text-gray-200 mb-4">
                     CALIFICACIÓN DE SERVICIO (Cliente)
                 </h3>
-                
-                <RadioGroup 
+
+                <RadioGroup
                     v-model="form.calificacion_servicio"
                     :options="['Bueno', 'Regular', 'Malo']"
                     unique-id="calificacion"
@@ -1676,10 +1676,10 @@ const breadcrumbs: BreadcrumbItem[] = [
                 <h3 class="text-base font-bold text-gray-800 dark:text-gray-200 mb-4">
                     POSICIÓN DE LOS INSTRUMENTOS AL CONCLUIR EL SERVICIO
                 </h3>
-                
+
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <!-- Control -->
-                    <RadioGroup 
+                    <RadioGroup
                         v-model="form.control"
                         label="Control"
                         :options="['M', 'A', 'OFF']"
@@ -1688,7 +1688,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                     />
 
                     <!-- Transferencia -->
-                    <RadioGroup 
+                    <RadioGroup
                         v-model="form.transferencia"
                         label="Transferencia"
                         :options="['M', 'A', 'OFF']"
@@ -1697,7 +1697,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                     />
 
                     <!-- Posición cargador -->
-                    <RadioGroup 
+                    <RadioGroup
                         v-model="form.posicion_cargador"
                         label="Posición cargador"
                         :options="['ON', 'OFF']"
@@ -1706,7 +1706,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                     />
 
                     <!-- Totalizador -->
-                    <RadioGroup 
+                    <RadioGroup
                         v-model="form.totalizador"
                         label="Totalizador"
                         :options="['ON', 'OFF']"
@@ -1715,7 +1715,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                     />
 
                     <!-- Precalentador posición -->
-                    <RadioGroup 
+                    <RadioGroup
                         v-model="form.precalentador_posicion"
                         label="Precalentador posición"
                         :options="['ON', 'OFF']"
@@ -1730,7 +1730,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                 <h3 class="text-base font-bold text-gray-800 dark:text-gray-200 mb-4">
                     FOTOS DESPUÉS
                 </h3>
-                
+
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <!-- Foto uno despues -->
                     <div class="flex flex-col gap-2">
@@ -1750,9 +1750,9 @@ const breadcrumbs: BreadcrumbItem[] = [
                         <span v-if="form.errors.foto_uno_despues" class="text-xs italic text-red-500">
                             {{ form.errors.foto_uno_despues }}
                         </span>
-                        <Input 
-                            v-model="form.pie_foto_uno_despues" 
-                            placeholder="Pie de página para esta foto" 
+                        <Input
+                            v-model="form.pie_foto_uno_despues"
+                            placeholder="Pie de página para esta foto"
                             :error="form.errors.pie_foto_uno_despues"
                         />
                     </div>
@@ -1775,9 +1775,9 @@ const breadcrumbs: BreadcrumbItem[] = [
                         <span v-if="form.errors.foto_dos_despues" class="text-xs italic text-red-500">
                             {{ form.errors.foto_dos_despues }}
                         </span>
-                        <Input 
-                            v-model="form.pie_foto_dos_despues" 
-                            placeholder="Pie de página para esta foto" 
+                        <Input
+                            v-model="form.pie_foto_dos_despues"
+                            placeholder="Pie de página para esta foto"
                             :error="form.errors.pie_foto_dos_despues"
                         />
                     </div>
@@ -1800,9 +1800,9 @@ const breadcrumbs: BreadcrumbItem[] = [
                         <span v-if="form.errors.foto_tres_despues" class="text-xs italic text-red-500">
                             {{ form.errors.foto_tres_despues }}
                         </span>
-                        <Input 
-                            v-model="form.pie_foto_tres_despues" 
-                            placeholder="Pie de página para esta foto" 
+                        <Input
+                            v-model="form.pie_foto_tres_despues"
+                            placeholder="Pie de página para esta foto"
                             :error="form.errors.pie_foto_tres_despues"
                         />
                     </div>
@@ -1817,7 +1817,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                         <h3 class="text-base font-bold text-gray-800 dark:text-gray-200">
                             Técnico
                         </h3>
-                        
+
                         <!-- Firma técnico -->
                         <SignaturePad
                             v-model="form.firma_tecnico"
@@ -1832,9 +1832,9 @@ const breadcrumbs: BreadcrumbItem[] = [
                             <label class="text-sm font-semibold text-gray-700 dark:text-gray-300">
                                 Nombre técnico
                             </label>
-                            <Input 
-                                v-model="form.nombre_tecnico" 
-                                placeholder="" 
+                            <Input
+                                v-model="form.nombre_tecnico"
+                                placeholder=""
                                 :error="form.errors.nombre_tecnico"
                             />
                         </div>
@@ -1844,9 +1844,9 @@ const breadcrumbs: BreadcrumbItem[] = [
                             <label class="text-sm font-semibold text-gray-700 dark:text-gray-300">
                                 Cédula
                             </label>
-                            <Input 
-                                v-model="form.cedula_tecnico" 
-                                placeholder="" 
+                            <Input
+                                v-model="form.cedula_tecnico"
+                                placeholder=""
                                 :error="form.errors.cedula_tecnico"
                             />
                         </div>
@@ -1857,7 +1857,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                         <h3 class="text-base font-bold text-gray-800 dark:text-gray-200">
                             Cliente
                         </h3>
-                        
+
                         <!-- Firma cliente -->
                         <SignaturePad
                             v-model="form.firma_cliente"
@@ -1872,9 +1872,9 @@ const breadcrumbs: BreadcrumbItem[] = [
                             <label class="text-sm font-semibold text-gray-700 dark:text-gray-300">
                                 Nombre cliente
                             </label>
-                            <Input 
-                                v-model="form.nombre_cliente" 
-                                placeholder="" 
+                            <Input
+                                v-model="form.nombre_cliente"
+                                placeholder=""
                                 :error="form.errors.nombre_cliente"
                             />
                         </div>
@@ -1884,9 +1884,9 @@ const breadcrumbs: BreadcrumbItem[] = [
                             <label class="text-sm font-semibold text-gray-700 dark:text-gray-300">
                                 Cédula
                             </label>
-                            <Input 
-                                v-model="form.cedula_cliente" 
-                                placeholder="" 
+                            <Input
+                                v-model="form.cedula_cliente"
+                                placeholder=""
                                 :error="form.errors.cedula_cliente"
                             />
                         </div>
@@ -1896,22 +1896,22 @@ const breadcrumbs: BreadcrumbItem[] = [
 
             <!-- Form Actions -->
             <div class="flex justify-end gap-3 border-t pt-4">
-                <Link 
-                    :href="solicituds.index()" 
+                <Link
+                    :href="solicituds.index()"
                     class="no-underline">
-                 <Button 
-                    type="button" 
-                    label="Cancelar" 
-                    severity="secondary" 
+                 <Button
+                    type="button"
+                    label="Cancelar"
+                    severity="secondary"
                     @click="emit('close')"
                     :disabled="form.processing"
                 />
                 </Link>
-               
-                <Button 
-                    type="submit" 
-                    label="Guardar" 
-                    icon="pi pi-save" 
+
+                <Button
+                    type="submit"
+                    label="Guardar"
+                    icon="pi pi-save"
                     :loading="form.processing"
                 />
             </div>

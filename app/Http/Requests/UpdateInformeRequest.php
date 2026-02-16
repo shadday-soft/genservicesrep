@@ -57,8 +57,11 @@ class UpdateInformeRequest extends FormRequest
 
             // Fotos antes (archivos de imagen)
             'foto_uno_antes' => ['nullable'],
+            'pie_foto_uno_antes' => ['nullable', 'string', 'max:255'],
             'foto_dos_antes' => ['nullable'],
+            'pie_foto_dos_antes' => ['nullable', 'string', 'max:255'],
             'foto_tres_antes' => ['nullable'],
+            'pie_foto_tres_antes' => ['nullable', 'string', 'max:255'],
 
             // Actividad realizada
             'actividad_realizada' => ['nullable', 'string'],
@@ -107,15 +110,24 @@ class UpdateInformeRequest extends FormRequest
             'bajo_voltaje_ac' => ['nullable', 'string', 'max:50'],
 
             // Fotos durante (archivos de imagen)
-            'foto_uno_durante' => ['nullable'],
-            'foto_dos_durante' => ['nullable'],
-            'foto_tres_durante' => ['nullable'],
-            'foto_cuatro_durante' => ['nullable'],
-            'foto_cinco_durante' => ['nullable'],
-            'foto_seis_durante' => ['nullable'],
-            'foto_siete_durante' => ['nullable'],
-            'foto_ocho_durante' => ['nullable'],
-            'foto_nueve_durante' => ['nullable'],
+            'foto_uno_durante' => ['nullable', ],
+            'pie_foto_uno_durante' => ['nullable', 'string', 'max:255'],
+            'foto_dos_durante' => ['nullable', ],
+            'pie_foto_dos_durante' => ['nullable', 'string', 'max:255'],
+            'foto_tres_durante' => ['nullable', ],
+            'pie_foto_tres_durante' => ['nullable', 'string', 'max:255'],
+            'foto_cuatro_durante' => ['nullable', ],
+            'pie_foto_cuatro_durante' => ['nullable', 'string', 'max:255'],
+            'foto_cinco_durante' => ['nullable', ],
+            'pie_foto_cinco_durante' => ['nullable', 'string', 'max:255'],
+            'foto_seis_durante' => ['nullable', ],
+            'pie_foto_seis_durante' => ['nullable', 'string', 'max:255'],
+            'foto_siete_durante' => ['nullable', ],
+            'pie_foto_siete_durante' => ['nullable', 'string', 'max:255'],
+            'foto_ocho_durante' => ['nullable', ],
+            'pie_foto_ocho_durante' => ['nullable', 'string', 'max:255'],
+            'foto_nueve_durante' => ['nullable', ],
+            'pie_foto_nueve_durante' => ['nullable', 'string', 'max:255'],
 
             // Recomendaciones
             'recomendaciones' => ['nullable', 'string'],
@@ -135,9 +147,12 @@ class UpdateInformeRequest extends FormRequest
             'precalentador_posicion' => ['nullable', 'string', 'max:10'],
 
             // Fotos después (archivos de imagen)
-            'foto_uno_despues' => ['nullable'],
-            'foto_dos_despues' => ['nullable'],
-            'foto_tres_despues' => ['nullable'],
+            'foto_uno_despues' => ['nullable', ],
+            'pie_foto_uno_despues' => ['nullable', 'string', 'max:255'],
+            'foto_dos_despues' => ['nullable', ],
+            'pie_foto_dos_despues' => ['nullable', 'string', 'max:255'],
+            'foto_tres_despues' => ['nullable', ],
+            'pie_foto_tres_despues' => ['nullable', 'string', 'max:255'],
 
             // Firmas (almacenadas como base64 data URLs)
             'firma_tecnico' => ['nullable', 'string'],

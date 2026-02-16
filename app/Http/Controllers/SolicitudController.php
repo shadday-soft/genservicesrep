@@ -62,7 +62,7 @@ class SolicitudController extends Controller
 
     public function reestored()
     {
-        $solicitudsAnteriores = DB::connection('dbantes')->table('solicitudes')->get();
+        $solicitudsAnteriores = DB::connection('dbantes')->table('solicitudes')->where('numero_orden', 2032)->get();
         foreach ($solicitudsAnteriores as $solicitud) {
             $cliente = $this->crearCliente($solicitud->user_id);
             $tecnico = $this->crearTenico($solicitud->assigment_id);
@@ -160,6 +160,7 @@ class SolicitudController extends Controller
             'tipo_contrato' => 'Indefinido',
             'activo' => true,
         ];
+        dd(Tecnico::where('correo', $tecnicoAnterior->email)->first());
         if (Tecnico::where('correo', $tecnicoAnterior->email)->exists()) {
             return Tecnico::where('correo', $tecnicoAnterior->email)->first();
         }
@@ -235,7 +236,7 @@ class SolicitudController extends Controller
     public function crearCliente($id)
     {
         $cliente = DB::connection('dbantes')->table('users')->where('id', $id)->first();
-
+    
         if (Client::where('nit', $cliente->nit)->exists()) {
             return Client::where('nit', $cliente->nit)->first();
         }

@@ -102,7 +102,7 @@ class InformeRepository extends BaseRepository implements InformeInterface
     {
         // Leer la imagen original
         $image = imagecreatefromstring(file_get_contents($file->getRealPath()));
-        
+
         if ($image === false) {
             throw new \Exception('No se pudo procesar la imagen');
         }
@@ -115,18 +115,18 @@ class InformeRepository extends BaseRepository implements InformeInterface
         $maxWidth = 800;
         $maxHeight = 800;
         $ratio = min($maxWidth / $originalWidth, $maxHeight / $originalHeight);
-        
+
         // Si la imagen es más grande que el máximo, redimensionar
         if ($ratio < 1) {
             $newWidth = (int)round($originalWidth * $ratio);
             $newHeight = (int)round($originalHeight * $ratio);
-            
+
             $resizedImage = imagecreatetruecolor($newWidth, $newHeight);
-            
+
             // Mantener transparencia
             imagealphablending($resizedImage, false);
             imagesavealpha($resizedImage, true);
-            
+
             // Redimensionar con alta calidad
             imagecopyresampled(
                 $resizedImage, $image,
@@ -134,7 +134,7 @@ class InformeRepository extends BaseRepository implements InformeInterface
                 $newWidth, $newHeight,
                 $originalWidth, $originalHeight
             );
-            
+
             imagedestroy($image);
             $image = $resizedImage;
         } else {

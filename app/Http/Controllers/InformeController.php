@@ -74,9 +74,7 @@ class InformeController extends Controller
 
             return back()->with('status', 'Informe create successfully');
         } catch (\Exception $e) {
-            dd($e->getMessage());
-
-            return back()->withErrors(['errors' => 'Action no Disabled']);
+            return back()->withErrors(['errors' => 'Action no Disabled: ' . $e->getMessage()]);
         }
     }
 
