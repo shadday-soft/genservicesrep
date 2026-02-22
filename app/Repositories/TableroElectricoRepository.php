@@ -67,7 +67,8 @@ class TableroElectricoRepository extends BaseRepository implements TableroElectr
      * @param  TableroElectrico|null  $tablero  Tablero existente (para actualización)
      * @return array Datos actualizados con rutas de fotos
      */
-    private function handlePhotoUploads(array $data, string $section, ?TableroElectrico $tablero = null): array
+
+    private function handlePhotoUploads(array $data, string $section, ?TableroElectrico $informe = null): array
     {
         $photoFields = $this->getPhotoFields($section);
 
@@ -76,18 +77,84 @@ class TableroElectricoRepository extends BaseRepository implements TableroElectr
                 // Si hay un archivo nuevo
                 if (is_object($data[$field]) && method_exists($data[$field], 'store')) {
                     // Eliminar foto anterior si existe
-                    if ($tablero && $tablero->$field) {
-                        Storage::disk('public')->delete($tablero->$field);
+                    if ($informe && $informe->$field) {
+                        Storage::disk('public')->delete($informe->$field);
                     }
 
-                    // Guardar nueva foto
-                    $data[$field] = $data[$field]->store("tableros/{$section}", 'public');
+                    // Convertir y comprimir a WebP
+                    $data[$field] = $this->convertToWebP($data[$field], $section);
                 }
             }
         }
 
         return $data;
     }
+
+
+    private function convertToWebP($file, string $section): string
+    {
+        // Leer la imagen original
+        $image = imagecreatefromstring(file_get_contents($file->getRealPath()));
+        
+        if ($image === false) {
+            throw new \Exception('No se pudo procesar la imagen');
+        }
+
+        // Obtener dimensiones originales
+        $originalWidth = imagesx($image);
+        $originalHeight = imagesy($image);
+
+        // OPTIMIZACIÓN AGRESIVA: Redimensionar a máximo 800px
+        $maxWidth = 800;
+        $maxHeight = 800;
+        $ratio = min($maxWidth / $originalWidth, $maxHeight / $originalHeight);
+        
+        // Si la imagen es más grande que el máximo, redimensionar
+        if ($ratio < 1) {
+            $newWidth = (int)round($originalWidth * $ratio);
+            $newHeight = (int)round($originalHeight * $ratio);
+            
+            $resizedImage = imagecreatetruecolor($newWidth, $newHeight);
+            
+            // Mantener transparencia
+            imagealphablending($resizedImage, false);
+            imagesavealpha($resizedImage, true);
+            
+            // Redimensionar con alta calidad
+            imagecopyresampled(
+                $resizedImage, $image,
+                0, 0, 0, 0,
+                $newWidth, $newHeight,
+                $originalWidth, $originalHeight
+            );
+            
+            imagedestroy($image);
+            $image = $resizedImage;
+        } else {
+            // Mantener transparencia si no se redimensiona
+            imagealphablending($image, false);
+            imagesavealpha($image, true);
+        }
+
+        // Generar nombre único para el archivo
+        $filename = uniqid() . '.webp';
+        $filePath = "informes/{$section}/{$filename}";
+
+        // Crear el contenido WebP con compresión agresiva (calidad 60)
+        ob_start();
+        imagewebp($image, null, 60); // Calidad 60 = PDFs más ligeros
+        $webpContent = ob_get_clean();
+
+        // Liberar memoria
+        imagedestroy($image);
+
+        // Guardar usando el disco 'public' configurado en filesystems.php
+        Storage::disk('public')->put($filePath, $webpContent);
+
+        // Retornar la ruta relativa
+        return $filePath;
+    }
+
 
     /**
      * Obtiene los campos de fotos según la sección

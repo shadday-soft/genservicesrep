@@ -156,7 +156,6 @@ class InformeController extends Controller
             $registro->ubicacion = $solicitud->ubicacion;
             $registro->user = $solicitud->user;
             $registro->sucursal = $solicitud->sucursal;
-
             // Si el equipo tiene los datos, agregarlos
             if ($solicitud->equipo) {
                 $registro->modelo_equipo = $registro->modelo_equipo ?? $solicitud->equipo->modelo_equipo ?? '';
@@ -248,6 +247,7 @@ class InformeController extends Controller
 
                         continue;
                     }
+                    
 
                     // Preparar los datos que necesita la vista
                     $registro->numero_orden = $solicitud->numero_orden;

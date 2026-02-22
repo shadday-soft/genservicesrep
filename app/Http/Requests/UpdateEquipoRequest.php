@@ -40,10 +40,10 @@ class UpdateEquipoRequest extends FormRequest
             'modelo_equipo' => ['required_if:tipo_equipo,Planta Eléctrica',  'max:100'],
             'modelo_motor' => ['required_if:tipo_equipo,Planta Eléctrica',  'max:100'],
             'tension_operacion' => ['required_if:tipo_equipo,Planta Eléctrica',  'max:50'],
-            'serie_equipo' => ['nullable',  'max:100', 'unique:equipos,serie_equipo,'.$equipo->id],
-            'serie_motor' => ['nullable',  'max:100', 'unique:equipos,serie_motor,'.$equipo->id],
+            'serie_equipo' => ['nullable',  'max:100', ],
+            'serie_motor' => ['nullable',  'max:100', ],
             'marca_generador' => ['required_if:tipo_equipo,Planta Eléctrica',  'max:100'],
-            'horometro' => ['required_if:tipo_equipo,Planta Eléctrica', 'min:0', 'numeric', 'nullable'],
+            'horometro' => ['required_if:tipo_equipo,Planta Eléctrica',  'nullable'],
             'marca_motor' => ['required_if:tipo_equipo,Planta Eléctrica',  'max:100'],
 
             // --- DETALLES DE TABLERO ELÉCTRICO ---
