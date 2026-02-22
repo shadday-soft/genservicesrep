@@ -87,7 +87,7 @@ class InformeRepository extends BaseRepository implements InformeInterface
                 }
             }
         }
-
+ 
         return $data;
     }
 

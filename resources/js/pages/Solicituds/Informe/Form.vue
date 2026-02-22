@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted, watch } from 'vue';
 import Input from '@/components/Input.vue';
 import RichTextEditor from '@/components/RichTextEditor.vue';
 import SignaturePad from '@/components/SignaturePad.vue';
@@ -28,14 +28,6 @@ const isScrolled = ref(false);
 const handleScroll = () => {
     isScrolled.value = window.scrollY > 50;
 };
-
-onMounted(() => {
-    window.addEventListener('scroll', handleScroll);
-});
-
-onUnmounted(() => {
-    window.removeEventListener('scroll', handleScroll);
-});
 
 interface Props {
     informe?: any | null;
@@ -228,6 +220,76 @@ if (props.tecnico) {
     form.nombre_tecnico = props.tecnico.nombre_completo || '';
     form.cedula_tecnico = props.tecnico.identificacion || '';
 }
+
+// Auto-guardado con debounce de 5 segundos
+const autoSaveTimer = ref<number | null>(null);
+const hasUnsavedChanges = ref(false);
+const lastSavedData = ref<string>('');
+
+// Guardar el estado inicial después de cargar el informe
+onMounted(() => {
+    window.addEventListener('scroll', handleScroll);
+    if (props.informe) {
+        // Guardamos el estado inicial serializado para comparar después
+        lastSavedData.value = JSON.stringify(form.data());
+    }
+});
+
+// Observar cambios en el formulario para auto-guardar
+watch(
+    () => form.data(),
+    () => {
+        // Solo auto-guardar si ya existe un informe (modo edición)
+        if (!props.informe) {
+            return;
+        }
+
+        // Marcar que hay cambios sin guardar
+        hasUnsavedChanges.value = true;
+
+        // Limpiar el timer anterior si existe
+        if (autoSaveTimer.value) {
+            clearTimeout(autoSaveTimer.value);
+        }
+
+        // Crear un nuevo timer de 5 segundos
+        autoSaveTimer.value = setTimeout(() => {
+            // Solo enviar si hay cambios sin guardar y no está procesando
+            if (hasUnsavedChanges.value && !form.processing) {
+                const currentData = JSON.stringify(form.data());
+                
+                // Verificar si realmente hay cambios comparando con el último estado guardado
+                if (currentData !== lastSavedData.value) {
+                    form.post(updateInforme.url(props.informe.id), {
+                        forceFormData: true,
+                        preserveState: true,
+                        preserveScroll: true,
+                        onSuccess: () => {
+                            console.log('Formulario guardado automáticamente');
+                            // Actualizar el último estado guardado
+                            lastSavedData.value = JSON.stringify(form.data());
+                            hasUnsavedChanges.value = false;
+                        },
+                        onError: (error) => {
+                            console.error('Error al guardar automáticamente:', error);
+                        }
+                    });
+                } else {
+                    // No hay cambios reales, resetear la bandera
+                    hasUnsavedChanges.value = false;
+                }
+            }
+        }, 5000) as unknown as number;
+    },
+    { deep: true }
+);
+
+onUnmounted(() => {
+    window.removeEventListener('scroll', handleScroll);
+    if (autoSaveTimer.value) {
+        clearTimeout(autoSaveTimer.value);
+    }
+});
 
 const tiposServicio = [
     { label: 'Mantenimiento', value: 'Mantenimiento' },
