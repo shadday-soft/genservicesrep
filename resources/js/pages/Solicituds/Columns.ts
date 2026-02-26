@@ -6,7 +6,7 @@ export const columns: Column[] = [
         field: 'select',
         sortable: false,
         type: 'slot',
-        filter: false
+        filter: false,
     },
     {
         header: 'Numero de solicitud',
@@ -23,7 +23,7 @@ export const columns: Column[] = [
         type: 'text',
         filter: true,
         filterPlaceholder: 'Buscar por empresa',
-    }, 
+    },
     {
         header: 'Sucursal',
         field: 'sucursal.name',
@@ -39,7 +39,7 @@ export const columns: Column[] = [
         type: 'text',
         filter: true,
         filterPlaceholder: 'Buscar por equipo',
-    },  
+    },
     {
         header: 'Prioridad',
         field: 'prioridad',
@@ -63,7 +63,7 @@ export const columns: Column[] = [
                 value: 'Urgente',
                 severity: 'danger',
             },
-        ]
+        ],
     },
     {
         header: 'Fecha de Solicitud',
@@ -83,23 +83,11 @@ export const columns: Column[] = [
     },
     {
         header: 'Tipo de Mantenimiento',
-        field: 'tipo_mantenimiento_display',
+        field: 'actividad',
         sortable: true,
         type: 'tag',
         filter: true,
         filterPlaceholder: 'Buscar por tipo',
-        tags: [
-            {
-                label: 'Preventivo',
-                value: 'Mantenimiento Preventivo',
-                severity: 'info',
-            },
-            {
-                label: 'Correctivo',
-                value: 'Mantenimiento Correctivo',
-                severity: 'warn',
-            },
-        ]
     },
     {
         header: 'Estado',
@@ -124,7 +112,8 @@ export const columns: Column[] = [
                 value: 'Finalizada',
                 severity: 'success',
             },
-        ]},
+        ],
+    },
     {
         header: 'Técnico Asignado',
         field: 'user.name',
@@ -149,5 +138,5 @@ export const columns: Column[] = [
         type: 'slot',
         filter: true,
         filterPlaceholder: 'Buscar por detalles',
-    }
-]
+    },
+];
