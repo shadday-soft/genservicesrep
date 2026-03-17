@@ -268,9 +268,10 @@ const exportToExcel = () => {
 };
 
 const getRoutePdf = (solicitudData: Solicitud) => {
-    if(solicitudData.pdf_path){
+    if(solicitudData.pdf_path && solicitudData.numero_orden <= 2900){
         return '/public/pdf/' + solicitudData.pdf_path;
     }
+
     return `/informe/${solicitudData.id}/pdf`;
 }
 

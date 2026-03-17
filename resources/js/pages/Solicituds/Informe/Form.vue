@@ -252,7 +252,7 @@ watch(
             clearTimeout(autoSaveTimer.value);
         }
 
-        // Crear un nuevo timer de 5 segundos
+        // Crear un nuevo timer de 60 segundos
         autoSaveTimer.value = setTimeout(() => {
             // Solo enviar si hay cambios sin guardar y no está procesando
             if (hasUnsavedChanges.value && !form.processing) {
@@ -279,7 +279,7 @@ watch(
                     hasUnsavedChanges.value = false;
                 }
             }
-        }, 5000) as unknown as number;
+        }, 3*60*1000) as unknown as number;
     },
     { deep: true }
 );
